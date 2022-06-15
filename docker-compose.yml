@@ -1,0 +1,11 @@
+version: '3.0'
+services:
+  mongo:
+    container_name: demo-mongo
+    hostname: demo-mongo
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - '27017:27017'

@@ -59,6 +59,18 @@ npm start
 docker-compose up -d
 ```
 
+## Urls
+
+* GET http://localhost:8080/ping
+
+### Pet
+
+* GET http://localhost:8080/api/pets?sort[name]=asc
+* POST http://localhost:8080/api/pets
+* GET http://localhost:8080/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* PUT http://localhost:8080/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* DELETE http://localhost:8080/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+
 ## Structure
 
 ### Command

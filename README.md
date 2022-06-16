@@ -48,8 +48,9 @@ An api skeleton using mongodb for [chubbyts-framework][6].
 ```sh
 git clone https://github.com/chubbyts/chubbyts-petstore.git
 cd chubbyts-petstore
-rm -r .git
-git init
+rm -rf .git
+npm install
+npm start
 ```
 
 ## Structure

@@ -5,7 +5,9 @@
   "keywords": [
     "chubbyts",
     "framework",
-    "skleton"
+    "skleton",
+    "api",
+    "mongodb"
   ],
   "author": "Dominik Zogg",
   "license": "MIT",

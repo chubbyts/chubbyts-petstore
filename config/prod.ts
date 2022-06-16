@@ -62,7 +62,7 @@ export type Config = {
 
 const rootDir = realpathSync(__dirname + '/..');
 
-export default (env: string): Config => {
+export default (_env: string): Config => {
   const cacheDir = rootDir + '/var/cache';
   const logDir = rootDir + '/var/log';
 
@@ -134,7 +134,7 @@ export default (env: string): Config => {
       stream: {
         write: (msg: string): void => {
           if (!logStream) {
-            logStream = createWriteStream(logDir + '/' + env + '.log', { flags: 'a' });
+            logStream = createWriteStream(logDir + '/application.log', { flags: 'a' });
           }
 
           logStream.write(msg);

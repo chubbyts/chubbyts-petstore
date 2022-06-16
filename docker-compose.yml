@@ -1,8 +1,8 @@
 version: '3.0'
 services:
   mongo:
-    container_name: demo-mongo
-    hostname: demo-mongo
+    container_name: chubbyts-petstore
+    hostname: chubbyts-petstore
     image: mongo:4.4
     environment:
       MONGO_INITDB_ROOT_USERNAME: root

@@ -37,6 +37,7 @@ import {
   petRemoveServiceFactory,
   petRoutesServiceDelegator,
 } from '../src/pet/service-factory';
+import { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 
 export type Config = {
   debug: boolean;
@@ -47,6 +48,7 @@ export type Config = {
   directories: Map<string, string>;
   mongodb: {
     uri: string;
+    indexes: IndexesByCollection;
   };
   pino: {
     options: Omit<LoggerOptions, 'level'> & { level: 'fatal' | 'error' | 'warn' | 'info' | 'debug' };
@@ -110,6 +112,19 @@ export default (env: string): Config => {
     ]),
     mongodb: {
       uri: process.env.MONGO_URI ?? 'mongodb://root:root@localhost:27017/pet?authMechanism=DEFAULT&authSource=admin',
+      indexes: {
+        pet: [
+          {
+            key: { id: 1 },
+            name: 'pet.id',
+            unique: true,
+          },
+          {
+            key: { name: 1 },
+            name: 'pet.name',
+          },
+        ],
+      },
     },
     pino: {
       options: {

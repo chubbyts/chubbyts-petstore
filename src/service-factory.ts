@@ -48,6 +48,7 @@ import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/en
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
 import { mapToHttpError } from './map-to-http-error';
+import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 
 export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
@@ -122,8 +123,11 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
 };
 
 export const mongoClientServiceFactory = async (container: Container): Promise<MongoClient> => {
-  // @todo: add indices creation
-  return MongoClient.connect(container.get<Config>('config').mongodb.uri);
+  const mongoConfig = container.get<Config>('config').mongodb;
+  const mongoClient = await MongoClient.connect(mongoConfig.uri);
+  await upsertIndexes(mongoClient, mongoConfig.indexes);
+
+  return mongoClient;
 };
 
 export const pingHandlerServiceFactory = (container: Container) => {

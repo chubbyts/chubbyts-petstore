@@ -34,14 +34,15 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-http-error][9]: ^1.0.0
  * [@chubbyts/chubbyts-http-types][10]: ^1.0.0
  * [@chubbyts/chubbyts-log-types][11]: ^1.0.0
- * [@chubbyts/chubbyts-negotiation][12]: ^3.0.0
- * [@chubbyts/chubbyts-pino-adapter][13]: ^1.0.0
- * [commander][14]: ^9.3.0
- * [get-stream][15]: ^6.0.1
- * [mongodb][16]: ^4.6.0
- * [pino][17]: ^7.11.0
- * [uuid][18]: ^8.3.2
- * [zod][19]: ^3.17.3
+ * [@chubbyts/chubbyts-mongodb][12]: ^1.0.0
+ * [@chubbyts/chubbyts-negotiation][13]: ^3.0.0
+ * [@chubbyts/chubbyts-pino-adapter][14]: ^1.0.0
+ * [commander][15]: ^9.3.0
+ * [get-stream][16]: ^6.0.1
+ * [mongodb][17]: ^4.6.0
+ * [pino][18]: ^7.11.0
+ * [uuid][19]: ^8.3.2
+ * [zod][20]: ^3.17.3
 
 ## Installation
 
@@ -77,31 +78,31 @@ docker-compose up -d
 
 Commands is code that is meant to be executed on command line.
 
- * [src/command.ts][20]
+ * [src/command.ts][30]
 
 ### Handler
 
 Handler alias Controller, or Controller actions to be more precise.
 
- * [src/handler.ts][21]
+ * [src/handler.ts][31]
 
 ### Model
 
 Models, entities, documents what ever fits your purpose the best.
 
- * [src/model.ts][22]
+ * [src/model.ts][32]
 
 ### Repository
 
 Repositories get data from storages like databases, elasticsearch, redis or whereever your models are stored or cached.
 
- * [src/repository.ts][23]
+ * [src/repository.ts][33]
 
 ### ServiceFactory
 
 Service factories are the glue code of the dependeny injection container.
 
- * [src/service-factory.ts][24]
+ * [src/service-factory.ts][34]
 
 ## Copyright
 
@@ -118,17 +119,18 @@ Dominik Zogg 2022
 [9]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
 [10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
 [11]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[14]: https://www.npmjs.com/package/commander
-[15]: https://www.npmjs.com/package/get-stream
-[16]: https://www.npmjs.com/package/mongodb
-[17]: https://www.npmjs.com/package/pino
-[18]: https://www.npmjs.com/package/uuid
-[19]: https://www.npmjs.com/package/zod
+[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
+[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
+[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[15]: https://www.npmjs.com/package/commander
+[16]: https://www.npmjs.com/package/get-stream
+[17]: https://www.npmjs.com/package/mongodb
+[18]: https://www.npmjs.com/package/pino
+[19]: https://www.npmjs.com/package/uuid
+[20]: https://www.npmjs.com/package/zod
 
-[20]: src/command.ts
-[21]: src/handler.ts
-[22]: src/model.ts
-[23]: src/repository.ts
-[24]: src/service-factory.ts
+[30]: src/command.ts
+[31]: src/handler.ts
+[32]: src/model.ts
+[33]: src/repository.ts
+[34]: src/service-factory.ts

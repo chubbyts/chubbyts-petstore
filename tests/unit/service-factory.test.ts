@@ -212,6 +212,7 @@ describe('service-factory', () => {
         {
           mongodb: {
             uri: 'mongodb://localhost',
+            indexes: {},
           },
         },
       ],

@@ -53,6 +53,12 @@ npm install
 npm start
 ```
 
+### Docker
+
+```sh
+docker-compose up -d
+```
+
 ## Structure
 
 ### Command

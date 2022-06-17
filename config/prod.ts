@@ -128,7 +128,7 @@ export default (_env: string): Config => {
     },
     pino: {
       options: {
-        name: 'demo',
+        name: 'chubbyts-petstore',
         level: 'info',
       },
       stream: {

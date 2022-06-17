@@ -23,12 +23,12 @@ An api skeleton using mongodb for [chubbyts-framework][6].
 ## Requirements
 
  * node: 14
- * [@chubbyts/chubbyts-api][1]: ^1.0.2
- * [@chubbyts/chubbyts-decode-encode][2]: ^1.0.2
+ * [@chubbyts/chubbyts-api][1]: ^1.0.3
+ * [@chubbyts/chubbyts-decode-encode][2]: ^1.0.4
  * [@chubbyts/chubbyts-dic][3]: ^1.0.2
  * [@chubbyts/chubbyts-dic-config][4]: ^1.0.2
  * [@chubbyts/chubbyts-dic-types][5]: ^1.0.0
- * [@chubbyts/chubbyts-framework][6]: ^1.1.4
+ * [@chubbyts/chubbyts-framework][6]: ^1.2.0
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^1.0.2
  * [@chubbyts/chubbyts-http][8]: ^1.0.0
  * [@chubbyts/chubbyts-http-error][9]: ^1.0.0
@@ -39,7 +39,7 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-pino-adapter][14]: ^1.0.0
  * [commander][15]: ^9.3.0
  * [get-stream][16]: ^6.0.1
- * [mongodb][17]: ^4.6.0
+ * [mongodb][17]: ^4.7.0
  * [pino][18]: ^7.11.0
  * [uuid][19]: ^8.3.2
  * [zod][20]: ^3.17.3

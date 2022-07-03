@@ -6,7 +6,7 @@ const program = new Command();
 
 program
   .command('clean-directories')
-  .argument('<string>', 'directoryNames')
+  .argument('[directoryNames]')
   .description('Delete everything within a given directory.')
   .option('-e, --env [env]', 'Environment', 'dev')
   .action((directoryNamesAsString: string, options: { env: string }) => {

@@ -49,6 +49,14 @@ import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/di
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
 import { mapToHttpError } from './map-to-http-error';
 import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
+import { createCorsMiddleware } from '@chubbyts/chubbyts-cors/dist/middleware';
+import {
+  createAllowOriginExact,
+  createAllowOriginRegex,
+  createHeadersNegotiator,
+  createMethodNegotiator,
+  createOriginNegotiator,
+} from '@chubbyts/chubbyts-cors/dist/negotiation';
 
 export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
@@ -72,12 +80,33 @@ export const cleanDirectoriesCommandServiceFactory = (container: Container): Cle
   return createCleanDirectoriesCommand(container.get<Config>('config').directories);
 };
 
-export const contentTypeNegotiationMiddlewareServiceFactory = (container: Container) => {
+export const contentTypeNegotiationMiddlewareServiceFactory = (container: Container): Middleware => {
   return createContentTypeNegotiationMiddleware(container.get<Negotiator>('contentTypeNegotiator'));
 };
 
-export const contentTypeNegotiatorServiceFactory = (container: Container) => {
+export const contentTypeNegotiatorServiceFactory = (container: Container): Negotiator => {
   return createContentTypeNegotiator(container.get<Decoder>('decoder').contentTypes);
+};
+
+export const corsMiddlewareServiceFactory = (container: Container) => {
+  const cors = container.get<Config>('config').cors;
+
+  return createCorsMiddleware(
+    container.get<ResponseFactory>('responseFactory'),
+    createOriginNegotiator([
+      ...(cors.allowOrigins.createAllowOriginExact
+        ? cors.allowOrigins.createAllowOriginExact.map((value) => createAllowOriginExact(value))
+        : []),
+      ...(cors.allowOrigins.createAllowOriginRegex
+        ? cors.allowOrigins.createAllowOriginRegex.map((value) => createAllowOriginRegex(value))
+        : []),
+    ]),
+    createMethodNegotiator(cors.allowMethods),
+    createHeadersNegotiator(cors.allowHeaders),
+    cors.exposeHeaders,
+    cors.allowCredentials,
+    cors.maxAge,
+  );
 };
 
 export const decoderServiceFactory = (): Decoder => {
@@ -119,7 +148,7 @@ export const matchServiceFactory = (container: Container): Match => {
 export const middlewaresServiceFactory = (container: Container): Array<Middleware> => {
   const m = (name: string) => createLazyMiddleware(container, name);
 
-  return [m('errorMiddleware'), m('routeMatcherMiddleware')];
+  return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
 };
 
 export const mongoClientServiceFactory = async (container: Container): Promise<MongoClient> => {

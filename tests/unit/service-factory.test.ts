@@ -7,6 +7,7 @@ import {
   cleanDirectoriesCommandServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
   contentTypeNegotiatorServiceFactory,
+  corsMiddlewareServiceFactory,
   decoderServiceFactory,
   encoderServiceFactory,
   errorMiddlewareServiceFactory,
@@ -126,6 +127,66 @@ describe('service-factory', () => {
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
 
+  describe('corsMiddlewareServiceFactory', () => {
+    test('with createAllowOriginExact', () => {
+      const calls: Array<[string, unknown]> = [
+        [
+          'config',
+          {
+            cors: {
+              allowOrigins: {
+                createAllowOriginExact: ['http://localhost:80'],
+              },
+              allowMethods: [],
+              allowHeaders: [],
+              exposeHeaders: [],
+              allowCredentials: false,
+              maxAge: 7200,
+            },
+          },
+        ],
+        ['responseFactory', () => undefined],
+      ];
+
+      const get = jest.fn(createGetMock(calls));
+
+      const container = { get } as unknown as Container;
+
+      expect(corsMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
+
+      expect(get).toHaveBeenCalledTimes(calls.length);
+    });
+
+    test('with createAllowOriginRegex', () => {
+      const calls: Array<[string, unknown]> = [
+        [
+          'config',
+          {
+            cors: {
+              allowOrigins: {
+                createAllowOriginRegex: [/^http?\:\/\/localhost(\:\d+)?$/],
+              },
+              allowMethods: [],
+              allowHeaders: [],
+              exposeHeaders: [],
+              allowCredentials: false,
+              maxAge: 7200,
+            },
+          },
+        ],
+        ['responseFactory', () => undefined],
+      ];
+
+      const get = jest.fn(createGetMock(calls));
+
+      const container = { get } as unknown as Container;
+
+      expect(corsMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
+
+      expect(get).toHaveBeenCalledTimes(calls.length);
+    });
+  });
+
   test('decoderServiceFactory', () => {
     expect(decoderServiceFactory()).toBeInstanceOf(Object);
   });
@@ -197,6 +258,7 @@ describe('service-factory', () => {
 
     expect(middlewares).toMatchInlineSnapshot(`
       Array [
+        [Function],
         [Function],
         [Function],
       ]

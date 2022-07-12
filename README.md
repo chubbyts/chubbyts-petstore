@@ -18,31 +18,32 @@
 
 ## Description
 
-An api skeleton using mongodb for [chubbyts-framework][6].
+An api skeleton using mongodb for [chubbyts-framework][7].
 
 ## Requirements
 
  * node: 14
  * [@chubbyts/chubbyts-api][1]: ^1.0.3
- * [@chubbyts/chubbyts-decode-encode][2]: ^1.0.4
- * [@chubbyts/chubbyts-dic][3]: ^1.0.2
- * [@chubbyts/chubbyts-dic-config][4]: ^1.0.2
- * [@chubbyts/chubbyts-dic-types][5]: ^1.0.0
- * [@chubbyts/chubbyts-framework][6]: ^1.2.0
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^1.0.2
- * [@chubbyts/chubbyts-http][8]: ^1.0.0
- * [@chubbyts/chubbyts-http-error][9]: ^1.0.0
- * [@chubbyts/chubbyts-http-types][10]: ^1.0.0
- * [@chubbyts/chubbyts-log-types][11]: ^1.0.0
- * [@chubbyts/chubbyts-mongodb][12]: ^1.0.0
- * [@chubbyts/chubbyts-negotiation][13]: ^3.0.0
- * [@chubbyts/chubbyts-pino-adapter][14]: ^1.0.0
- * [commander][15]: ^9.3.0
- * [get-stream][16]: ^6.0.1
- * [mongodb][17]: ^4.7.0
- * [pino][18]: ^7.11.0
- * [uuid][19]: ^8.3.2
- * [zod][20]: ^3.17.3
+ * [@chubbyts/chubbyts-cors][2]: ^1.0.1
+ * [@chubbyts/chubbyts-decode-encode][3]: ^1.0.4
+ * [@chubbyts/chubbyts-dic][4]: ^1.0.2
+ * [@chubbyts/chubbyts-dic-config][5]: ^1.0.2
+ * [@chubbyts/chubbyts-dic-types][6]: ^1.0.0
+ * [@chubbyts/chubbyts-framework][7]: ^1.2.0
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.0.2
+ * [@chubbyts/chubbyts-http][9]: ^1.0.0
+ * [@chubbyts/chubbyts-http-error][10]: ^1.0.0
+ * [@chubbyts/chubbyts-http-types][11]: ^1.0.0
+ * [@chubbyts/chubbyts-log-types][12]: ^1.0.0
+ * [@chubbyts/chubbyts-mongodb][13]: ^1.0.0
+ * [@chubbyts/chubbyts-negotiation][14]: ^3.0.0
+ * [@chubbyts/chubbyts-pino-adapter][15]: ^1.0.0
+ * [commander][16]: ^9.3.0
+ * [get-stream][17]: ^6.0.1
+ * [mongodb][18]: ^4.7.0
+ * [pino][19]: ^7.11.0
+ * [uuid][20]: ^8.3.2
+ * [zod][21]: ^3.17.3
 
 ## Installation
 
@@ -109,25 +110,26 @@ Service factories are the glue code of the dependeny injection container.
 Dominik Zogg 2022
 
 [1]: https://www.npmjs.com/package/@chubbyts/chubbyts-api
-[2]: https://www.npmjs.com/package/@chubbyts/chubbyts-decode-encode
-[3]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic
-[4]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-config
-[5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
-[6]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
-[7]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
-[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-http
-[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
-[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
-[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
-[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[15]: https://www.npmjs.com/package/commander
-[16]: https://www.npmjs.com/package/get-stream
-[17]: https://www.npmjs.com/package/mongodb
-[18]: https://www.npmjs.com/package/pino
-[19]: https://www.npmjs.com/package/uuid
-[20]: https://www.npmjs.com/package/zod
+[2]: https://www.npmjs.com/package/@chubbyts/chubbyts-cors
+[3]: https://www.npmjs.com/package/@chubbyts/chubbyts-decode-encode
+[4]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic
+[5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-config
+[6]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
+[7]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
+[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
+[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-http
+[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
+[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
+[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
+[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
+[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
+[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[16]: https://www.npmjs.com/package/commander
+[17]: https://www.npmjs.com/package/get-stream
+[18]: https://www.npmjs.com/package/mongodb
+[19]: https://www.npmjs.com/package/pino
+[20]: https://www.npmjs.com/package/uuid
+[21]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

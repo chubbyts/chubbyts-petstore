@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@chubbyts/chubbyts-api": "^1.0.3",
+    "@chubbyts/chubbyts-cors": "^1.0.1",
     "@chubbyts/chubbyts-decode-encode": "^1.0.4",
     "@chubbyts/chubbyts-dic": "^1.0.2",
     "@chubbyts/chubbyts-dic-config": "^1.0.2",

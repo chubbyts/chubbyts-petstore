@@ -8,6 +8,7 @@ import {
   cleanDirectoriesCommandServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
   contentTypeNegotiatorServiceFactory,
+  corsMiddlewareServiceFactory,
   decoderServiceFactory,
   encoderServiceFactory,
   errorMiddlewareServiceFactory,
@@ -38,8 +39,20 @@ import {
   petRoutesServiceDelegator,
 } from '../src/pet/service-factory';
 import { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
+import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 
 export type Config = {
+  cors: {
+    allowCredentials: boolean;
+    allowHeaders: Array<string>;
+    allowMethods: Array<Method>;
+    allowOrigins: {
+      createAllowOriginExact?: Array<string>;
+      createAllowOriginRegex?: Array<RegExp>;
+    };
+    exposeHeaders: Array<string>;
+    maxAge: number;
+  };
   debug: boolean;
   dependencies: {
     factories: Map<string, ConfigFactory>;
@@ -69,6 +82,14 @@ export default (_env: string): Config => {
   let logStream: WriteStream | undefined;
 
   return {
+    cors: {
+      allowCredentials: false,
+      allowHeaders: ['Accept', 'Content-Type'],
+      allowMethods: [Method.DELETE, Method.GET, Method.POST, Method.PUT],
+      allowOrigins: {},
+      exposeHeaders: [],
+      maxAge: 7200,
+    },
     debug: false,
     dependencies: {
       factories: new Map<string, ConfigFactory>([
@@ -78,6 +99,7 @@ export default (_env: string): Config => {
         ['cleanDirectoriesCommand', cleanDirectoriesCommandServiceFactory],
         ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory],
         ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory],
+        ['corsMiddleware', corsMiddlewareServiceFactory],
         ['decoder', decoderServiceFactory],
         ['encoder', encoderServiceFactory],
         ['errorMiddleware', errorMiddlewareServiceFactory],

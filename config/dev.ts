@@ -5,6 +5,10 @@ export default (env: string): Config => {
 
   return {
     ...config,
+    cors: {
+      ...config.cors,
+      allowOrigins: { createAllowOriginRegex: [/^http?\:\/\/localhost(\:\d+)?$/] },
+    },
     debug: true,
     pino: {
       ...config.pino,

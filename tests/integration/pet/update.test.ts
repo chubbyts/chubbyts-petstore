@@ -150,9 +150,22 @@ describe('update', () => {
         accept: 'application/json',
       },
       body: JSON.stringify({
+        id: createResponseData.id,
+        createdAt: createResponseData.createdAt,
+        updatedAt: createResponseData.updatedAt,
         name: 'update.test',
         tag: 'tag',
         vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
+        _links: {
+          read: {
+            href: '/api/pets',
+            templated: false,
+            rel: [],
+            attributes: {
+              method: 'GET',
+            },
+          },
+        },
       }),
     });
 
@@ -169,6 +182,32 @@ describe('update', () => {
       name: 'update.test',
       tag: 'tag',
       vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
+      _links: {
+        read: {
+          href: expect.stringMatching(/^\/api\/pets/),
+          templated: false,
+          rel: [],
+          attributes: {
+            method: 'GET',
+          },
+        },
+        update: {
+          href: expect.stringMatching(/^\/api\/pets/),
+          templated: false,
+          rel: [],
+          attributes: {
+            method: 'PUT',
+          },
+        },
+        delete: {
+          href: expect.stringMatching(/^\/api\/pets/),
+          templated: false,
+          rel: [],
+          attributes: {
+            method: 'DELETE',
+          },
+        },
+      },
     });
   });
 });

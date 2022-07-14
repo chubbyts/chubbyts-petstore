@@ -8,6 +8,8 @@ export const modelSchema = z
   })
   .strict();
 
+export type Model = z.infer<typeof modelSchema>;
+
 const numberSchema = z.union([
   z
     .string()
@@ -16,7 +18,7 @@ const numberSchema = z.union([
   z.number(),
 ]);
 
-export const partialListSchema = z
+export const partialModelListSchema = z
   .object({
     offset: numberSchema.default(0),
     limit: numberSchema.default(20),
@@ -24,3 +26,12 @@ export const partialListSchema = z
     sort: z.object({}).strict().optional(),
   })
   .strict();
+
+export const modelListSchema = partialModelListSchema
+  .extend({
+    items: z.array(modelSchema),
+    count: z.number(),
+  })
+  .strict();
+
+export type ModelList = z.infer<typeof modelListSchema>;

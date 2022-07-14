@@ -22,47 +22,23 @@ import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update'
 import { createDeleteHandler } from '@chubbyts/chubbyts-api/dist/handler/delete';
 import { createListHandler } from '@chubbyts/chubbyts-api/dist/handler/list';
 import { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
-
-export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createListHandler(
-    partialPetListSchema,
-    await container.get<Promise<ResolveList>>('petResolveList'),
-    container.get<ResponseFactory>('responseFactory'),
-    petListSchema,
-    container.get<Encoder>('encoder'),
-  );
-};
+import { createModelEncoder, createModelListEncoder } from '../encoder';
+import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
+import { createModelDecoder } from '../decoder';
 
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createCreateHandler(
-    container.get<Decoder>('decoder'),
+    container.get<Decoder>('petDecoder'),
     partialPetSchema,
     await container.get<Promise<Persist>>('petPersist'),
     container.get<ResponseFactory>('responseFactory'),
     petSchema,
-    container.get<Encoder>('encoder'),
+    container.get<Encoder>('petEncoder'),
   );
 };
 
-export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createReadHandler(
-    await container.get<Promise<FindById>>('petFindById'),
-    container.get<ResponseFactory>('responseFactory'),
-    petSchema,
-    container.get<Encoder>('encoder'),
-  );
-};
-
-export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createUpdateHandler(
-    await container.get<Promise<FindById>>('petFindById'),
-    container.get<Decoder>('decoder'),
-    partialPetSchema,
-    await container.get<Promise<Persist>>('petPersist'),
-    container.get<ResponseFactory>('responseFactory'),
-    petSchema,
-    container.get<Encoder>('encoder'),
-  );
+export const petDecoderServiceFactory = (container: Container): Decoder => {
+  return createModelDecoder(container.get<Decoder>('decoder'));
 };
 
 export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -73,20 +49,57 @@ export const petDeleteHandlerServiceFactory = async (container: Container): Prom
   );
 };
 
-export const petResolveListServiceFactory = async (container: Container): Promise<ResolveList> => {
-  return createResolveList(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+export const petEncoderServiceFactory = (container: Container): Encoder => {
+  return createModelEncoder(container.get<Encoder>('encoder'), container.get<GeneratePath>('generatePath'), {
+    create: 'pet_create',
+    read: 'pet_read',
+    update: 'pet_update',
+    delete: 'pet_delete',
+  });
 };
 
 export const petFindByIdServiceFactory = async (container: Container): Promise<FindById> => {
   return createFindById(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
 };
 
+export const petListEncoderServiceFactory = (container: Container): Encoder => {
+  return createModelListEncoder(container.get<Encoder>('encoder'), container.get<GeneratePath>('generatePath'), {
+    create: 'pet_create',
+    read: 'pet_read',
+    update: 'pet_update',
+    delete: 'pet_delete',
+  });
+};
+
+export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
+  return createListHandler(
+    partialPetListSchema,
+    await container.get<Promise<ResolveList>>('petResolveList'),
+    container.get<ResponseFactory>('responseFactory'),
+    petListSchema,
+    container.get<Encoder>('petListEncoder'),
+  );
+};
+
 export const petPersistServiceFactory = async (container: Container): Promise<Persist> => {
   return createPersist(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
 };
 
+export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
+  return createReadHandler(
+    await container.get<Promise<FindById>>('petFindById'),
+    container.get<ResponseFactory>('responseFactory'),
+    petSchema,
+    container.get<Encoder>('petEncoder'),
+  );
+};
+
 export const petRemoveServiceFactory = async (container: Container): Promise<Remove> => {
   return createRemove(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+};
+
+export const petResolveListServiceFactory = async (container: Container): Promise<ResolveList> => {
+  return createResolveList(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
 };
 
 export const petRoutesServiceDelegator = (
@@ -135,4 +148,16 @@ export const petRoutesServiceDelegator = (
       }),
     ),
   ];
+};
+
+export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
+  return createUpdateHandler(
+    await container.get<Promise<FindById>>('petFindById'),
+    container.get<Decoder>('petDecoder'),
+    partialPetSchema,
+    await container.get<Promise<Persist>>('petPersist'),
+    container.get<ResponseFactory>('responseFactory'),
+    petSchema,
+    container.get<Encoder>('petEncoder'),
+  );
 };

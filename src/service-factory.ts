@@ -14,6 +14,7 @@ import {
 import { Config } from '../config/prod';
 import { createLogger, Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { Match } from '@chubbyts/chubbyts-framework/dist/router/route-matcher';
+import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import {
   createRequestFactory,
   createResponseFactory,
@@ -23,9 +24,12 @@ import {
   createUriFactory,
 } from '@chubbyts/chubbyts-http/dist/message-factory';
 import { createPinoAdapter } from '@chubbyts/chubbyts-pino-adapter/dist/pino-adapter';
-import { createPathToRegexpRouteMatcher } from '@chubbyts/chubbyts-framework-router-path-to-regexp/dist/path-to-regexp-router';
+import {
+  createPathToRegexpRouteMatcher,
+  createPathToRegexpPathGenerator,
+} from '@chubbyts/chubbyts-framework-router-path-to-regexp/dist/path-to-regexp-router';
 import pino from 'pino';
-import { createRoutesByName } from '@chubbyts/chubbyts-framework/dist/router/routes';
+import { createRoutesByName, Routes } from '@chubbyts/chubbyts-framework/dist/router/routes';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import { createGetRoute, Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { createPingHandler } from './handler';
@@ -135,6 +139,10 @@ export const errorMiddlewareServiceFactory = (container: Container): Middleware 
   );
 };
 
+export const generatePathServiceFactory = (container: Container): GeneratePath => {
+  return createPathToRegexpPathGenerator(container.get<Routes>('routesByName'));
+};
+
 export const loggerServiceFactory = (container: Container): Logger => {
   const { options, stream } = container.get<Config>('config').pino;
 
@@ -142,7 +150,7 @@ export const loggerServiceFactory = (container: Container): Logger => {
 };
 
 export const matchServiceFactory = (container: Container): Match => {
-  return createPathToRegexpRouteMatcher(createRoutesByName(container.get<Array<Route>>('routes')));
+  return createPathToRegexpRouteMatcher(container.get<Routes>('routesByName'));
 };
 
 export const middlewaresServiceFactory = (container: Container): Array<Middleware> => {
@@ -185,6 +193,10 @@ export const routesServiceFactory = (container: Container): Array<Route> => {
       handler: h('pingHandler'),
     }),
   ];
+};
+
+export const routesByNameServiceFactory = (container: Container): Routes => {
+  return createRoutesByName(container.get<Array<Route>>('routes'));
 };
 
 export const serverRequestFactoryServiceFactory = (container: Container): ServerRequestFactory => {

@@ -23,9 +23,9 @@ An api skeleton using mongodb for [chubbyts-framework][7].
 ## Requirements
 
  * node: 14
- * [@chubbyts/chubbyts-api][1]: ^1.0.3
- * [@chubbyts/chubbyts-cors][2]: ^1.0.1
- * [@chubbyts/chubbyts-decode-encode][3]: ^1.0.4
+ * [@chubbyts/chubbyts-api][1]: ^1.1.0
+ * [@chubbyts/chubbyts-cors][2]: ^1.0.3
+ * [@chubbyts/chubbyts-decode-encode][3]: ^1.1.0
  * [@chubbyts/chubbyts-dic][4]: ^1.0.2
  * [@chubbyts/chubbyts-dic-config][5]: ^1.0.2
  * [@chubbyts/chubbyts-dic-types][6]: ^1.0.0

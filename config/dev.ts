@@ -7,7 +7,7 @@ export default (env: string): Config => {
     ...config,
     cors: {
       ...config.cors,
-      allowOrigins: { createAllowOriginRegex: [/^http?\:\/\/localhost(\:\d+)?$/] },
+      allowOrigins: { createAllowOriginRegex: [/^http?\:\/\/(localhost|127\.\d+.\d+.\d+)(\:\d+)?$/] },
     },
     debug: true,
     pino: {

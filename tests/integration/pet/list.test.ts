@@ -96,14 +96,52 @@ describe('list', () => {
       filters: {
         name: 'list.test',
       },
-      items: [
-        {
-          id: expect.any(String),
-          createdAt: expect.any(String),
-          name: 'list.test',
-        },
-      ],
       count: 2,
+      _embedded: {
+        items: [
+          {
+            id: expect.any(String),
+            createdAt: expect.any(String),
+            name: 'list.test',
+            _links: {
+              read: {
+                href: expect.stringMatching(/^\/api\/pets/),
+                templated: false,
+                rel: [],
+                attributes: {
+                  method: 'GET',
+                },
+              },
+              update: {
+                href: expect.stringMatching(/^\/api\/pets/),
+                templated: false,
+                rel: [],
+                attributes: {
+                  method: 'PUT',
+                },
+              },
+              delete: {
+                href: expect.stringMatching(/^\/api\/pets/),
+                templated: false,
+                rel: [],
+                attributes: {
+                  method: 'DELETE',
+                },
+              },
+            },
+          },
+        ],
+      },
+      _links: {
+        create: {
+          href: expect.stringMatching(/^\/api\/pets/),
+          templated: false,
+          rel: [],
+          attributes: {
+            method: 'POST',
+          },
+        },
+      },
     });
   });
 });

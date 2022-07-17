@@ -3,7 +3,7 @@ import { mapToHttpError } from '../../src/map-to-http-error';
 import { DecodeError } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
 
 describe('mapToHttpError', () => {
-  test('unknown e', async () => {
+  test('unknown e', () => {
     const error = new Error('something went wrong');
 
     try {
@@ -14,7 +14,7 @@ describe('mapToHttpError', () => {
     }
   });
 
-  test('convert decode', async () => {
+  test('convert decode', () => {
     const error = new DecodeError('something went wrong');
 
     expect(mapToHttpError(error)).toMatchInlineSnapshot(`

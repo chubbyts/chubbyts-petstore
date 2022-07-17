@@ -11,6 +11,7 @@ import {
   decoderServiceFactory,
   encoderServiceFactory,
   errorMiddlewareServiceFactory,
+  generatePathServiceFactory,
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
@@ -19,6 +20,7 @@ import {
   requestFactoryServiceFactory,
   responseFactoryServiceFactory,
   routeMatcherMiddlewareServiceFactory,
+  routesByNameServiceFactory,
   routesServiceFactory,
   serverRequestFactoryServiceFactory,
   streamFactoryServiceFactory,
@@ -87,6 +89,18 @@ describe('service-factory', () => {
     const container = { get } as unknown as Container;
 
     expect(apiErrorMiddlewareServiceFactory(container)).toBeInstanceOf(Object);
+
+    expect(get).toHaveBeenCalledTimes(calls.length);
+  });
+
+  test('generatePathServiceFactory', () => {
+    const calls: Array<[string, unknown]> = [['routesByName', () => new Map()]];
+
+    const get = jest.fn(createGetMock(calls));
+
+    const container = { get } as unknown as Container;
+
+    expect(generatePathServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
@@ -234,7 +248,7 @@ describe('service-factory', () => {
   });
 
   test('matchServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['routes', []]];
+    const calls: Array<[string, unknown]> = [['routesByName', () => new Map()]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -367,6 +381,18 @@ describe('service-factory', () => {
         },
       ]
     `);
+
+    expect(get).toHaveBeenCalledTimes(calls.length);
+  });
+
+  test('routesByNameServiceFactory', () => {
+    const calls: Array<[string, unknown]> = [['routes', []]];
+
+    const get = jest.fn(createGetMock(calls));
+
+    const container = { get } as unknown as Container;
+
+    expect(routesByNameServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });

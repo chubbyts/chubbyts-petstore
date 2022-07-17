@@ -3,7 +3,7 @@ import { partialPetSchema, petSchema, partialPetListSchema, petListSchema } from
 
 describe('model', () => {
   describe('partialPetSchema', () => {
-    test('valid', async () => {
+    test('valid', () => {
       const input = {
         name: 'name',
         tag: 'tag',
@@ -13,7 +13,7 @@ describe('model', () => {
       expect(partialPetSchema.parse(input)).toEqual(input);
     });
 
-    test('invalid', async () => {
+    test('invalid', () => {
       const input = {
         name: 'name',
         tag: 'tag',
@@ -42,7 +42,7 @@ describe('model', () => {
   });
 
   describe('petSchema', () => {
-    test('valid', async () => {
+    test('valid', () => {
       const input = {
         id: 'test',
         createdAt: new Date(),
@@ -55,7 +55,7 @@ describe('model', () => {
       expect(petSchema.parse(input)).toEqual(input);
     });
 
-    test('invalid', async () => {
+    test('invalid', () => {
       const input = {
         id: 'test',
         createdAt: new Date(),
@@ -87,13 +87,13 @@ describe('model', () => {
   });
 
   describe('partialPetListSchema', () => {
-    test('valid', async () => {
+    test('valid', () => {
       const input = { offset: 0, limit: '20', filters: { name: 'name' }, sort: { name: 'asc' } };
 
       expect(partialPetListSchema.parse(input)).toEqual({ ...input, limit: 20 });
     });
 
-    test('invalid', async () => {
+    test('invalid', () => {
       const input = { offset: 0, limit: '20', filters: { value: 'name' }, sort: { name: 'asc' } };
 
       try {
@@ -119,7 +119,7 @@ describe('model', () => {
   });
 
   describe('petListSchema', () => {
-    test('valid', async () => {
+    test('valid', () => {
       const input = {
         offset: 0,
         limit: '20',
@@ -141,7 +141,7 @@ describe('model', () => {
       expect(petListSchema.parse(input)).toEqual({ ...input, limit: 20 });
     });
 
-    test('invalid', async () => {
+    test('invalid', () => {
       const input = {
         offset: 0,
         limit: '20',

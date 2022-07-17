@@ -6,7 +6,7 @@ import { createCleanDirectoriesCommand } from '../../src/command';
 
 describe('command', () => {
   describe('createCleanDirectoriesCommand', () => {
-    test('with unknown directories', async () => {
+    test('with unknown directories', () => {
       const error: Array<string> = [];
 
       console.error = (message: string) => {
@@ -20,7 +20,7 @@ describe('command', () => {
       expect(error).toEqual(['Unsupported directory names: cache, log']);
     });
 
-    test('with known directories', async () => {
+    test('with known directories', () => {
       const info: Array<string> = [];
 
       console.info = (message: string) => {

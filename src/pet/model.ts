@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { modelSchema, partialListSchema } from '../model';
+import { modelSchema, partialModelListSchema } from '../model';
 
 export const vaccinationSchema = z
   .object({
@@ -17,7 +17,9 @@ export const partialPetSchema = z
 
 export const petSchema = z.object({ ...modelSchema.shape, ...partialPetSchema.shape }).strict();
 
-export const partialPetListSchema = partialListSchema
+export type Pet = z.infer<typeof petSchema>;
+
+export const partialPetListSchema = partialModelListSchema
   .extend({
     filters: z.object({ name: z.string().optional() }).strict().optional(),
     sort: z
@@ -33,3 +35,5 @@ export const petListSchema = partialPetListSchema
     count: z.number(),
   })
   .strict();
+
+export type PetList = z.infer<typeof petListSchema>;

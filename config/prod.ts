@@ -174,7 +174,7 @@ export default (_env: string): Config => {
       },
     },
     server: {
-      host: process.env.SERVER_HOST ?? '0.0.0.0',
+      host: process.env.SERVER_HOST ?? '172.17.0.1',
       port: process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT, 10) : 10080,
     },
   };

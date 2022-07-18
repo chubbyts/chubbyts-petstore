@@ -63,15 +63,15 @@ docker-compose up -d
 
 ## Urls
 
-* GET http://localhost:10080/ping
+* GET https://localhost:10443/ping
 
 ### Pet
 
-* GET http://localhost:10080/api/pets?sort[name]=asc
-* POST http://localhost:10080/api/pets
-* GET http://localhost:10080/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
-* PUT http://localhost:10080/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
-* DELETE http://localhost:10080/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* GET https://localhost:10443/api/pets?sort[name]=asc
+* POST https://localhost:10443/api/pets
+* GET https://localhost:10443/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* PUT https://localhost:10443/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* DELETE https://localhost:10443/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
 
 ## Structure
 

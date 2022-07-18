@@ -1,11 +1,19 @@
 version: '3.0'
 services:
   mongo:
-    container_name: chubbyts-petstore
-    hostname: chubbyts-petstore
+    container_name: chubbyts-petstore-mongo
+    hostname: chubbyts-petstore-mongo
     image: mongo:4.4
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
       - '27017:27017'
+  nginx:
+    container_name: chubbyts-petstore-nginx
+    hostname: chubbyts-petstore-nginx
+    build:
+      dockerfile: ./docker/prod/nginx/Dockerfile
+      context: ./
+    ports:
+      - '10443:443'

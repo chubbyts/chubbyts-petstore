@@ -86,24 +86,25 @@ Commands is code that is meant to be executed on command line.
 Handler alias Controller, or Controller actions to be more precise.
 
  * [src/handler.ts][31]
-
 ### Model
 
 Models, entities, documents what ever fits your purpose the best.
 
  * [src/model.ts][32]
+ * [src/pet/model.ts][33]
 
 ### Repository
 
 Repositories get data from storages like databases, elasticsearch, redis or whereever your models are stored or cached.
 
- * [src/repository.ts][33]
+ * [src/repository.ts][34]
 
 ### ServiceFactory
 
 Service factories are the glue code of the dependeny injection container.
 
- * [src/service-factory.ts][34]
+ * [src/service-factory.ts][35]
+ * [src/pet/service-factory.ts][36]
 
 ## Copyright
 
@@ -134,5 +135,7 @@ Dominik Zogg 2022
 [30]: src/command.ts
 [31]: src/handler.ts
 [32]: src/model.ts
-[33]: src/repository.ts
-[34]: src/service-factory.ts
+[33]: src/pet/model.ts
+[34]: src/repository.ts
+[35]: src/service-factory.ts
+[36]: src/pet/service-factory.ts

@@ -3,7 +3,8 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 import {
   createNodeToServerRequestFactory,
   createResponseToNodeEmitter,
-} from '@chubbyts/chubbyts-framework/dist/server/node-http';
+} from '@chubbyts/chubbyts-node-http-bridge/dist/node-http';
+
 import container from '../bootstrap/container';
 import { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
 import {

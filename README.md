@@ -29,7 +29,7 @@ An api skeleton using mongodb for [chubbyts-framework][7].
  * [@chubbyts/chubbyts-dic][4]: ^1.0.2
  * [@chubbyts/chubbyts-dic-config][5]: ^1.0.2
  * [@chubbyts/chubbyts-dic-types][6]: ^1.0.0
- * [@chubbyts/chubbyts-framework][7]: ^1.2.0
+ * [@chubbyts/chubbyts-framework][7]: ^1.3.0
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.0.2
  * [@chubbyts/chubbyts-http][9]: ^1.0.0
  * [@chubbyts/chubbyts-http-error][10]: ^1.0.0
@@ -37,13 +37,14 @@ An api skeleton using mongodb for [chubbyts-framework][7].
  * [@chubbyts/chubbyts-log-types][12]: ^1.0.0
  * [@chubbyts/chubbyts-mongodb][13]: ^1.0.0
  * [@chubbyts/chubbyts-negotiation][14]: ^3.0.0
- * [@chubbyts/chubbyts-pino-adapter][15]: ^1.0.0
- * [commander][16]: ^9.3.0
- * [get-stream][17]: ^6.0.1
- * [mongodb][18]: ^4.7.0
- * [pino][19]: ^7.11.0
- * [uuid][20]: ^8.3.2
- * [zod][21]: ^3.17.3
+ * [@chubbyts/chubbyts-node-http-bridge][15]: ^1.0.0
+ * [@chubbyts/chubbyts-pino-adapter][16]: ^1.0.0
+ * [commander][17]: ^9.3.0
+ * [get-stream][18]: ^6.0.1
+ * [mongodb][19]: ^4.7.0
+ * [pino][20]: ^7.11.0
+ * [uuid][21]: ^8.3.2
+ * [zod][22]: ^3.17.3
 
 ## Installation
 
@@ -124,13 +125,14 @@ Dominik Zogg 2022
 [12]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
 [13]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
 [14]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[16]: https://www.npmjs.com/package/commander
-[17]: https://www.npmjs.com/package/get-stream
-[18]: https://www.npmjs.com/package/mongodb
-[19]: https://www.npmjs.com/package/pino
-[20]: https://www.npmjs.com/package/uuid
-[21]: https://www.npmjs.com/package/zod
+[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-node-http-bridge
+[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[17]: https://www.npmjs.com/package/commander
+[18]: https://www.npmjs.com/package/get-stream
+[19]: https://www.npmjs.com/package/mongodb
+[20]: https://www.npmjs.com/package/pino
+[21]: https://www.npmjs.com/package/uuid
+[22]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

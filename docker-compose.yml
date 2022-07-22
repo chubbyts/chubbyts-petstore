@@ -1,5 +1,31 @@
 version: '3.0'
 services:
+  node:
+    container_name: chubbyts-petstore-node
+    hostname: chubbyts-petstore-node
+    build:
+      dockerfile: ./docker/dev/node/Dockerfile
+      context: ./
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    environment:
+      APP_ENV: dev
+      MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
+      SERVER_HOST: '0.0.0.0'
+      SERVER_PORT: '10080'
+      SSH_AUTH_SOCK: /ssh-agent
+    ports:
+      - '10080:10080'
+    volumes:
+      - ${PWD}:/app
+      - ~/.bash_docker:/home/node/.bash_docker
+      - ~/.gitconfig:/home/node/.gitconfig
+      - ~/.gitignore:/home/node/.gitignore
+      - ~/.zsh_docker:/home/node/.zsh_docker
+      - $SSH_AUTH_SOCK:/ssh-agent
+    depends_on:
+      - mongo
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
@@ -13,7 +39,18 @@ services:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
     build:
-      dockerfile: ./docker/prod/nginx/Dockerfile
+      dockerfile: ./docker/dev/nginx/Dockerfile
       context: ./
+    environment:
+      SERVER_HOST: '10443'
+      NODE_SERVER_HOST: 'node' # 172.17.0.1, if node is running on host (drop service node and depends on node)
+      NODE_SERVER_PORT: '10080'
     ports:
-      - '10443:443'
+      - '10443:10443'
+    command: >
+      /bin/bash -c "envsubst \"`for v in $$(compgen -v);do printf '$${%s} ' $$v;done`'\"
+      < /etc/nginx/nginx.conf.template
+      > /etc/nginx/nginx.conf
+      && nginx -g 'daemon off;'"
+    depends_on:
+      - node

@@ -14,7 +14,7 @@ import {
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import { Config } from '../config/prod';
 
-const boostrapedContainer = container(process.env.APP_ENV ?? 'dev');
+const boostrapedContainer = container(process.env.APP_ENV as string);
 
 const config = boostrapedContainer.get<Config>('config');
 

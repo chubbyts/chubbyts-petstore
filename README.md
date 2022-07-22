@@ -46,20 +46,27 @@ An api skeleton using mongodb for [chubbyts-framework][7].
  * [uuid][21]: ^8.3.2
  * [zod][22]: ^3.17.3
 
-## Installation
+## Environment
+
+Add the following environment variable to your system, for example within `~/.bashrc`:
 
 ```sh
-git clone https://github.com/chubbyts/chubbyts-petstore.git
-cd chubbyts-petstore
-rm -rf .git
-npm install
-npm start
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
 ```
 
 ### Docker
 
 ```sh
 docker-compose up -d
+docker-compose exec node bash
+```
+
+## Installation
+
+```sh
+npm install
+npm start
 ```
 
 ## Urls

@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 
 describe('create', () => {
   test('missing accept', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -21,7 +21,7 @@ describe('create', () => {
   });
 
   test('missing content-type', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
       method: 'POST',
       headers: {
         accept: 'application/json',
@@ -53,7 +53,7 @@ describe('create', () => {
   });
 
   test('validation error', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -90,7 +90,7 @@ describe('create', () => {
   });
 
   test('successful', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',

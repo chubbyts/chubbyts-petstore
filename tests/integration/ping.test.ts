@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 
 test('ping', async () => {
-  const response = await fetch('http://127.0.0.1:12345/ping');
+  const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/ping`);
 
   expect(response.status).toBe(200);
   expect(response.headers.get('content-type')).toBe('application/json');

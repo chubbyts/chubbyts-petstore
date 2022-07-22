@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 
 describe('update', () => {
   test('missing accept', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',
@@ -21,7 +21,7 @@ describe('update', () => {
   });
 
   test('missing content-type', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
       method: 'PUT',
       headers: {
         accept: 'application/json',
@@ -53,7 +53,7 @@ describe('update', () => {
   });
 
   test('not found', async () => {
-    const response = await fetch('http://127.0.0.1:12345/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8', {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',
@@ -80,7 +80,7 @@ describe('update', () => {
   });
 
   test('validation error', async () => {
-    const createResponse = await fetch('http://127.0.0.1:12345/api/pets', {
+    const createResponse = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -93,7 +93,7 @@ describe('update', () => {
 
     const createResponseData = await createResponse.json();
 
-    const response = await fetch(`http://127.0.0.1:12345/api/pets/${createResponseData.id}`, {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/${createResponseData.id}`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',
@@ -130,7 +130,7 @@ describe('update', () => {
   });
 
   test('successful', async () => {
-    const createResponse = await fetch('http://127.0.0.1:12345/api/pets', {
+    const createResponse = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -143,7 +143,7 @@ describe('update', () => {
 
     const createResponseData = await createResponse.json();
 
-    const response = await fetch(`http://127.0.0.1:12345/api/pets/${createResponseData.id}`, {
+    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/${createResponseData.id}`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',

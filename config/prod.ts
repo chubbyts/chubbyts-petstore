@@ -143,7 +143,7 @@ export default (_env: string): Config => {
       ['log', logDir],
     ]),
     mongodb: {
-      uri: process.env.MONGO_URI ?? 'mongodb://root:root@localhost:27017/pet?authMechanism=DEFAULT&authSource=admin',
+      uri: process.env.MONGO_URI as string,
       indexes: {
         pet: [
           {
@@ -174,8 +174,8 @@ export default (_env: string): Config => {
       },
     },
     server: {
-      host: process.env.SERVER_HOST ?? '172.17.0.1',
-      port: process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT, 10) : 10080,
+      host: process.env.SERVER_HOST as string,
+      port: parseInt(process.env.SERVER_PORT as string, 10),
     },
   };
 };

@@ -1,5 +1,30 @@
 version: '3.0'
 services:
+  node:
+    container_name: chubbyts-petstore-node
+    hostname: chubbyts-petstore-node
+    build:
+      dockerfile: ./docker/dev/node/Dockerfile
+      context: ./
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    environment:
+      MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
+      SERVER_HOST: '0.0.0.0'
+      SERVER_PORT: '80'
+      SSH_AUTH_SOCK: /ssh-agent
+    volumes:
+      - ${PWD}:/app
+      - ~/.bash_aliases:/home/node/.bash_aliases
+      - ~/.bash_history:/home/node/.bash_history
+      - ~/.gitconfig:/home/node/.gitconfig
+      - ~/.gitignore:/home/node/.gitignore
+      - ~/.zsh_aliases:/home/node/.zsh_aliases
+      - ~/.zsh_history:/home/node/.zsh_history
+      - $SSH_AUTH_SOCK:/ssh-agent
+    depends_on:
+      - mongo
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
@@ -15,5 +40,15 @@ services:
     build:
       dockerfile: ./docker/prod/nginx/Dockerfile
       context: ./
+    environment:
+      SERVER_HOST: 'node'
+      SERVER_PORT: '80'
     ports:
       - '10443:443'
+    command: >
+      /bin/bash -c "envsubst \"`for v in $$(compgen -v);do printf '$${%s} ' $$v;done`'\"
+      < /etc/nginx/nginx.conf.template
+      > /etc/nginx/nginx.conf
+      && nginx -g 'daemon off;'"
+    depends_on:
+      - node

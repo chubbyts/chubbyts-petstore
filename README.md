@@ -52,14 +52,10 @@ An api skeleton using mongodb for [chubbyts-framework][7].
 git clone https://github.com/chubbyts/chubbyts-petstore.git
 cd chubbyts-petstore
 rm -rf .git
+docker-compose up -d
+docker-compose exec node bash
 npm install
 npm start
-```
-
-### Docker
-
-```sh
-docker-compose up -d
 ```
 
 ## Urls

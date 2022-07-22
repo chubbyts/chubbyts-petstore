@@ -17,7 +17,7 @@ http {
         ssl_certificate_key /etc/nginx/certificate_key;
 
         location / {
-            proxy_pass http://172.17.0.1:10080;
+            proxy_pass http://${SERVER_HOST}:${SERVER_PORT};
 
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;

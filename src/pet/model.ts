@@ -3,14 +3,14 @@ import { modelSchema, partialModelListSchema } from '../model';
 
 export const vaccinationSchema = z
   .object({
-    name: z.string(),
+    name: z.string().min(1),
   })
   .strict();
 
 export const partialPetSchema = z
   .object({
-    name: z.string(),
-    tag: z.string().optional(),
+    name: z.string().min(1),
+    tag: z.string().min(1).optional(),
     vaccinations: z.array(vaccinationSchema).optional(),
   })
   .strict();

@@ -61,23 +61,61 @@ import {
   createMethodNegotiator,
   createOriginNegotiator,
 } from '@chubbyts/chubbyts-cors/dist/negotiation';
+import { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
+import { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
+import { ZodError, ZodIssueBase } from 'zod';
+import { isHttpError } from '@chubbyts/chubbyts-http-error/dist/http-error';
 
-export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
+export const acceptNegotiationMiddlewareServiceFactory = (container: Container): Middleware => {
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
 };
 
-export const acceptNegotiatorServiceFactory = (container: Container) => {
+export const acceptNegotiatorServiceFactory = (container: Container): Negotiator => {
   return createAcceptNegotiator(container.get<Encoder>('encoder').contentTypes);
 };
 
-export const apiErrorMiddlewareServiceFactory = (container: Container) => {
-  return createApiErrorMiddleware(
+const flatPath = (error: ZodIssueBase): string => {
+  return error.path.map((pathPart, i) => {
+    const newPathPart = typeof pathPart === 'number' ? `[${pathPart}]` : pathPart;
+
+    if (error.path[i - 1] && typeof error.path[i - 1] !== 'number') {
+      return `${newPathPart}.`;
+    }
+
+    return newPathPart;
+  }).join('');
+}
+
+export const apiErrorMiddlewareServiceFactory = (container: Container): Middleware => {
+  const originalMiddleware = createApiErrorMiddleware(
     container.get<ResponseFactory>('responseFactory'),
     container.get<Encoder>('encoder'),
     mapToHttpError,
     container.get<Config>('config').debug,
     container.get<Logger>('logger'),
   );
+
+  return async (request: ServerRequest, handler: Handler): Promise<Response> => {
+    return originalMiddleware(request, async (): Promise<Response> => {
+      try {
+        return await handler(request);
+      } catch (e) {
+        if (isHttpError(e) && e.status === 400 && typeof e.validation !== undefined) {
+          const { validation, ...rest } = e;
+
+          throw {
+            ...rest, invalidParameters: (validation as ZodError).errors.map((error) => ({
+              name: flatPath(error),
+              reason: error.code,
+              details: error.message,
+            }))
+          };
+        }
+
+        throw e;
+      }
+    });
+  };
 };
 
 export const cleanDirectoriesCommandServiceFactory = (container: Container): CleanDirectoriesCommand => {

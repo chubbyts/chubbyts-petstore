@@ -51,7 +51,7 @@
     "node": ">=14"
   },
   "dependencies": {
-    "@chubbyts/chubbyts-api": "^1.1.0",
+    "@chubbyts/chubbyts-api": "^1.2.0",
     "@chubbyts/chubbyts-cors": "^1.0.3",
     "@chubbyts/chubbyts-decode-encode": "^1.1.0",
     "@chubbyts/chubbyts-dic": "^1.0.2",

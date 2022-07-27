@@ -16,7 +16,7 @@ const startServer = async () => {
     const child = spawn(process.argv[0], ['node_modules/.bin/ts-node', 'public/index.ts'], {
       env: {
         APP_ENV: 'jest',
-        MONGO_URI: process.env.MONGO_URL,
+        MONGO_URI: process.env.MONGO_URI,
         SERVER_HOST: testServerHost,
         SERVER_PORT: testServerPort,
       },
@@ -42,6 +42,7 @@ module.exports = async () => {
   if (!process.env.INTEGRATION_ENDPOINT) {
     await mongoDbSetup();
     process.env.INTEGRATION_ENDPOINT = `http://${testServerHost}:${testServerPort}`;
+    process.env.MONGO_URI = process.env.MONGO_URL;
     global.__HTTP_SERVER__ = await startServer();
   }
 

@@ -35,21 +35,21 @@ describe('list', () => {
     expect(responseData).toMatchInlineSnapshot(`
       Object {
         "_httpError": "BadRequest",
+        "invalidParameters": Array [
+          Object {
+            "context": Object {
+              "code": "unrecognized_keys",
+              "keys": Array [
+                "name1",
+              ],
+            },
+            "name": "filters",
+            "reason": "Unrecognized key(s) in object: 'name1'",
+          },
+        ],
         "status": 400,
         "title": "Bad Request",
         "type": "https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.1",
-        "validation": Array [
-          Object {
-            "code": "unrecognized_keys",
-            "keys": Array [
-              "name1",
-            ],
-            "message": "Unrecognized key(s) in object: 'name1'",
-            "path": Array [
-              "filters",
-            ],
-          },
-        ],
       }
     `);
   });

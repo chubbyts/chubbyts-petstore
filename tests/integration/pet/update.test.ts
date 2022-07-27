@@ -111,20 +111,20 @@ describe('update', () => {
     expect(responseData).toMatchInlineSnapshot(`
       Object {
         "_httpError": "BadRequest",
+        "invalidParameters": Array [
+          Object {
+            "context": Object {
+              "code": "invalid_type",
+              "expected": "string",
+              "received": "undefined",
+            },
+            "name": "name",
+            "reason": "Required",
+          },
+        ],
         "status": 400,
         "title": "Bad Request",
         "type": "https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.1",
-        "validation": Array [
-          Object {
-            "code": "invalid_type",
-            "expected": "string",
-            "message": "Required",
-            "path": Array [
-              "name",
-            ],
-            "received": "undefined",
-          },
-        ],
       }
     `);
   });

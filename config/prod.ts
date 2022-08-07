@@ -39,9 +39,8 @@ import {
   petDeleteHandlerServiceFactory,
   petRemoveServiceFactory,
   petRoutesServiceDelegator,
-  petEncoderServiceFactory,
-  petListEncoderServiceFactory,
-  petDecoderServiceFactory,
+  petEnrichModelServiceFactory,
+  petEnrichListServiceFactory,
 } from '../src/pet/service-factory';
 import { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
@@ -114,11 +113,10 @@ export default (_env: string): Config => {
         ['middlewares', middlewaresServiceFactory],
         ['mongoClient', mongoClientServiceFactory],
         ['petCreateHandler', petCreateHandlerServiceFactory],
-        ['petDecoder', petDecoderServiceFactory],
         ['petDeleteHandler', petDeleteHandlerServiceFactory],
-        ['petEncoder', petEncoderServiceFactory],
+        ['petEnrichList', petEnrichListServiceFactory],
+        ['petEnrichModel', petEnrichModelServiceFactory],
         ['petFindById', petFindByIdServiceFactory],
-        ['petListEncoder', petListEncoderServiceFactory],
         ['petListHandler', petListHandlerServiceFactory],
         ['petPersist', petPersistServiceFactory],
         ['petReadHandler', petReadHandlerServiceFactory],

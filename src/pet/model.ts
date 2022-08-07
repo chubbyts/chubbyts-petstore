@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { modelSchema, partialModelListSchema } from '../model';
+import { linkSchema, modelSchema, partialListSchema } from '../model';
 
-export const vaccinationSchema = z
+const vaccinationSchema = z
   .object({
     name: z.string().min(1),
   })
@@ -15,12 +15,24 @@ export const partialPetSchema = z
   })
   .strict();
 
-export const petSchema = z.object({ ...modelSchema.shape, ...partialPetSchema.shape }).strict();
+const petSchema = z.object({ ...modelSchema.shape, ...partialPetSchema.shape }).strict();
 
-export type Pet = z.infer<typeof petSchema>;
+export const petHalSchema = z
+  .object({
+    ...petSchema.shape,
+    _links: z
+      .object({
+        read: linkSchema.optional(),
+        update: linkSchema.optional(),
+        delete: linkSchema.optional(),
+      })
+      .optional(),
+  })
+  .strict();
 
-export const partialPetListSchema = partialModelListSchema
-  .extend({
+export const partialPetListSchema = z
+  .object({
+    ...partialListSchema.shape,
     filters: z.object({ name: z.string().optional() }).strict().optional(),
     sort: z
       .object({ name: z.enum(['asc', 'desc']).optional() })
@@ -29,11 +41,22 @@ export const partialPetListSchema = partialModelListSchema
   })
   .strict();
 
-export const petListSchema = partialPetListSchema
-  .extend({
-    items: z.array(petSchema),
+const petListSchema = z
+  .object({
+    ...partialPetListSchema.shape,
+    items: z.array(modelSchema),
     count: z.number(),
   })
   .strict();
 
-export type PetList = z.infer<typeof petListSchema>;
+export const petListHalSchema = z
+  .object({
+    ...petListSchema.shape,
+    items: z.array(petHalSchema),
+    _links: z
+      .object({
+        create: linkSchema.optional(),
+      })
+      .optional(),
+  })
+  .strict();

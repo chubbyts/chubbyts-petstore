@@ -1,5 +1,82 @@
 import { describe, expect, test } from '@jest/globals';
-import { modelListSchema, modelSchema, partialModelListSchema } from '../../src/model';
+import { numberSchema, modelSchema, partialListSchema, linkSchema } from '../../src/model';
+
+describe('numberSchema', () => {
+  test('valid', () => {
+    expect(numberSchema.parse(10)).toEqual(10);
+    expect(numberSchema.parse('10')).toEqual(10);
+  });
+
+  test('invalid', () => {
+    try {
+      numberSchema.parse('test');
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "custom",
+            "message": "Invalid input",
+            "path": []
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+describe('linkSchema', () => {
+  test('valid', () => {
+    expect(linkSchema.parse({ href: '/api/model' })).toEqual({ href: '/api/model' });
+    expect(linkSchema.parse({ href: '/api/model', attributes: { method: 'POST' } })).toEqual({
+      href: '/api/model',
+      attributes: { method: 'POST' },
+    });
+  });
+
+  test('invalid', () => {
+    try {
+      numberSchema.parse({ href: '/api/model', attributes: { method: 'POST' }, key: 'value' });
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "object",
+                    "path": [],
+                    "message": "Expected string, received object"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "object",
+                    "path": [],
+                    "message": "Expected number, received object"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [],
+            "message": "Invalid input"
+          }
+        ]]
+      `);
+    }
+  });
+});
 
 describe('modelSchema', () => {
   test('valid', () => {
@@ -31,64 +108,18 @@ describe('modelSchema', () => {
   });
 });
 
-describe('partialModelListSchema', () => {
+describe('partialListSchema', () => {
   test('valid', () => {
     const input = { offset: 0, limit: '20', filters: {}, sort: {} };
 
-    expect(partialModelListSchema.parse(input)).toEqual({ ...input, limit: 20 });
+    expect(partialListSchema.parse(input)).toEqual({ ...input, limit: 20 });
   });
 
   test('invalid', () => {
     const input = { offset: 0, limit: 20, filters: { name: 'name' }, sort: {} };
 
     try {
-      partialModelListSchema.parse(input);
-      fail('Expect fail');
-    } catch (e) {
-      expect(e).toMatchInlineSnapshot(`
-        [ZodError: [
-          {
-            "code": "unrecognized_keys",
-            "keys": [
-              "name"
-            ],
-            "path": [
-              "filters"
-            ],
-            "message": "Unrecognized key(s) in object: 'name'"
-          }
-        ]]
-      `);
-    }
-  });
-});
-
-describe('modelListSchema', () => {
-  test('valid', () => {
-    const input = {
-      offset: 0,
-      limit: '20',
-      filters: {},
-      sort: {},
-      count: 1,
-      items: [{ id: 'id', createdAt: new Date(), updatedAt: new Date() }],
-    };
-
-    expect(modelListSchema.parse(input)).toEqual({ ...input, limit: 20 });
-  });
-
-  test('invalid', () => {
-    const input = {
-      offset: 0,
-      limit: '20',
-      filters: { name: 'name' },
-      sort: {},
-      count: 1,
-      items: [{ id: 'id', createdAt: new Date(), updatedAt: new Date() }],
-    };
-
-    try {
-      modelListSchema.parse(input);
+      partialListSchema.parse(input);
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`

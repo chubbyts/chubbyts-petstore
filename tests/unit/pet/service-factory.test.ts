@@ -1,13 +1,11 @@
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
-import { MongoClient } from 'mongodb';
 import {
   petCreateHandlerServiceFactory,
-  petDecoderServiceFactory,
   petDeleteHandlerServiceFactory,
-  petEncoderServiceFactory,
+  petEnrichListServiceFactory,
+  petEnrichModelServiceFactory,
   petFindByIdServiceFactory,
-  petListEncoderServiceFactory,
   petListHandlerServiceFactory,
   petPersistServiceFactory,
   petReadHandlerServiceFactory,
@@ -37,10 +35,11 @@ const createGetMock = (givenCalls: Array<[string, unknown]>) => {
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
     const calls: Array<[string, unknown]> = [
-      ['petDecoder', {}],
+      ['decoder', {}],
       ['petPersist', () => undefined],
       ['responseFactory', () => undefined],
-      ['petEncoder', {}],
+      ['encoder', {}],
+      ['petEnrichModel', {}],
     ];
 
     const get = jest.fn(createGetMock(calls));
@@ -48,18 +47,6 @@ describe('service-factory', () => {
     const container = { get } as unknown as Container;
 
     expect(await petCreateHandlerServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(get).toHaveBeenCalledTimes(calls.length);
-  });
-
-  test('petDecoderServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['decoder', {}]];
-
-    const get = jest.fn(createGetMock(calls));
-
-    const container = { get } as unknown as Container;
-
-    expect(petDecoderServiceFactory(container)).toBeInstanceOf(Object);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
@@ -80,17 +67,26 @@ describe('service-factory', () => {
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
 
-  test('petEncoderServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
-      ['encoder', {}],
-      ['generatePath', () => undefined],
-    ];
+  test('petEnrichModelServiceFactory', async () => {
+    const calls: Array<[string, unknown]> = [['generatePath', () => undefined]];
 
     const get = jest.fn(createGetMock(calls));
 
     const container = { get } as unknown as Container;
 
-    expect(petEncoderServiceFactory(container)).toBeInstanceOf(Object);
+    expect(petEnrichModelServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(get).toHaveBeenCalledTimes(calls.length);
+  });
+
+  test('petEnrichListServiceFactory', async () => {
+    const calls: Array<[string, unknown]> = [['generatePath', () => undefined]];
+
+    const get = jest.fn(createGetMock(calls));
+
+    const container = { get } as unknown as Container;
+
+    expect(petEnrichListServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
@@ -107,26 +103,12 @@ describe('service-factory', () => {
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
 
-  test('petListEncoderServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
-      ['encoder', {}],
-      ['generatePath', () => undefined],
-    ];
-
-    const get = jest.fn(createGetMock(calls));
-
-    const container = { get } as unknown as Container;
-
-    expect(petListEncoderServiceFactory(container)).toBeInstanceOf(Object);
-
-    expect(get).toHaveBeenCalledTimes(calls.length);
-  });
-
   test('petListHandlerServiceFactory', async () => {
     const calls: Array<[string, unknown]> = [
       ['petResolveList', () => undefined],
       ['responseFactory', () => undefined],
-      ['petListEncoder', {}],
+      ['encoder', {}],
+      ['petEnrichList', {}],
     ];
 
     const get = jest.fn(createGetMock(calls));
@@ -154,7 +136,8 @@ describe('service-factory', () => {
     const calls: Array<[string, unknown]> = [
       ['petFindById', () => undefined],
       ['responseFactory', () => undefined],
-      ['petEncoder', {}],
+      ['encoder', {}],
+      ['petEnrichModel', {}],
     ];
 
     const get = jest.fn(createGetMock(calls));
@@ -279,10 +262,11 @@ describe('service-factory', () => {
   test('petUpdateHandlerServiceFactory', async () => {
     const calls: Array<[string, unknown]> = [
       ['petFindById', () => undefined],
-      ['petDecoder', {}],
+      ['decoder', {}],
       ['petPersist', () => undefined],
       ['responseFactory', () => undefined],
-      ['petEncoder', {}],
+      ['encoder', {}],
+      ['petEnrichModel', {}],
     ];
 
     const get = jest.fn(createGetMock(calls));

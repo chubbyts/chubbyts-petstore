@@ -118,24 +118,18 @@ describe('create', () => {
       _links: {
         read: {
           href: expect.stringMatching(/^\/api\/pets/),
-          templated: false,
-          rel: [],
           attributes: {
             method: 'GET',
           },
         },
         update: {
           href: expect.stringMatching(/^\/api\/pets/),
-          templated: false,
-          rel: [],
           attributes: {
             method: 'PUT',
           },
         },
         delete: {
           href: expect.stringMatching(/^\/api\/pets/),
-          templated: false,
-          rel: [],
           attributes: {
             method: 'DELETE',
           },

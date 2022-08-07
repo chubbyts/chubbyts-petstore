@@ -7,10 +7,7 @@ export const createModelDecoder = (defaultDecoder: Decoder): Decoder => {
       const data = defaultDecoder.decode(encodedData, contentType, context);
 
       if (typeof data === 'object' && data !== null) {
-        const { id, createdAt, updatedAt, _links, ...rest } = data as {
-          id: string;
-          createdAt: string;
-          updatedAt: string;
+        const { _links, ...rest } = data as {
           _links: {};
         };
 

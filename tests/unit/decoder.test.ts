@@ -38,9 +38,6 @@ describe('decoder', () => {
 
     test('with model', () => {
       const encodedData = JSON.stringify({
-        id: '6a1e5d32-1c20-4893-9953-5e066814d5af',
-        createdAt: new Date('2022-01-01').toJSON(),
-        updatedAt: new Date('2022-01-02').toJSON(),
         name: 'Name',
         _links: {
           read: {

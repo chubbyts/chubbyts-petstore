@@ -51,7 +51,6 @@ import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/enc
 import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
-import { mapToHttpError } from './map-to-http-error';
 import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { createCorsMiddleware } from '@chubbyts/chubbyts-cors/dist/middleware';
 import {
@@ -74,7 +73,7 @@ export const apiErrorMiddlewareServiceFactory = (container: Container) => {
   return createApiErrorMiddleware(
     container.get<ResponseFactory>('responseFactory'),
     container.get<Encoder>('encoder'),
-    mapToHttpError,
+    undefined,
     container.get<Config>('config').debug,
     container.get<Logger>('logger'),
   );

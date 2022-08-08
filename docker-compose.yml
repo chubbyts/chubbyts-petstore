@@ -35,6 +35,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
       - '27017:27017'
+    volumes:
+      - ./data/mongo:/data/db
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx

@@ -7,6 +7,8 @@ export HISTFILE=~/.bash_history
 export HISTSIZE=5000
 export SAVEHIST=100000
 
+export PROMPT_COMMAND='history -a'
+
 alias cls="printf '\033c'; printf '\033[3J'"
 
 alias ls='ls -ahl --color=auto'

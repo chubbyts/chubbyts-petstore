@@ -11,6 +11,8 @@ services:
       MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '10080'
+    ports:
+      - '10080:10080'
     depends_on:
       - mongo
   mongo:

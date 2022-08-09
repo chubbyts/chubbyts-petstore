@@ -3,17 +3,45 @@ import { ServerRequest, Response } from '@chubbyts/chubbyts-http-types/dist/mess
 import { createPingHandler } from '../../src/handler';
 import { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import { Duplex } from 'stream';
+import { Db, Document, MongoClient } from 'mongodb';
 
 describe('handler', () => {
   test('createPingHandler', async () => {
     const end = jest.fn((givenChunk) => {
-      expect(JSON.parse(givenChunk)).toHaveProperty('datetime');
+      const data = JSON.parse(givenChunk);
+
+      expect(data).toEqual({
+        datetime: expect.any(String),
+        database: true,
+      });
     });
 
     const body = { end } as unknown as Duplex;
 
     const request = {} as ServerRequest;
     const response = { body } as Response;
+
+    const command: Db['command'] = jest.fn(async (givenDocument: Document) => {
+      expect(givenDocument).toMatchInlineSnapshot(`
+        Object {
+          "serverStatus": 1,
+        }
+      `);
+
+      return {
+        key1: 'value1',
+        ok: 1,
+        key2: 'value2',
+      };
+    });
+
+    const db = jest.fn((givenDbName) => {
+      expect(givenDbName).toBe(undefined);
+
+      return { command } as Db;
+    });
+
+    const mongoClient = { db } as unknown as MongoClient;
 
     const responseFactory: ResponseFactory = jest.fn((givenStatus: number, givenReasonPhrase?: string) => {
       expect(givenStatus).toBe(200);
@@ -22,7 +50,7 @@ describe('handler', () => {
       return response;
     });
 
-    const pingHandler = createPingHandler(responseFactory);
+    const pingHandler = createPingHandler(mongoClient, responseFactory);
 
     expect(await pingHandler(request)).toEqual({
       ...response,
@@ -35,6 +63,8 @@ describe('handler', () => {
     });
 
     expect(end).toHaveBeenCalledTimes(1);
+    expect(command).toHaveBeenCalledTimes(1);
+    expect(db).toHaveBeenCalledTimes(1);
     expect(responseFactory).toHaveBeenCalledTimes(1);
   });
 });

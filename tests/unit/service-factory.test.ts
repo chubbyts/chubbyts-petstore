@@ -305,14 +305,17 @@ describe('service-factory', () => {
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
 
-  test('pingHandlerServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['responseFactory', () => undefined]];
+  test('pingHandlerServiceFactory', async () => {
+    const calls: Array<[string, unknown]> = [
+      ['mongoClient', () => async () => ({})],
+      ['responseFactory', () => undefined],
+    ];
 
     const get = jest.fn(createGetMock(calls));
 
     const container = { get } as unknown as Container;
 
-    expect(pingHandlerServiceFactory(container)).toBeInstanceOf(Function);
+    expect(await pingHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });

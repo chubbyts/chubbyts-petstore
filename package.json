@@ -18,8 +18,7 @@
     "test": "jest",
     "test:integration": "jest --config jest.integration.config.js",
     "infection": "stryker run",
-    "build": "tsc",
-    "prepare": "npm run cs && npm run test && npm run test:integration && rm -Rf dist && npm run build",
+    "build": "rm -Rf dist && tsc",
     "start": "nodemon public/index.ts",
     "command": "ts-node bin/console.ts"
   },

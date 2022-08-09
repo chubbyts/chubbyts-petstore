@@ -166,8 +166,11 @@ export const mongoClientServiceFactory = async (container: Container): Promise<M
   return mongoClient;
 };
 
-export const pingHandlerServiceFactory = (container: Container) => {
-  return createPingHandler(container.get<ResponseFactory>('responseFactory'));
+export const pingHandlerServiceFactory = async (container: Container) => {
+  return createPingHandler(
+    await container.get<Promise<MongoClient>>('mongoClient'),
+    container.get<ResponseFactory>('responseFactory'),
+  );
 };
 
 export const requestFactoryServiceFactory = (container: Container): RequestFactory => {

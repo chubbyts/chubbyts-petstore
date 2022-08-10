@@ -4,7 +4,6 @@ import {
   createNodeToServerRequestFactory,
   createResponseToNodeEmitter,
 } from '@chubbyts/chubbyts-node-http-bridge/dist/node-http';
-
 import containerFactory from '../bootstrap/container';
 import { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
 import {

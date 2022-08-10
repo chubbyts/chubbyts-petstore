@@ -5,7 +5,7 @@ import {
   createResponseToNodeEmitter,
 } from '@chubbyts/chubbyts-node-http-bridge/dist/node-http';
 
-import container from '../bootstrap/container';
+import containerFactory from '../bootstrap/container';
 import { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
 import {
   ServerRequestFactory,
@@ -14,16 +14,16 @@ import {
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import { Config } from '../config/prod';
 
-const boostrapedContainer = container(process.env.APP_ENV as string);
+const container = containerFactory(process.env.APP_ENV as string);
 
-const config = boostrapedContainer.get<Config>('config');
+const config = container.get<Config>('config');
 
-const app = createApplication(boostrapedContainer.get<Array<Middleware>>('middlewares'));
+const app = createApplication(container.get<Array<Middleware>>('middlewares'));
 
 const nodeToServerRequestFactory = createNodeToServerRequestFactory(
-  boostrapedContainer.get<UriFactory>('uriFactory'),
-  boostrapedContainer.get<ServerRequestFactory>('serverRequestFactory'),
-  boostrapedContainer.get<StreamFromResourceFactory>('streamFromResourceFactory'),
+  container.get<UriFactory>('uriFactory'),
+  container.get<ServerRequestFactory>('serverRequestFactory'),
+  container.get<StreamFromResourceFactory>('streamFromResourceFactory'),
 );
 
 const responseToNodeEmitter = createResponseToNodeEmitter();

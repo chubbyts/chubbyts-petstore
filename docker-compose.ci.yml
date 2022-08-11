@@ -7,7 +7,7 @@ services:
       dockerfile: ./docker/prod/node/Dockerfile
       context: ./
     environment:
-      APP_ENV: prod
+      NODE_ENV: production
       MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '10080'

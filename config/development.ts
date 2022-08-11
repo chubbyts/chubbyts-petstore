@@ -1,7 +1,7 @@
-import prod, { Config } from './prod';
+import production, { Config } from './production';
 
 export default (env: string): Config => {
-  const config = prod(env);
+  const config = production(env);
 
   return {
     ...config,

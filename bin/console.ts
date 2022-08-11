@@ -8,9 +8,8 @@ program
   .command('clean-directories')
   .argument('[directoryNames]')
   .description('Delete everything within a given directory.')
-  .option('-e, --env [env]', 'Environment', 'dev')
-  .action((directoryNamesAsString: string, options: { env: string }) => {
-    container(options.env).get<CleanDirectoriesCommand>('cleanDirectoriesCommand')(
+  .action((directoryNamesAsString: string) => {
+    container(process.env.NODE_ENV as string).get<CleanDirectoriesCommand>('cleanDirectoriesCommand')(
       directoryNamesAsString.split(',').map((directoryName) => directoryName.trim()),
     );
   });

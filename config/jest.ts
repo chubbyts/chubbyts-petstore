@@ -1,6 +1,6 @@
-import dev from './dev';
-import { Config } from './prod';
+import development from './development';
+import { Config } from './production';
 
 export default (env: string): Config => {
-  return dev(env);
+  return development(env);
 };

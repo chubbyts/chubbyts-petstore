@@ -10,7 +10,7 @@ services:
         USER_ID: ${USER_ID:-1000}
         GROUP_ID: ${GROUP_ID:-1000}
     environment:
-      APP_ENV: dev
+      NODE_ENV: development
       MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '10080'

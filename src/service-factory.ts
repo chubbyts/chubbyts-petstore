@@ -11,7 +11,7 @@ import {
   StreamFromResourceFactory,
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { Config } from '../config/prod';
+import { Config } from '../config/production';
 import { createLogger, Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { Match } from '@chubbyts/chubbyts-framework/dist/router/route-matcher';
 import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';

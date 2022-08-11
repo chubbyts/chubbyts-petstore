@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'fs';
-import { Config } from '../config/prod';
+import { Config } from '../config/production';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 

@@ -11,9 +11,9 @@ import {
   StreamFromResourceFactory,
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { Config } from '../config/prod';
+import { Config } from '../config/production';
 
-const container = containerFactory(process.env.APP_ENV as string);
+const container = containerFactory(process.env.NODE_ENV as string);
 
 const config = container.get<Config>('config');
 

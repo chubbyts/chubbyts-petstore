@@ -6,6 +6,8 @@ RUN dnf upgrade -y --refresh
 
 RUN dnf install -y \
     compat-openssl11 \
+    nmap-ncat \
+    procps-ng \
     unzip
 
 COPY docker/prod/node/files /

@@ -7,7 +7,7 @@ RUN dnf upgrade -y --refresh
 RUN dnf install -y \
     compat-openssl11 \
     git \
-    net-tools \
+    nmap-ncat \
     procps-ng \
     sudo \
     unzip \

@@ -1,4 +1,5 @@
-FROM rockylinux:9.0
+# base
+FROM rockylinux:9.0 AS base
 
 SHELL ["/bin/bash", "-c"]
 
@@ -11,14 +12,10 @@ RUN dnf install -y \
     unzip
 
 COPY docker/production/node/files /
-COPY . /app-build
 
-RUN mkdir /app \
-    && groupadd -g 1000 node \
+RUN groupadd -g 1000 node \
     && useradd -u 1000 -g 1000 -s /bin/bash -M node \
-    && chown -Rf node: /home/node \
-    && chown -Rf node: /app-build \
-    && chown -Rf node: /app
+    && chown -Rf node: /home/node
 
 USER node
 
@@ -30,6 +27,17 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell \
     && fnm default 18 \
     && fnm use 18
 
+# build
+FROM base as build
+
+USER root
+
+COPY . /app-build
+
+RUN chown -Rf node: /app-build
+
+USER node
+
 WORKDIR /app-build
 
 RUN source ~/.bashrc \
@@ -37,10 +45,20 @@ RUN source ~/.bashrc \
     && npm run cs \
     && npm run test \
     && npm run test:integration \
-    && npm run build \
-    && cp -r dist/* /app \
-    && cp package.json /app \
-    && cp package-lock.json /app
+    && npm run build
+
+# prod
+FROM base
+
+USER root
+
+COPY --from=build /app-build/dist /app
+COPY --from=build /app-build/package.json /app
+COPY --from=build /app-build/package-lock.json /app
+
+RUN chown -Rf node: /app
+
+USER node
 
 WORKDIR /app
 

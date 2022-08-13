@@ -8,10 +8,7 @@ test('ping', async () => {
 
   const responseData = await response.json();
 
-  expect(responseData).toEqual({
-    datetime: expect.any(String),
-    database: true,
-  });
+  expect(responseData).toEqual({ datetime: expect.any(String) });
 
   const date = new Date(responseData.datetime);
 

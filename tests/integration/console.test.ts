@@ -8,7 +8,8 @@ describe('console', () => {
     const output = execSync(consoleCommand + ' -h', options);
 
     expect(output).toMatchInlineSnapshot(`
-      "Usage: console [options] [command]
+      "Loading \\"jest\\" config
+      Usage: console [options] [command]
 
       Options:
         -h, --help                          display help for command

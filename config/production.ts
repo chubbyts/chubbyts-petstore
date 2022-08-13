@@ -79,7 +79,9 @@ export type Config = {
 
 const rootDir = realpathSync(__dirname + '/..');
 
-export default (_env: string): Config => {
+export const configFactory = (env: string): Config => {
+  console.log(`Loading "${env}" config`);
+
   const cacheDir = rootDir + '/var/cache';
   const logDir = rootDir + '/var/log';
 

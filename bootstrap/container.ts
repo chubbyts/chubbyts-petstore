@@ -3,8 +3,8 @@ import { Config } from '../config/production';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 
-export default (env: string): Container => {
-  const config: Config = require(`../config/${env}`).default(env);
+export const containerFactory = (env: string): Container => {
+  const config: Config = require(`../config/${env}`).configFactory(env);
 
   config.directories.forEach((directory) => {
     if (!existsSync(directory)) {

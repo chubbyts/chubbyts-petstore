@@ -13,7 +13,7 @@ const testServerPort = getRandomInt(49152, 65535);
 
 const startServer = async () => {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.argv[0], ['node_modules/.bin/ts-node', 'public/index.ts'], {
+    const child = spawn(process.argv[0], ['node_modules/.bin/ts-node', 'bootstrap/index.ts'], {
       env: {
         NODE_ENV: 'jest',
         MONGO_URI: process.env.MONGO_URI,

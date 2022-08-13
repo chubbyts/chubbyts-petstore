@@ -10,7 +10,6 @@
     "bin",
     "bootstrap",
     "config",
-    "public",
     "src"
   ]
 }

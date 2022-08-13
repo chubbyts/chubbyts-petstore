@@ -13,13 +13,13 @@
   "license": "MIT",
   "repository": "chubbyts/petstore",
   "scripts": {
-    "cs-fix": "prettier --write bin bootstrap config public src tests",
-    "cs": "prettier --check bin bootstrap config public src tests",
+    "cs-fix": "prettier --write bin bootstrap config src tests",
+    "cs": "prettier --check bin bootstrap config src tests",
     "test": "jest",
     "test:integration": "jest --config jest.integration.config.js",
     "infection": "stryker run",
     "build": "rm -Rf dist && tsc",
-    "start": "nodemon public/index.ts",
+    "start": "nodemon bootstrap/index.ts",
     "command": "ts-node bin/console.ts"
   },
   "jest": {
@@ -87,8 +87,5 @@
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.3"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

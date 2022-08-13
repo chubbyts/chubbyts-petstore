@@ -48,4 +48,4 @@ RUN source ~/.bashrc \
     && npm install --omit=dev
 
 CMD source ~/.bashrc \
-    && node public/index.js
+    && node bootstrap/index.js

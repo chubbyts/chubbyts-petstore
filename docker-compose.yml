@@ -4,7 +4,7 @@ services:
     container_name: chubbyts-petstore-node
     hostname: chubbyts-petstore-node
     build:
-      dockerfile: ./docker/dev/node/Dockerfile
+      dockerfile: ./docker/development/node/Dockerfile
       context: ./
       args:
         USER_ID: ${USER_ID:-1000}
@@ -41,7 +41,7 @@ services:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
     build:
-      dockerfile: ./docker/prod/nginx/Dockerfile
+      dockerfile: ./docker/production/nginx/Dockerfile
       context: ./
     environment:
       SERVER_HOST: '10443'

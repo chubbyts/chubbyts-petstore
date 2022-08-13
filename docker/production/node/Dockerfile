@@ -10,7 +10,7 @@ RUN dnf install -y \
     procps-ng \
     unzip
 
-COPY docker/prod/node/files /
+COPY docker/production/node/files /
 COPY . /app-build
 
 RUN mkdir /app \

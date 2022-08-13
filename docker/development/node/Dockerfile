@@ -14,7 +14,7 @@ RUN dnf install -y \
     vim \
     zsh
 
-COPY docker/dev/node/files /
+COPY docker/development/node/files /
 
 ARG USER_ID
 ARG GROUP_ID

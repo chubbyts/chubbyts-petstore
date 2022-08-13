@@ -4,7 +4,7 @@ services:
     container_name: chubbyts-petstore-node
     hostname: chubbyts-petstore-node
     build:
-      dockerfile: ./docker/prod/node/Dockerfile
+      dockerfile: ./docker/production/node/Dockerfile
       context: ./
     environment:
       NODE_ENV: production

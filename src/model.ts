@@ -27,6 +27,14 @@ export const modelSchema = z
   })
   .strict();
 
+export const modelHalSchema = z
+  .object({
+    id: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string().optional(),
+  })
+  .strict();
+
 export const partialListSchema = z
   .object({
     offset: numberSchema.default(0),

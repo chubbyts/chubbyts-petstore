@@ -44,8 +44,8 @@ describe('petHalSchema', () => {
   test('valid', () => {
     const input = {
       id: 'test',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toJSON(),
+      updatedAt: new Date().toJSON(),
       name: 'name',
       tag: 'tag',
       vaccinations: [{ name: 'name' }],
@@ -62,8 +62,8 @@ describe('petHalSchema', () => {
   test('invalid', () => {
     const input = {
       id: 'test',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toJSON(),
+      updatedAt: new Date().toJSON(),
       name: 'name',
       tag: 'tag',
       vaccinations: [{ name: 'name' }],
@@ -132,8 +132,8 @@ describe('petListHalSchema', () => {
       items: [
         {
           id: 'test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date().toJSON(),
+          updatedAt: new Date().toJSON(),
           name: 'name',
           tag: 'tag',
           vaccinations: [{ name: 'name' }],
@@ -162,8 +162,8 @@ describe('petListHalSchema', () => {
       items: [
         {
           id: 'test',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date().toJSON(),
+          updatedAt: new Date().toJSON(),
           name: 'name',
           tag: 'tag',
           vaccinations: [{ name: 'name' }],

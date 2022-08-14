@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { numberSchema, modelSchema, partialListSchema, linkSchema } from '../../src/model';
+import { numberSchema, modelSchema, partialListSchema, linkSchema, modelHalSchema } from '../../src/model';
 
 describe('numberSchema', () => {
   test('valid', () => {
@@ -90,6 +90,36 @@ describe('modelSchema', () => {
 
     try {
       modelSchema.parse(input);
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "unknown"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'unknown'"
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+describe('modelHalSchema', () => {
+  test('valid', () => {
+    const input = { id: 'test', createdAt: new Date().toJSON(), updatedAt: new Date().toJSON() };
+
+    expect(modelHalSchema.parse(input)).toEqual(input);
+  });
+
+  test('invalid', () => {
+    const input = { id: 'test', createdAt: new Date().toJSON(), updatedAt: new Date().toJSON(), unknown: 'unknown' };
+
+    try {
+      modelHalSchema.parse(input);
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`

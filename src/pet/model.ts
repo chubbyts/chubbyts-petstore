@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { linkSchema, modelSchema, partialListSchema } from '../model';
+import { linkSchema, modelHalSchema, modelSchema, partialListSchema } from '../model';
 
 const vaccinationSchema = z
   .object({
@@ -15,11 +15,10 @@ export const partialPetSchema = z
   })
   .strict();
 
-const petSchema = z.object({ ...modelSchema.shape, ...partialPetSchema.shape }).strict();
-
 export const petHalSchema = z
   .object({
-    ...petSchema.shape,
+    ...modelHalSchema.shape,
+    ...partialPetSchema.shape,
     _links: z
       .object({
         read: linkSchema.optional(),

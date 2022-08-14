@@ -23,28 +23,30 @@ An api skeleton using mongodb for [chubbyts-framework][7].
 ## Requirements
 
  * node: 14
- * [@chubbyts/chubbyts-api][1]: ^2.0.0
- * [@chubbyts/chubbyts-cors][2]: ^1.0.3
- * [@chubbyts/chubbyts-decode-encode][3]: ^1.1.0
- * [@chubbyts/chubbyts-dic][4]: ^1.0.2
- * [@chubbyts/chubbyts-dic-config][5]: ^1.0.2
- * [@chubbyts/chubbyts-dic-types][6]: ^1.0.0
- * [@chubbyts/chubbyts-framework][7]: ^1.3.0
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.0.2
- * [@chubbyts/chubbyts-http][9]: ^1.0.0
- * [@chubbyts/chubbyts-http-error][10]: ^1.0.0
- * [@chubbyts/chubbyts-http-types][11]: ^1.0.0
- * [@chubbyts/chubbyts-log-types][12]: ^1.0.0
- * [@chubbyts/chubbyts-mongodb][13]: ^1.0.0
- * [@chubbyts/chubbyts-negotiation][14]: ^3.0.0
- * [@chubbyts/chubbyts-node-http-bridge][15]: ^1.0.0
- * [@chubbyts/chubbyts-pino-adapter][16]: ^1.0.0
- * [commander][17]: ^9.3.0
- * [get-stream][18]: ^6.0.1
- * [mongodb][19]: ^4.7.0
- * [pino][20]: ^7.11.0
- * [uuid][21]: ^8.3.2
- * [zod][22]: ^3.17.3
+ * [@asteasolutions/zod-to-openapi][1]: ^1.3.0
+ * [@chubbyts/chubbyts-api][2]: ^2.0.0
+ * [@chubbyts/chubbyts-cors][3]: ^1.0.3
+ * [@chubbyts/chubbyts-decode-encode][4]: ^1.1.0
+ * [@chubbyts/chubbyts-dic][5]: ^1.0.2
+ * [@chubbyts/chubbyts-dic-config][6]: ^1.0.2
+ * [@chubbyts/chubbyts-dic-types][7]: ^1.0.0
+ * [@chubbyts/chubbyts-framework][8]: ^1.3.0
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][9]: ^1.0.2
+ * [@chubbyts/chubbyts-http][10]: ^1.0.0
+ * [@chubbyts/chubbyts-http-error][11]: ^1.0.0
+ * [@chubbyts/chubbyts-http-types][12]: ^1.0.0
+ * [@chubbyts/chubbyts-log-types][13]: ^1.0.0
+ * [@chubbyts/chubbyts-mongodb][14]: ^1.0.0
+ * [@chubbyts/chubbyts-negotiation][15]: ^3.0.0
+ * [@chubbyts/chubbyts-node-http-bridge][16]: ^1.0.0
+ * [@chubbyts/chubbyts-pino-adapter][17]: ^1.0.0
+ * [commander][18]: ^9.3.0
+ * [get-stream][19]: ^6.0.1
+ * [mongodb][20]: ^4.7.0
+ * [openapi3-ts][21]: ^3.0.0
+ * [pino][22]: ^7.11.0
+ * [uuid][23]: ^8.3.2
+ * [zod][24]: ^3.17.3
 
 ## Environment
 
@@ -72,6 +74,7 @@ npm start
 ## Urls
 
 * GET https://localhost:10443/ping
+* GET https://localhost:10443/swagger (https://localhost:10443/openapi)
 
 ### Pet
 
@@ -118,28 +121,30 @@ Service factories are the glue code of the dependeny injection container.
 
 Dominik Zogg 2022
 
-[1]: https://www.npmjs.com/package/@chubbyts/chubbyts-api
-[2]: https://www.npmjs.com/package/@chubbyts/chubbyts-cors
-[3]: https://www.npmjs.com/package/@chubbyts/chubbyts-decode-encode
-[4]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic
-[5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-config
-[6]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
-[7]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
-[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
-[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-http
-[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
-[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
-[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
-[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-node-http-bridge
-[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[17]: https://www.npmjs.com/package/commander
-[18]: https://www.npmjs.com/package/get-stream
-[19]: https://www.npmjs.com/package/mongodb
-[20]: https://www.npmjs.com/package/pino
-[21]: https://www.npmjs.com/package/uuid
-[22]: https://www.npmjs.com/package/zod
+[1]: https://www.npmjs.com/package/@asteasolutions/zod-to-openapi
+[2]: https://www.npmjs.com/package/@chubbyts/chubbyts-api
+[3]: https://www.npmjs.com/package/@chubbyts/chubbyts-cors
+[4]: https://www.npmjs.com/package/@chubbyts/chubbyts-decode-encode
+[5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic
+[6]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-config
+[7]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
+[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
+[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
+[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http
+[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
+[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
+[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
+[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
+[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
+[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-node-http-bridge
+[17]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[18]: https://www.npmjs.com/package/commander
+[19]: https://www.npmjs.com/package/get-stream
+[20]: https://www.npmjs.com/package/mongodb
+[21]: https://www.npmjs.com/package/openapi3-ts
+[22]: https://www.npmjs.com/package/pino
+[23]: https://www.npmjs.com/package/uuid
+[24]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

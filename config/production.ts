@@ -17,6 +17,9 @@ import {
   matchServiceFactory,
   middlewaresServiceFactory,
   mongoClientServiceFactory,
+  openApiHandlerServiceFactory,
+  openApiObjectServiceFactory,
+  openApiRegistryServiceFactory,
   pingHandlerServiceFactory,
   requestFactoryServiceFactory,
   responseFactoryServiceFactory,
@@ -41,9 +44,11 @@ import {
   petRoutesServiceDelegator,
   petEnrichModelServiceFactory,
   petEnrichListServiceFactory,
+  petOpenApiRegistryServiceDelegator,
 } from '../src/pet/service-factory';
 import { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
+import { InfoObject, ServerObject } from 'openapi3-ts';
 
 export type Config = {
   cors: {
@@ -66,6 +71,11 @@ export type Config = {
   mongodb: {
     uri: string;
     indexes: IndexesByCollection;
+  };
+  openApi: {
+    openapi: string;
+    info: InfoObject;
+    servers: Array<ServerObject>;
   };
   pino: {
     options: Omit<LoggerOptions, 'level'> & { level: 'fatal' | 'error' | 'warn' | 'info' | 'debug' };
@@ -114,6 +124,9 @@ export const configFactory = (env: string): Config => {
         ['match', matchServiceFactory],
         ['middlewares', middlewaresServiceFactory],
         ['mongoClient', mongoClientServiceFactory],
+        ['openApiObject', openApiObjectServiceFactory],
+        ['openApiHandler', openApiHandlerServiceFactory],
+        ['openApiRegistry', openApiRegistryServiceFactory],
         ['petCreateHandler', petCreateHandlerServiceFactory],
         ['petDeleteHandler', petDeleteHandlerServiceFactory],
         ['petEnrichList', petEnrichListServiceFactory],
@@ -136,7 +149,10 @@ export const configFactory = (env: string): Config => {
         ['streamFromResourceFactory', streamFromResourceFactoryServiceFactory],
         ['uriFactory', uriFactoryServiceFactory],
       ]),
-      delegators: new Map([['routes', [petRoutesServiceDelegator]]]),
+      delegators: new Map([
+        ['openApiRegistry', [petOpenApiRegistryServiceDelegator]],
+        ['routes', [petRoutesServiceDelegator]],
+      ]),
     },
     directories: new Map([
       ['cache', cacheDir],
@@ -157,6 +173,17 @@ export const configFactory = (env: string): Config => {
           },
         ],
       },
+    },
+    openApi: {
+      openapi: '3.0.0',
+      info: {
+        version: '1.0.0',
+        title: 'Petstore',
+        license: {
+          name: 'MIT',
+        },
+      },
+      servers: [{ url: 'https://localhost:10443' }],
     },
     pino: {
       options: {

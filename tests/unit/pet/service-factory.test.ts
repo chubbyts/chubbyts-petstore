@@ -1,3 +1,4 @@
+import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
 import {
@@ -7,6 +8,7 @@ import {
   petEnrichModelServiceFactory,
   petFindByIdServiceFactory,
   petListHandlerServiceFactory,
+  petOpenApiRegistryServiceDelegator,
   petPersistServiceFactory,
   petReadHandlerServiceFactory,
   petRemoveServiceFactory,
@@ -169,6 +171,30 @@ describe('service-factory', () => {
     const container = { get } as unknown as Container;
 
     expect(await petResolveListServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(get).toHaveBeenCalledTimes(calls.length);
+  });
+
+  test('petOpenApiRegistryServiceDelegator', async () => {
+    const calls: Array<[string, unknown]> = [];
+
+    const get = jest.fn(createGetMock(calls));
+
+    const container = { get } as unknown as Container;
+
+    const factory = () => new OpenAPIRegistry();
+
+    const openApiRegistry = petOpenApiRegistryServiceDelegator(container, 'petOpenApiRegistry', factory);
+
+    expect(openApiRegistry).toMatchObject({
+      definitions: [
+        { route: { method: 'get', path: '/api/pets' } },
+        { route: { method: 'post', path: '/api/pets' } },
+        { route: { method: 'get', path: '/api/pets/{id}' } },
+        { route: { method: 'put', path: '/api/pets/{id}' } },
+        { route: { method: 'delete', path: '/api/pets/{id}' } },
+      ],
+    });
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });

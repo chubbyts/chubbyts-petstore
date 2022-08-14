@@ -15,7 +15,13 @@ import { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
 import { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import { MongoClient } from 'mongodb';
 import { createResolveList, createFindById, createPersist, createRemove } from '../repository';
-import { partialPetSchema, partialPetListSchema, petHalSchema, petListHalSchema } from './model';
+import {
+  partialPetSchema,
+  partialPetListSchema,
+  petHalSchema,
+  petListHalSchema,
+  partialPetListHalSchema,
+} from './model';
 import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
 import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
 import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
@@ -25,6 +31,10 @@ import { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/d
 import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import { createEnrichList, createEnrichModel } from '../enrich';
 import { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
+import { extendZodWithOpenApi, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { z } from 'zod';
+
+extendZodWithOpenApi(z);
 
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createCreateHandler(
@@ -98,6 +108,107 @@ export const petRemoveServiceFactory = async (container: Container): Promise<Rem
 
 export const petResolveListServiceFactory = async (container: Container): Promise<ResolveList> => {
   return createResolveList(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+};
+
+export const petOpenApiRegistryServiceDelegator = (_container: Container, _name: string, factory: () => unknown) => {
+  const registry = factory() as OpenAPIRegistry;
+
+  registry.registerPath({
+    path: '/api/pets',
+    method: 'get',
+    summary: 'List all pets',
+    operationId: 'listPets',
+    tags: ['Pets'],
+    request: {
+      query: partialPetListHalSchema.strip(),
+    },
+    responses: {
+      200: {
+        mediaType: 'application/json',
+        schema: petListHalSchema.openapi({
+          description: 'Pets',
+        }),
+      },
+    },
+  });
+
+  registry.registerPath({
+    path: '/api/pets',
+    method: 'post',
+    summary: 'Create a pet',
+    operationId: 'createPet',
+    tags: ['Pets'],
+    request: {
+      body: partialPetSchema.strip(),
+    },
+    responses: {
+      201: {
+        mediaType: 'application/json',
+        schema: petHalSchema.openapi({
+          description: 'Pet',
+        }),
+      },
+    },
+  });
+
+  registry.registerPath({
+    path: '/api/pets/{id}',
+    method: 'get',
+    summary: 'Read a pet',
+    operationId: 'readPet',
+    tags: ['Pets'],
+    request: {
+      params: z.object({
+        id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
+      }),
+    },
+    responses: {
+      200: {
+        mediaType: 'application/json',
+        schema: petHalSchema.openapi({
+          description: 'Pet',
+        }),
+      },
+    },
+  });
+
+  registry.registerPath({
+    path: '/api/pets/{id}',
+    method: 'put',
+    summary: 'Update a pet',
+    operationId: 'updatePet',
+    tags: ['Pets'],
+    request: {
+      params: z.object({
+        id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
+      }),
+      body: partialPetSchema.strip(),
+    },
+    responses: {
+      200: {
+        mediaType: 'application/json',
+        schema: petHalSchema.openapi({
+          description: 'Pet',
+        }),
+      },
+    },
+  });
+
+  registry.registerPath({
+    path: '/api/pets/{id}',
+    method: 'delete',
+    summary: 'Delete a pet',
+    operationId: 'deletePet',
+    tags: ['Pets'],
+    request: {
+      params: z.object({
+        id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
+      }),
+    },
+    responses: {},
+  });
+
+  return registry;
 };
 
 export const petRoutesServiceDelegator = (

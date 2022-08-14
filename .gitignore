@@ -1,6 +1,6 @@
 .stryker-tmp
 coverage
-data
+database
 dist
 globalConfig.json
 node_modules

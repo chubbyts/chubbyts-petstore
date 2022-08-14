@@ -126,7 +126,7 @@ describe('petListHalSchema', () => {
   test('valid', () => {
     const input = {
       offset: 0,
-      limit: '20',
+      limit: 20,
       filters: { name: 'name' },
       sort: { name: 'asc' },
       items: [
@@ -156,7 +156,7 @@ describe('petListHalSchema', () => {
   test('invalid', () => {
     const input = {
       offset: 0,
-      limit: '20',
+      limit: 20,
       filters: { name: 'name' },
       sort: { name: 'asc' },
       items: [

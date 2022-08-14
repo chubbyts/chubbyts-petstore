@@ -43,3 +43,10 @@ export const partialListSchema = z
     sort: z.object({}).strict().optional(),
   })
   .strict();
+
+export const partialListHalSchema = z
+  .object({
+    offset: z.number().default(0),
+    limit: z.number().default(20),
+  })
+  .strict();

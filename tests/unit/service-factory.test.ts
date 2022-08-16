@@ -1,3 +1,4 @@
+import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
 import {
@@ -16,6 +17,9 @@ import {
   matchServiceFactory,
   middlewaresServiceFactory,
   mongoClientServiceFactory,
+  openApiHandlerServiceFactory,
+  openApiObjectServiceFactory,
+  openApiRegistryServiceFactory,
   pingHandlerServiceFactory,
   requestFactoryServiceFactory,
   responseFactoryServiceFactory,
@@ -305,6 +309,40 @@ describe('service-factory', () => {
     expect(get).toHaveBeenCalledTimes(calls.length);
   });
 
+  test('openApiHandlerServiceFactory', () => {
+    const calls: Array<[string, unknown]> = [
+      ['openApiObject', {}],
+      ['responseFactory', () => null],
+    ];
+
+    const get = jest.fn(createGetMock(calls));
+
+    const container = { get } as unknown as Container;
+
+    expect(openApiHandlerServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(get).toHaveBeenCalledTimes(calls.length);
+  });
+
+  test('openApiObjectServiceFactory', () => {
+    const calls: Array<[string, unknown]> = [
+      ['config', { openApi: {} }],
+      ['openApiRegistry', { definitions: { sort: () => null, forEach: () => null } }],
+    ];
+
+    const get = jest.fn(createGetMock(calls));
+
+    const container = { get } as unknown as Container;
+
+    expect(openApiObjectServiceFactory(container)).toBeInstanceOf(Object);
+
+    expect(get).toHaveBeenCalledTimes(calls.length);
+  });
+
+  test('openApiRegistryServiceFactory', () => {
+    expect(openApiRegistryServiceFactory()).toBeInstanceOf(OpenAPIRegistry);
+  });
+
   test('pingHandlerServiceFactory', () => {
     const calls: Array<[string, unknown]> = [['responseFactory', () => null]];
 
@@ -377,6 +415,16 @@ describe('service-factory', () => {
           "middlewares": Array [],
           "name": "ping",
           "path": "/ping",
+          "pathOptions": Object {},
+        },
+        Object {
+          "_route": "Route",
+          "attributes": Object {},
+          "handler": [Function],
+          "method": "GET",
+          "middlewares": Array [],
+          "name": "openapi",
+          "path": "/openapi",
           "pathOptions": Object {},
         },
       ]

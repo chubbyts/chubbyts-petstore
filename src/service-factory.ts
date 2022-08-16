@@ -32,7 +32,7 @@ import pino from 'pino';
 import { createRoutesByName, Routes } from '@chubbyts/chubbyts-framework/dist/router/routes';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import { createGetRoute, Route } from '@chubbyts/chubbyts-framework/dist/router/route';
-import { createPingHandler } from './handler';
+import { createOpenApiHandler, createPingHandler } from './handler';
 import { CleanDirectoriesCommand, createCleanDirectoriesCommand } from './command';
 import { MongoClient } from 'mongodb';
 import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/accept-negotiation-middleware';
@@ -60,6 +60,8 @@ import {
   createMethodNegotiator,
   createOriginNegotiator,
 } from '@chubbyts/chubbyts-cors/dist/negotiation';
+import { OpenAPIComponentObject, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
+import { OpenAPIGenerator } from '@asteasolutions/zod-to-openapi';
 
 export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
@@ -166,6 +168,24 @@ export const mongoClientServiceFactory = async (container: Container): Promise<M
   return mongoClient;
 };
 
+export const openApiHandlerServiceFactory = (container: Container) => {
+  return createOpenApiHandler(
+    container.get<OpenAPIComponentObject>('openApiObject'),
+    container.get<ResponseFactory>('responseFactory'),
+  );
+};
+
+export const openApiObjectServiceFactory = (container: Container): OpenAPIComponentObject => {
+  const openApi = container.get<Config>('config').openApi;
+  const generator = new OpenAPIGenerator(container.get<OpenAPIRegistry>('openApiRegistry').definitions);
+
+  return generator.generateDocument(openApi);
+};
+
+export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
+  return new OpenAPIRegistry();
+};
+
 export const pingHandlerServiceFactory = (container: Container) => {
   return createPingHandler(container.get<ResponseFactory>('responseFactory'));
 };
@@ -190,6 +210,11 @@ export const routesServiceFactory = (container: Container): Array<Route> => {
       path: '/ping',
       name: 'ping',
       handler: h('pingHandler'),
+    }),
+    createGetRoute({
+      path: '/openapi',
+      name: 'openapi',
+      handler: h('openApiHandler'),
     }),
   ];
 };

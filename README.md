@@ -18,7 +18,7 @@
 
 ## Description
 
-An api skeleton using mongodb for [chubbyts-framework][7].
+An api skeleton using mongodb for [chubbyts-framework][8].
 
 ## Requirements
 

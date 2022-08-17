@@ -48,7 +48,7 @@ import {
 } from '../src/pet/service-factory';
 import { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
-import { InfoObject, ServerObject } from 'openapi3-ts';
+import { InfoObject } from 'openapi3-ts';
 
 export type Config = {
   cors: {
@@ -75,7 +75,6 @@ export type Config = {
   openApi: {
     openapi: string;
     info: InfoObject;
-    servers: Array<ServerObject>;
   };
   pino: {
     options: Omit<LoggerOptions, 'level'> & { level: 'fatal' | 'error' | 'warn' | 'info' | 'debug' };
@@ -183,7 +182,6 @@ export const configFactory = (env: string): Config => {
           name: 'MIT',
         },
       },
-      servers: [{ url: 'https://localhost:10443' }],
     },
     pino: {
       options: {

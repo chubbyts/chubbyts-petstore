@@ -1,1 +1,10 @@
-data
+.git
+.stryker-tmp
+coverage
+database
+dist
+globalConfig.json
+node_modules
+package-lock.json
+pulumi
+var

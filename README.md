@@ -117,6 +117,66 @@ Service factories are the glue code of the dependeny injection container.
  * [src/service-factory.ts][35]
  * [src/pet/service-factory.ts][36]
 
+## Deployment
+
+### Setup
+
+ * [Register digitalocean](https:cloud.digitalocean.com/)
+ * [Create digitalocean token](https://cloud.digitalocean.com/account/api/tokens)
+ * [Install doctl](https://docs.digitalocean.com/reference/doctl/how-to/install/)
+ * [Register pulumi](https:app.pulumi.com/)
+ * [Install pulumi](https://www.pulumi.com/docs/get-started/install/)
+ * [Installkubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+
+### Deployment
+
+```sh
+cd pulumi
+npm install
+pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
+pulumi up
+```
+
+### Docker registry login
+
+```sh
+doctl registry login
+```
+
+### Kubectl config
+
+```sh
+doctl kubenetes clusters list
+doctl kubenetes clusters kubeconfig save <clustername>
+```
+
+### Important kubectl commands
+
+```sh
+# lists all deployments: container definition(s) which provide(s) howto start a pod
+kubectl get deployments
+
+# show the current deployment definition
+kubectl get deployment <deploymentname> -o yaml
+
+# edit the current deployment defintion (should be done via code change and pulumi up, and not inline)
+kubectl edit deployment <deploymentname>
+
+# lists all pods: container(s) which provide(s) one application for example the cms
+kubectl get pods
+
+# show the current pod definition (do not edit!)
+kubectl get pod <podname> -o yaml
+
+# enter a pod
+kubectl exec -it <podname> -- /bin/bash
+
+# create a custom pod for debugging, for example postgres
+kubectl run -i --tty --rm debug --image=governmentpaas/psql --restart=Never
+```
+
+###
+
 ## Copyright
 
 Dominik Zogg 2022

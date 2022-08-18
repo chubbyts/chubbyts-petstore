@@ -74,8 +74,3 @@ export const createContainerRegistry = (region: digitalocean.Region): digitaloce
     region,
   });
 };
-
-// doctl registry login
-// docker login registry.digitalocean.com;
-// Username: <paste-api - token >
-//   Password: <paste-api - token >;

@@ -146,8 +146,8 @@ doctl registry login
 ### Kubectl config
 
 ```sh
-doctl kubenetes clusters list
-doctl kubenetes clusters kubeconfig save <clustername>
+doctl kubernetes clusters list
+doctl kubernetes clusters kubeconfig save <clustername>
 ```
 
 ### Important kubectl commands

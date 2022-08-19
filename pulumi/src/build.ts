@@ -3,7 +3,29 @@ import * as digitalocean from '@pulumi/digitalocean';
 import { execSync } from 'child_process';
 
 export const directoryChecksum = (cwd: string): string => {
-  const output = execSync(`find . -type d \\( -path ./.git -o -path ./.stryker-tmp -o -path ./coverage -o -path ./database -o -path ./dist -o -path ./node_modules -o -path ./pulumi -o -path ./var \\) -prune -o -type f -exec md5sum {} + | LC_ALL=C sort | md5sum | cut -c 1-32`, {
+  const ignorePaths = [
+    './.git',
+    './.github',
+    './.gitignore',
+    './.stryker-tmp',
+    './coverage',
+    './database',
+    './dist',
+    './docker-compose.ci.yml',
+    './docker-compose.yml',
+    './docker/development',
+    './LICENSE',
+    './node_modules',
+    './nodemon.json',
+    './pulumi',
+    './README.md',
+    './sonar-project.properties',
+    './var',
+  ];
+
+  const flatIgnorePaths = ignorePaths.map((ignorePath) => `-path ${ignorePath}`).join(' -o ');
+
+  const output = execSync(`find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec md5sum {} + | LC_ALL=C sort | md5sum | cut -c 1-32`, {
     cwd,
     encoding: 'utf-8',
   });

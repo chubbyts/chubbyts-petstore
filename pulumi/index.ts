@@ -48,7 +48,6 @@ const nodeFactory = (
 
 const swaggerUiFactory = (
   k8sProvider: k8s.Provider,
-  nginxIp: pulumi.Output<string>,
 ): {
   deployment: k8s.apps.v1.Deployment;
   internalService: k8s.core.v1.Service;
@@ -57,11 +56,9 @@ const swaggerUiFactory = (
 
   const labels = { appClass: name };
 
-  const swaggerJsonUrl = pulumi.interpolate`https://${nginxIp}/openapi`;
-
   const deployment = createK8sHttpDeployment(k8sProvider, labels, 'swaggerapi/swagger-ui', [
     { name: 'BASE_URL', value: '/swagger' },
-    { name: 'SWAGGER_JSON_URL', value: swaggerJsonUrl },
+    { name: 'URLS', value: '[ { url: "/openapi" } ]' },
   ], 8080, '/swagger');
 
   const internalService = createK8sInternalHttpService(k8sProvider, labels, 8080);
@@ -113,9 +110,9 @@ const k8sCluster = createK8sCluster(region, vpc);
 const k8sProvider = createK8sProvider(k8sCluster);
 
 nodeFactory(k8sProvider, directory, containerRegistry, imageTag, k8sCluster, region, vpc);
+swaggerUiFactory(k8sProvider);
 
 const nginx = nginxFactory(k8sProvider, directory, containerRegistry, imageTag);
 
 export const nginxIp = nginx.externalService.status.loadBalancer.ingress[0].ip;
 
-swaggerUiFactory(k8sProvider, nginxIp);

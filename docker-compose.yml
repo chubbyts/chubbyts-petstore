@@ -43,7 +43,7 @@ services:
     image: swaggerapi/swagger-ui
     environment:
       BASE_URL: /swagger
-      SWAGGER_JSON_URL: 'https://localhost:10443/openapi'
+      URLS: '[ { url: "/openapi" } ]'
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx

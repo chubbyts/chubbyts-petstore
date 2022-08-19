@@ -121,10 +121,10 @@ Service factories are the glue code of the dependeny injection container.
 
 ### Setup
 
- * [Register digitalocean](https:cloud.digitalocean.com/)
+ * [Register digitalocean](https://cloud.digitalocean.com/)
  * [Create digitalocean token](https://cloud.digitalocean.com/account/api/tokens)
  * [Install doctl](https://docs.digitalocean.com/reference/doctl/how-to/install/)
- * [Register pulumi](https:app.pulumi.com/)
+ * [Register pulumi](https://app.pulumi.com/)
  * [Install pulumi](https://www.pulumi.com/docs/get-started/install/)
  * [Installkubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 

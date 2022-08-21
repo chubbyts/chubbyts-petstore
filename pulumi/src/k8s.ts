@@ -31,7 +31,7 @@ export const createK8sHttpDeployment = (
   return new k8s.apps.v1.Deployment(`${labels.appClass}-deployment`, {
     metadata: { labels },
     spec: {
-      replicas: 1,
+      replicas: 2,
       selector: { matchLabels: labels },
       template: {
         metadata: { labels },

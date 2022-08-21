@@ -48,7 +48,7 @@ services:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
     build:
-      dockerfile: ./docker/production/nginx/Dockerfile
+      dockerfile: ./docker/development/nginx/Dockerfile
       context: ./
     environment:
       SERVER_PORT: '10443'

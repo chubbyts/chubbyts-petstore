@@ -134,6 +134,7 @@ Service factories are the glue code of the dependeny injection container.
 cd pulumi
 npm install
 pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
+pulumi config set chubbyts-petstore:certManagerEmail XXXXXXXXXXXXXX --secret
 pulumi up
 ```
 

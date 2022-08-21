@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as digitalocean from '@pulumi/digitalocean';
-import { createContainerRegistry } from './src/build';
+import { createContainerRegistry, createContainerRegistryDockerCredentials } from './src/build';
 import { buildDockerImage, directoryChecksum, pushDockerImage } from './src/build';
 import { createMongoDbCluster, createMongoDbFirewall } from './src/mongodb';
 import { createVpc } from './src/network';
@@ -13,7 +13,8 @@ import {
   createK8sHttpDeployment,
   createK8sInternalHttpService,
   createK8sProvider,
-  createCertManager
+  createCertManager,
+  createK8sDockerRegistrySecret
 } from './src/k8s';
 
 const nodeFactory = (
@@ -24,10 +25,7 @@ const nodeFactory = (
   k8sCluster: digitalocean.KubernetesCluster,
   region: digitalocean.Region,
   vpc: digitalocean.Vpc,
-): {
-  deployment: k8s.apps.v1.Deployment;
-  internalService: k8s.core.v1.Service;
-} => {
+): void => {
   const name = 'node';
 
   buildDockerImage(directory, name, imageTag);
@@ -43,7 +41,7 @@ const nodeFactory = (
   const mongoUri = pulumi.all([mongoDbCluster.user, mongoDbCluster.password, mongoDbCluster.privateHost, mongoDbCluster.database])
     .apply(([user, password, host, db]) => `mongodb+srv://${user}:${password}@${host}/${db}?authMechanism=DEFAULT&authSource=admin`);
 
-  const deployment = createK8sHttpDeployment(k8sProvider, labels, image, [
+  const deployment = createK8sHttpDeployment(k8sProvider, labels, containerRegistry, image, [
     { name: 'NODE_ENV', value: 'production' },
     { name: 'MONGO_URI', value: mongoUri },
     { name: 'SERVER_HOST', value: '0.0.0.0' },
@@ -51,28 +49,21 @@ const nodeFactory = (
   ], 10080, '/ping');
 
   const internalService = createK8sInternalHttpService(k8sProvider, labels, 10080);
-
-  return { deployment, internalService };
 };
 
 const swaggerUiFactory = (
   k8sProvider: k8s.Provider,
-): {
-  deployment: k8s.apps.v1.Deployment;
-  internalService: k8s.core.v1.Service;
-} => {
+): void => {
   const name = 'swagger-ui';
 
   const labels = { appClass: name };
 
-  const deployment = createK8sHttpDeployment(k8sProvider, labels, 'swaggerapi/swagger-ui', [
+  const deployment = createK8sHttpDeployment(k8sProvider, labels, containerRegistry, 'swaggerapi/swagger-ui', [
     { name: 'BASE_URL', value: '/swagger' },
     { name: 'URLS', value: '[ { url: \'/openapi\' } ]' },
   ], 8080, '/swagger');
 
   const internalService = createK8sInternalHttpService(k8sProvider, labels, 8080);
-
-  return { deployment, internalService };
 };
 
 const directory = `${process.cwd()}/../`;
@@ -84,21 +75,25 @@ const region = digitalocean.Region.FRA1;
 const imageTag = directoryChecksum(directory);
 
 const containerRegistry = createContainerRegistry(region);
+const containerRegistryDockerCredentials = createContainerRegistryDockerCredentials(containerRegistry);
 
 const vpc = createVpc(region);
 
 const k8sCluster = createK8sCluster(region, vpc);
 const k8sProvider = createK8sProvider(k8sCluster);
 
+createK8sDockerRegistrySecret(k8sProvider, containerRegistry, containerRegistryDockerCredentials);
+
 nodeFactory(k8sProvider, directory, containerRegistry, imageTag, k8sCluster, region, vpc);
 swaggerUiFactory(k8sProvider);
 
-installHelmIngressNginxController(k8sProvider);
-installHelmCertManager(k8sProvider);
+const helmCertManager = installHelmCertManager(k8sProvider);
 
-createCertManager(k8sProvider, config.require('certManagerEmail'));
+createCertManager(k8sProvider, helmCertManager, config.require('certManagerEmail'));
 
-const ingress = createIngressNginx(k8sProvider, [
+const helmIngressNginxController = installHelmIngressNginxController(k8sProvider);
+
+const ingress = createIngressNginx(k8sProvider, helmIngressNginxController, [
   {
     path: '/swagger',
     pathType: 'Prefix',

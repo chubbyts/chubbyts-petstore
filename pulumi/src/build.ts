@@ -96,3 +96,9 @@ export const createContainerRegistry = (region: digitalocean.Region): digitaloce
     region,
   });
 };
+
+export const createContainerRegistryDockerCredentials = (registry: digitalocean.ContainerRegistry): digitalocean.ContainerRegistryDockerCredentials => {
+  return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials', {
+    registryName: registry.name,
+  });
+};

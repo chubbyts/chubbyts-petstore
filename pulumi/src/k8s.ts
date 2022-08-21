@@ -19,9 +19,29 @@ export const createK8sProvider = (cluster: digitalocean.KubernetesCluster): k8s.
   return new k8s.Provider('k8s-provider', { kubeconfig: cluster.kubeConfigs[0].rawConfig });
 };
 
+export const createK8sDockerRegistrySecret = (
+  provider: k8s.Provider,
+  registry: digitalocean.ContainerRegistry,
+  registryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials
+): k8s.core.v1.Secret => {
+  return new k8s.core.v1.Secret('docker-registry-secret', {
+    type: 'kubernetes.io/dockerconfigjson',
+    metadata: {
+      labels: {
+        'digitalocean.com/copy-identifier': registry.name,
+      },
+      name: registry.name,
+    },
+    stringData: {
+      '.dockerconfigjson': registryDockerCredentials.dockerCredentials,
+    },
+  }, { provider });
+};
+
 export const createK8sHttpDeployment = (
   provider: k8s.Provider,
   labels: { appClass: string; },
+  registry: digitalocean.ContainerRegistry,
   image: pulumi.Input<string>,
   env: pulumi.Input<Array<{ name: string, value: string | pulumi.Output<string>; }>>,
   port: number,
@@ -57,6 +77,7 @@ export const createK8sHttpDeployment = (
               },
             },
           }],
+          imagePullSecrets: [{ name: registry.name }],
         }
       }
     },
@@ -73,22 +94,6 @@ export const createK8sInternalHttpService = (
     spec: {
       type: 'ClusterIP',
       ports: [{ name: 'http', port, targetPort: 'http' }],
-      selector: labels,
-    },
-  }, { provider });
-};
-
-export const createK8sExternalHttpService = (
-  provider: k8s.Provider,
-  labels: { appClass: string; },
-  port: number,
-  externalPort: number,
-): k8s.core.v1.Service => {
-  return new k8s.core.v1.Service(`${labels.appClass}-public-service`, {
-    metadata: { labels: labels },
-    spec: {
-      type: 'LoadBalancer',
-      ports: [{ name: 'http', port: externalPort, targetPort: port, protocol: 'TCP' }],
       selector: labels,
     },
   }, { provider });
@@ -150,13 +155,14 @@ export const installHelmCertManager = (provider: k8s.Provider): k8s.helm.v3.Rele
   }, { provider });
 };
 
-export const createIngressNginx = (provider: k8s.Provider, paths: Array<k8s.types.input.networking.v1.HTTPIngressPath>): k8s.networking.v1.Ingress => {
+export const createIngressNginx = (provider: k8s.Provider, helm: k8s.helm.v3.Release, paths: Array<k8s.types.input.networking.v1.HTTPIngressPath>): k8s.networking.v1.Ingress => {
   return new k8s.networking.v1.Ingress('nginx-ingress', {
     metadata: {
       name: 'nginx-ingress',
       annotations: {
         'cert-manager.io/cluster-issuer': 'letsencrypt-prod',
         'kubernetes.io/ingress.class': 'nginx',
+        helmId: helm.id,
       }
     },
     spec: {
@@ -178,13 +184,16 @@ export const createIngressNginx = (provider: k8s.Provider, paths: Array<k8s.type
   }, { provider });
 };
 
-export const createCertManager = (provider: k8s.Provider, email: string): k8s.apiextensions.CustomResource => {
+export const createCertManager = (provider: k8s.Provider, helm: k8s.helm.v3.Release, email: string): k8s.apiextensions.CustomResource => {
   return new k8s.apiextensions.CustomResource('cert-manager', {
     apiVersion: 'cert-manager.io/v1',
     kind: 'ClusterIssuer',
     metadata: {
       name: 'letsencrypt-prod',
       namespace: 'cert-manager',
+      annotations: {
+        helmId: helm.id,
+      }
     },
     spec: {
       acme: {

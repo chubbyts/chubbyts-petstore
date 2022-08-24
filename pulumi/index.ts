@@ -115,6 +115,42 @@ const ingress = createK8sIngressNginx(k8sProvider, helmIngressNginxController, [
     http: {
       paths: [
         {
+          path: '/api',
+          pathType: 'Prefix',
+          backend: {
+            service: {
+              name: 'node',
+              port: {
+                number: 10080,
+              },
+            },
+          },
+        },
+        {
+          path: '/openapi',
+          pathType: 'Prefix',
+          backend: {
+            service: {
+              name: 'node',
+              port: {
+                number: 10080,
+              },
+            },
+          },
+        },
+        {
+          path: '/ping',
+          pathType: 'Prefix',
+          backend: {
+            service: {
+              name: 'node',
+              port: {
+                number: 10080,
+              },
+            },
+          },
+        },
+        {
           path: '/swagger',
           pathType: 'Prefix',
           backend: {
@@ -122,18 +158,6 @@ const ingress = createK8sIngressNginx(k8sProvider, helmIngressNginxController, [
               name: 'swagger-ui',
               port: {
                 number: 8080,
-              },
-            },
-          },
-        },
-        {
-          path: '/',
-          pathType: 'Prefix',
-          backend: {
-            service: {
-              name: 'node',
-              port: {
-                number: 10080,
               },
             },
           },

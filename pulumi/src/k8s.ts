@@ -26,15 +26,14 @@ export const createK8sProvider = (cluster: digitalocean.KubernetesCluster): k8s.
 
 export const createK8sDockerRegistrySecret = (
   provider: k8s.Provider,
-  registry: digitalocean.ContainerRegistry,
   registryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials,
 ): k8s.core.v1.Secret => {
   return new k8s.core.v1.Secret(
-    'docker-registry-secret',
+    'do-docker-registry-secret',
     {
       type: 'kubernetes.io/dockerconfigjson',
       metadata: {
-        name: registry.name,
+        name: 'do-docker-registry-secret',
       },
       stringData: {
         '.dockerconfigjson': registryDockerCredentials.dockerCredentials,
@@ -47,7 +46,6 @@ export const createK8sDockerRegistrySecret = (
 export const createK8sHttpDeployment = (
   provider: k8s.Provider,
   labels: { appClass: string },
-  registry: digitalocean.ContainerRegistry,
   image: pulumi.Input<string>,
   env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
   port: number,
@@ -87,7 +85,7 @@ export const createK8sHttpDeployment = (
                 },
               },
             ],
-            imagePullSecrets: [{ name: registry.name }],
+            imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
           },
         },
       },
@@ -203,7 +201,7 @@ export const createK8sIngressNginx = (
         tls: [
           {
             hosts: rules.filter((rule) => rule.host !== undefined).map((rule) => rule.host) as Array<string>,
-            secretName: 'chubbyts-petstore-tls',
+            secretName: 'letsencrypt-tls',
           },
         ],
       },

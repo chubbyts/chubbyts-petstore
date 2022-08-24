@@ -48,7 +48,6 @@ const nodeFactory = (
   createK8sHttpDeployment(
     k8sProvider,
     labels,
-    containerRegistry,
     image,
     [
       { name: 'NODE_ENV', value: 'production' },
@@ -71,7 +70,6 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
   createK8sHttpDeployment(
     k8sProvider,
     labels,
-    containerRegistry,
     'swaggerapi/swagger-ui',
     [
       { name: 'BASE_URL', value: '/swagger' },
@@ -100,7 +98,7 @@ const vpc = createVpc(region);
 const k8sCluster = createK8sCluster(region, vpc);
 const k8sProvider = createK8sProvider(k8sCluster);
 
-createK8sDockerRegistrySecret(k8sProvider, containerRegistry, containerRegistryDockerCredentials);
+createK8sDockerRegistrySecret(k8sProvider, containerRegistryDockerCredentials);
 
 nodeFactory(k8sProvider, directory, containerRegistry, imageTag, k8sCluster, region, vpc);
 swaggerUiFactory(k8sProvider);

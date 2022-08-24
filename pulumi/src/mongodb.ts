@@ -6,7 +6,7 @@ export const createMongoDbCluster = (
 ): digitalocean.DatabaseCluster => {
   return new digitalocean.DatabaseCluster('mongo-cluster', {
     engine: 'mongodb',
-    version: '4',
+    version: '5',
     region,
     size: digitalocean.DatabaseSlug.DB_1VPCU1GB,
     nodeCount: 1, // or 3

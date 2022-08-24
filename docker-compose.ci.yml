@@ -16,7 +16,7 @@ services:
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
-    image: mongo:4.4
+    image: mongo:5.0
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root

@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 const fetch = require('cross-fetch');
 
-const mongoDbSetup = require('@shelf/jest-mongodb/setup');
+const mongoDbSetup = require('@shelf/jest-mongodb/lib/setup');
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -49,7 +49,6 @@ module.exports = async () => {
   if (!process.env.INTEGRATION_ENDPOINT) {
     await mongoDbSetup();
     process.env.INTEGRATION_ENDPOINT = `http://${testServerHost}:${testServerPort}`;
-    process.env.MONGO_URI = process.env.MONGO_URL;
     global.__HTTP_SERVER__ = await startServer();
   }
 

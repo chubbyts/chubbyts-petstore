@@ -1,4 +1,4 @@
-const mongoDbTeardown = require('@shelf/jest-mongodb/teardown');
+const mongoDbTeardown = require('@shelf/jest-mongodb/lib/teardown');
 
 module.exports = async function () {
   if (global.__HTTP_SERVER__) {

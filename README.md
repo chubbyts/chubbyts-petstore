@@ -171,9 +171,6 @@ kubectl get pod <podname> -o yaml
 
 # enter a pod
 kubectl exec -it <podname> -- /bin/bash
-
-# create a custom pod for debugging, for example postgres
-kubectl run -i --tty --rm debug --image=governmentpaas/psql --restart=Never
 ```
 
 ###

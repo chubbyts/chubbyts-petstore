@@ -39,14 +39,14 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-mongodb][14]: ^1.0.0
  * [@chubbyts/chubbyts-negotiation][15]: ^3.0.0
  * [@chubbyts/chubbyts-node-http-bridge][16]: ^1.0.0
- * [@chubbyts/chubbyts-pino-adapter][17]: ^1.0.0
+ * [@chubbyts/chubbyts-pino-adapter][17]: ^1.1.0
  * [commander][18]: ^9.3.0
  * [get-stream][19]: ^6.0.1
  * [mongodb][20]: ^4.9.0
- * [openapi3-ts][21]: ^3.0.0
- * [pino][22]: ^7.11.0
+ * [openapi3-ts][21]: ^3.0.1
+ * [pino][22]: ^8.4.2
  * [uuid][23]: ^8.3.2
- * [zod][24]: ^3.17.3
+ * [zod][24]: ^3.18.0
 
 ## Environment
 

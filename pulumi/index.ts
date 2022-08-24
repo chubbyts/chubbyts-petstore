@@ -45,7 +45,7 @@ const nodeFactory = (
         `mongodb+srv://${user}:${password}@${host}/${db}?authMechanism=DEFAULT&authSource=admin`,
     );
 
-  const deployment = createK8sHttpDeployment(
+  createK8sHttpDeployment(
     k8sProvider,
     labels,
     containerRegistry,
@@ -60,7 +60,7 @@ const nodeFactory = (
     '/ping',
   );
 
-  const internalService = createK8sInternalHttpService(k8sProvider, labels, 10080);
+  createK8sInternalHttpService(k8sProvider, labels, 10080);
 };
 
 const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
@@ -68,7 +68,7 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
 
   const labels = { appClass: name };
 
-  const deployment = createK8sHttpDeployment(
+  createK8sHttpDeployment(
     k8sProvider,
     labels,
     containerRegistry,
@@ -81,7 +81,7 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
     '/swagger',
   );
 
-  const internalService = createK8sInternalHttpService(k8sProvider, labels, 8080);
+  createK8sInternalHttpService(k8sProvider, labels, 8080);
 };
 
 const directory = `${process.cwd()}/../`;

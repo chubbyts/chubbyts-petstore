@@ -34,9 +34,6 @@ export const createK8sDockerRegistrySecret = (
     {
       type: 'kubernetes.io/dockerconfigjson',
       metadata: {
-        labels: {
-          'digitalocean.com/copy-identifier': registry.name,
-        },
         name: registry.name,
       },
       stringData: {

@@ -1,6 +1,7 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
+import { Collection, Db, MongoClient } from 'mongodb';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -94,7 +95,13 @@ describe('service-factory', () => {
   });
 
   test('petFindByIdServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [['mongoClient', {}]];
+    const collection = jest.fn(() => ({}));
+
+    const db = jest.fn(() => ({ collection } as unknown as Db));
+
+    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+
+    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -103,6 +110,8 @@ describe('service-factory', () => {
     expect(await petFindByIdServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(db).toHaveBeenCalledTimes(1);
+    expect(collection).toHaveBeenCalledTimes(1);
   });
 
   test('petListHandlerServiceFactory', async () => {
@@ -123,7 +132,13 @@ describe('service-factory', () => {
   });
 
   test('petPersistServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [['mongoClient', {}]];
+    const collection = jest.fn(() => ({}));
+
+    const db = jest.fn(() => ({ collection } as unknown as Db));
+
+    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+
+    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -132,6 +147,8 @@ describe('service-factory', () => {
     expect(await petPersistServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(db).toHaveBeenCalledTimes(1);
+    expect(collection).toHaveBeenCalledTimes(1);
   });
 
   test('petReadHandlerServiceFactory', async () => {
@@ -152,7 +169,13 @@ describe('service-factory', () => {
   });
 
   test('petRemoveServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [['mongoClient', {}]];
+    const collection = jest.fn(() => ({}));
+
+    const db = jest.fn(() => ({ collection } as unknown as Db));
+
+    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+
+    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -161,10 +184,18 @@ describe('service-factory', () => {
     expect(await petRemoveServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(db).toHaveBeenCalledTimes(1);
+    expect(collection).toHaveBeenCalledTimes(1);
   });
 
   test('petResolveListServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [['mongoClient', {}]];
+    const collection = jest.fn(() => ({}));
+
+    const db = jest.fn(() => ({ collection } as unknown as Db));
+
+    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+
+    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -173,6 +204,8 @@ describe('service-factory', () => {
     expect(await petResolveListServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(db).toHaveBeenCalledTimes(1);
+    expect(collection).toHaveBeenCalledTimes(1);
   });
 
   test('petOpenApiRegistryServiceDelegator', async () => {

@@ -9,9 +9,9 @@ const withoutMongoId = (model: WithId<Model>): Model => {
 };
 
 export const createResolveList = (mongoClient: MongoClient, collectionName: string): ResolveList => {
-  return async (list: List): Promise<List> => {
-    const collection = mongoClient.db().collection<Model>(collectionName);
+  const collection = mongoClient.db().collection<Model>(collectionName);
 
+  return async (list: List): Promise<List> => {
     const cursor = collection.find(list.filters);
 
     cursor.skip(list.offset);
@@ -29,8 +29,9 @@ export const createResolveList = (mongoClient: MongoClient, collectionName: stri
 };
 
 export const createFindById = (mongoClient: MongoClient, collectionName: string): FindById => {
+  const collection = mongoClient.db().collection<Model>(collectionName);
+
   return async (id: string): Promise<Model | undefined> => {
-    const collection = mongoClient.db().collection<Model>(collectionName);
     const modelWithMongoId = await collection.findOne({ id });
 
     if (!modelWithMongoId) {
@@ -42,8 +43,9 @@ export const createFindById = (mongoClient: MongoClient, collectionName: string)
 };
 
 export const createPersist = (mongoClient: MongoClient, collectionName: string): Persist => {
+  const collection = mongoClient.db().collection<Model>(collectionName);
+
   return async (model: Model): Promise<Model> => {
-    const collection = mongoClient.db().collection<Model>(collectionName);
     await collection.replaceOne({ id: model.id }, model, { upsert: true });
 
     return withoutMongoId((await collection.findOne({ id: model.id })) as WithId<Model>);
@@ -51,9 +53,9 @@ export const createPersist = (mongoClient: MongoClient, collectionName: string):
 };
 
 export const createRemove = (mongoClient: MongoClient, collectionName: string): Remove => {
-  return async (model: Model): Promise<void> => {
-    const collection = mongoClient.db().collection<Model>(collectionName);
+  const collection = mongoClient.db().collection<Model>(collectionName);
 
+  return async (model: Model): Promise<void> => {
     await collection.deleteOne({ id: model.id });
   };
 };

@@ -39,10 +39,10 @@ const nodeFactory = (
   const labels = { appClass: name };
 
   const mongoUri = pulumi
-    .all([mongoDbCluster.user, mongoDbCluster.password, mongoDbCluster.privateHost, mongoDbCluster.database])
+    .all([mongoDbCluster.user, mongoDbCluster.password, mongoDbCluster.privateHost, mongoDbCluster.name])
     .apply(
-      ([user, password, host, db]) =>
-        `mongodb+srv://${user}:${password}@${host}/${db}?authMechanism=DEFAULT&authSource=admin`,
+      ([user, password, host, replicaSet]) =>
+        `mongodb+srv://${user}:${password}@${host}/petstore?tls=true&authSource=admin&replicaSet=${replicaSet}`,
     );
 
   createK8sHttpDeployment(

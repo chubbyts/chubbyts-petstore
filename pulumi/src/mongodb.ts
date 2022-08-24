@@ -9,7 +9,7 @@ export const createMongoDbCluster = (
     version: '4',
     region,
     size: digitalocean.DatabaseSlug.DB_1VPCU1GB,
-    nodeCount: 1,
+    nodeCount: 1, // or 3
     privateNetworkUuid: vpc.id,
   });
 };

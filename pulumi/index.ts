@@ -6,15 +6,15 @@ import { buildDockerImage, directoryChecksum, pushDockerImage } from './src/buil
 import { createMongoDbCluster, createMongoDbFirewall } from './src/mongodb';
 import { createVpc } from './src/network';
 import {
-  installHelmCertManager,
-  createIngressNginx,
-  installHelmIngressNginxController,
+  installK8sHelmCertManager,
+  createK8sIngressNginx,
+  installK8sHelmIngressNginxController,
   createK8sCluster,
   createK8sHttpDeployment,
   createK8sInternalHttpService,
   createK8sProvider,
-  createCertManager,
-  createK8sDockerRegistrySecret
+  createK8sCertManager,
+  createK8sDockerRegistrySecret,
 } from './src/k8s';
 
 const nodeFactory = (
@@ -38,30 +38,48 @@ const nodeFactory = (
 
   const labels = { appClass: name };
 
-  const mongoUri = pulumi.all([mongoDbCluster.user, mongoDbCluster.password, mongoDbCluster.privateHost, mongoDbCluster.database])
-    .apply(([user, password, host, db]) => `mongodb+srv://${user}:${password}@${host}/${db}?authMechanism=DEFAULT&authSource=admin`);
+  const mongoUri = pulumi
+    .all([mongoDbCluster.user, mongoDbCluster.password, mongoDbCluster.privateHost, mongoDbCluster.database])
+    .apply(
+      ([user, password, host, db]) =>
+        `mongodb+srv://${user}:${password}@${host}/${db}?authMechanism=DEFAULT&authSource=admin`,
+    );
 
-  const deployment = createK8sHttpDeployment(k8sProvider, labels, containerRegistry, image, [
-    { name: 'NODE_ENV', value: 'production' },
-    { name: 'MONGO_URI', value: mongoUri },
-    { name: 'SERVER_HOST', value: '0.0.0.0' },
-    { name: 'SERVER_PORT', value: '10080' },
-  ], 10080, '/ping');
+  const deployment = createK8sHttpDeployment(
+    k8sProvider,
+    labels,
+    containerRegistry,
+    image,
+    [
+      { name: 'NODE_ENV', value: 'production' },
+      { name: 'MONGO_URI', value: mongoUri },
+      { name: 'SERVER_HOST', value: '0.0.0.0' },
+      { name: 'SERVER_PORT', value: '10080' },
+    ],
+    10080,
+    '/ping',
+  );
 
   const internalService = createK8sInternalHttpService(k8sProvider, labels, 10080);
 };
 
-const swaggerUiFactory = (
-  k8sProvider: k8s.Provider,
-): void => {
+const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
   const name = 'swagger-ui';
 
   const labels = { appClass: name };
 
-  const deployment = createK8sHttpDeployment(k8sProvider, labels, containerRegistry, 'swaggerapi/swagger-ui', [
-    { name: 'BASE_URL', value: '/swagger' },
-    { name: 'URLS', value: '[ { url: \'/openapi\' } ]' },
-  ], 8080, '/swagger');
+  const deployment = createK8sHttpDeployment(
+    k8sProvider,
+    labels,
+    containerRegistry,
+    'swaggerapi/swagger-ui',
+    [
+      { name: 'BASE_URL', value: '/swagger' },
+      { name: 'URLS', value: "[ { url: '/openapi' } ]" },
+    ],
+    8080,
+    '/swagger',
+  );
 
   const internalService = createK8sInternalHttpService(k8sProvider, labels, 8080);
 };
@@ -87,35 +105,42 @@ createK8sDockerRegistrySecret(k8sProvider, containerRegistry, containerRegistryD
 nodeFactory(k8sProvider, directory, containerRegistry, imageTag, k8sCluster, region, vpc);
 swaggerUiFactory(k8sProvider);
 
-const helmCertManager = installHelmCertManager(k8sProvider);
+const helmCertManager = installK8sHelmCertManager(k8sProvider);
 
-createCertManager(k8sProvider, helmCertManager, config.require('certManagerEmail'));
+createK8sCertManager(k8sProvider, helmCertManager, config.require('certManagerEmail'));
 
-const helmIngressNginxController = installHelmIngressNginxController(k8sProvider);
+const helmIngressNginxController = installK8sHelmIngressNginxController(k8sProvider);
 
-const ingress = createIngressNginx(k8sProvider, helmIngressNginxController, [
+const ingress = createK8sIngressNginx(k8sProvider, helmIngressNginxController, [
   {
-    path: '/swagger',
-    pathType: 'Prefix',
-    backend: {
-      service: {
-        name: 'swagger-ui',
-        port: {
-          number: 8080,
+    host: 'chubbyts-petstore.dev',
+    http: {
+      paths: [
+        {
+          path: '/swagger',
+          pathType: 'Prefix',
+          backend: {
+            service: {
+              name: 'swagger-ui',
+              port: {
+                number: 8080,
+              },
+            },
+          },
         },
-      },
-    },
-  },
-  {
-    path: '/',
-    pathType: 'Prefix',
-    backend: {
-      service: {
-        name: 'node',
-        port: {
-          number: 10080,
+        {
+          path: '/',
+          pathType: 'Prefix',
+          backend: {
+            service: {
+              name: 'node',
+              port: {
+                number: 10080,
+              },
+            },
+          },
         },
-      },
+      ],
     },
   },
 ]);

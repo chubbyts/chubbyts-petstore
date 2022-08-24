@@ -25,10 +25,13 @@ export const directoryChecksum = (cwd: string): string => {
 
   const flatIgnorePaths = ignorePaths.map((ignorePath) => `-path ${ignorePath}`).join(' -o ');
 
-  const output = execSync(`find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec md5sum {} + | LC_ALL=C sort | md5sum | cut -c 1-32`, {
-    cwd,
-    encoding: 'utf-8',
-  });
+  const output = execSync(
+    `find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec md5sum {} + | LC_ALL=C sort | md5sum | cut -c 1-32`,
+    {
+      cwd,
+      encoding: 'utf-8',
+    },
+  );
 
   return output.trim();
 };
@@ -51,7 +54,7 @@ const dockerBuildx = (cwd: string, name: string, repositoryTag: string): string 
 };
 
 const dockerTag = (repositoryTag: string, remoteRepositoryTag: pulumi.Input<string>): pulumi.Output<string> => {
-  return pulumi.output(remoteRepositoryTag).apply(resolvedTemoteRepositoryTag => {
+  return pulumi.output(remoteRepositoryTag).apply((resolvedTemoteRepositoryTag) => {
     const output = execSync(`docker tag ${repositoryTag} ${resolvedTemoteRepositoryTag}`, {
       encoding: 'utf-8',
     });
@@ -61,7 +64,7 @@ const dockerTag = (repositoryTag: string, remoteRepositoryTag: pulumi.Input<stri
 };
 
 const dockerPush = (remoteRepositoryTag: pulumi.Input<string>): pulumi.Output<string> => {
-  return pulumi.output(remoteRepositoryTag).apply(resolvedTemoteRepositoryTag => {
+  return pulumi.output(remoteRepositoryTag).apply((resolvedTemoteRepositoryTag) => {
     const output = execSync(`docker push ${resolvedTemoteRepositoryTag}`, {
       encoding: 'utf-8',
     });
@@ -80,7 +83,11 @@ export const buildDockerImage = (directory: string, name: string, imageTag: stri
   console.log(dockerBuildx(directory, name, repositoryTag));
 };
 
-export const pushDockerImage = (name: string, imageTag: string, repository: digitalocean.ContainerRegistry): pulumi.Output<string> => {
+export const pushDockerImage = (
+  name: string,
+  imageTag: string,
+  repository: digitalocean.ContainerRegistry,
+): pulumi.Output<string> => {
   const repositoryTag = `${name}:${imageTag}`;
   const remoteRepositoryTag = pulumi.interpolate`${repository.endpoint}/${name}:${imageTag}`;
 
@@ -97,7 +104,9 @@ export const createContainerRegistry = (region: digitalocean.Region): digitaloce
   });
 };
 
-export const createContainerRegistryDockerCredentials = (registry: digitalocean.ContainerRegistry): digitalocean.ContainerRegistryDockerCredentials => {
+export const createContainerRegistryDockerCredentials = (
+  registry: digitalocean.ContainerRegistry,
+): digitalocean.ContainerRegistryDockerCredentials => {
   return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials', {
     registryName: registry.name,
   });

@@ -109,62 +109,67 @@ createK8sCertManager(k8sProvider, helmCertManager, config.require('certManagerEm
 
 const helmIngressNginxController = installK8sHelmIngressNginxController(k8sProvider);
 
-const ingress = createK8sIngressNginx(k8sProvider, helmIngressNginxController, [
-  {
-    host: 'chubbyts-petstore.dev',
-    http: {
-      paths: [
-        {
-          path: '/api',
-          pathType: 'Prefix',
-          backend: {
-            service: {
-              name: 'node',
-              port: {
-                number: 10080,
+const ingress = createK8sIngressNginx(
+  k8sProvider,
+  helmIngressNginxController,
+  [
+    {
+      host: 'chubbyts-petstore.dev',
+      http: {
+        paths: [
+          {
+            path: '/api',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: 'node',
+                port: {
+                  number: 10080,
+                },
               },
             },
           },
-        },
-        {
-          path: '/openapi',
-          pathType: 'Prefix',
-          backend: {
-            service: {
-              name: 'node',
-              port: {
-                number: 10080,
+          {
+            path: '/openapi',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: 'node',
+                port: {
+                  number: 10080,
+                },
               },
             },
           },
-        },
-        {
-          path: '/ping',
-          pathType: 'Prefix',
-          backend: {
-            service: {
-              name: 'node',
-              port: {
-                number: 10080,
+          {
+            path: '/ping',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: 'node',
+                port: {
+                  number: 10080,
+                },
               },
             },
           },
-        },
-        {
-          path: '/swagger',
-          pathType: 'Prefix',
-          backend: {
-            service: {
-              name: 'swagger-ui',
-              port: {
-                number: 8080,
+          {
+            path: '/swagger',
+            pathType: 'Prefix',
+            backend: {
+              service: {
+                name: 'swagger-ui',
+                port: {
+                  number: 8080,
+                },
               },
             },
           },
-        },
-      ],
+        ],
+      },
     },
-  },
-]);
+  ],
+  { 'nginx.ingress.kubernetes.io/configuration-snippet': 'rewrite ^/$ /swagger redirect;' },
+);
 
 export const ingressIp = ingress.status.loadBalancer.ingress[0].ip;

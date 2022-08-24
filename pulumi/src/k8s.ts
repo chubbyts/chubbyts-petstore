@@ -181,6 +181,7 @@ export const createK8sIngressNginx = (
   provider: k8s.Provider,
   helm: k8s.helm.v3.Release,
   rules: Array<k8s.types.input.networking.v1.IngressRule>,
+  annotations: { [key: string]: string } = {},
 ): k8s.networking.v1.Ingress => {
   return new k8s.networking.v1.Ingress(
     'nginx-ingress',
@@ -193,6 +194,7 @@ export const createK8sIngressNginx = (
           'nginx.ingress.kubernetes.io/proxy-body-size': '0',
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
+          ...annotations,
           helmId: helm.id,
         },
       },

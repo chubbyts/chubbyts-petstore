@@ -58,6 +58,7 @@ export const createK8sHttpDeployment = (
       metadata: { labels },
       spec: {
         replicas: 2,
+        minReadySeconds: 15,
         selector: { matchLabels: labels },
         template: {
           metadata: { labels },

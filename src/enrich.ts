@@ -37,7 +37,7 @@ const createModelLinks = (generatePath: GeneratePath, model: Model, links: Model
   };
 };
 
-export const createEnrichModel = (generatePath: GeneratePath, links: ListLinks): EnrichModel => {
+export const createEnrichModel = (generatePath: GeneratePath, links: ModelLinks): EnrichModel => {
   return (model: Model): EnrichedModel => ({
     ...model,
     _links: createModelLinks(generatePath, model, links),

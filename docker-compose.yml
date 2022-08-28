@@ -11,7 +11,7 @@ services:
         GROUP_ID: ${GROUP_ID:-1000}
     environment:
       NODE_ENV: development
-      MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
+      MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '10080'
       SSH_AUTH_SOCK: /ssh-agent
@@ -31,8 +31,8 @@ services:
     hostname: chubbyts-petstore-mongo
     image: mongo:5.0
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: petstore
+      MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
     ports:
       - '27017:27017'
     volumes:
@@ -60,3 +60,4 @@ services:
       - ./docker/development/nginx:/etc/nginx/templates
     depends_on:
       - node
+      - swagger-ui

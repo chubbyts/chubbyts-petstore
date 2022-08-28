@@ -8,7 +8,7 @@ services:
       context: ./
     environment:
       NODE_ENV: production
-      MONGO_URI: 'mongodb://root:root@mongo:27017/pet?authMechanism=DEFAULT&authSource=admin'
+      MONGO_URI: 'mongodb://petstore:KVKtkrTHhKuTJTor8pCP@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '10080'
     depends_on:
@@ -18,5 +18,5 @@ services:
     hostname: chubbyts-petstore-mongo
     image: mongo:5.0
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: petstore
+      MONGO_INITDB_ROOT_PASSWORD: KVKtkrTHhKuTJTor8pCP

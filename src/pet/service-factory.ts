@@ -20,7 +20,7 @@ import {
   petRequestListSchema,
   petResponseSchema,
   petListResponseSchema,
-  petRequestListResponseSchema,
+  petRequestListOpenApiSchema,
 } from './model';
 import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
 import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
@@ -120,7 +120,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     operationId: 'listPets',
     tags: ['Pets'],
     request: {
-      query: petRequestListResponseSchema.strip(),
+      query: petRequestListOpenApiSchema.strip(),
     },
     responses: {
       200: {

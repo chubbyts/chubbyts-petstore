@@ -40,7 +40,7 @@ export const petRequestListSchema = z
   })
   .strict();
 
-export const petRequestListResponseSchema = z
+export const petRequestListOpenApiSchema = z
   .object({
     offset: z.number().default(0),
     limit: z.number().default(20),

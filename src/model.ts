@@ -35,7 +35,7 @@ export const modelResponseSchema = z
   })
   .strict();
 
-export const partialListSchema = z
+export const listRequestSchema = z
   .object({
     offset: numberSchema.default(0),
     limit: numberSchema.default(20),

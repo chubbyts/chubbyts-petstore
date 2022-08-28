@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { numberSchema, modelSchema, partialListSchema, linkSchema, modelResponseSchema } from '../../src/model';
+import { numberSchema, modelSchema, listRequestSchema, linkSchema, modelResponseSchema } from '../../src/model';
 
 describe('numberSchema', () => {
   test('valid', () => {
@@ -138,18 +138,18 @@ describe('modelResponseSchema', () => {
   });
 });
 
-describe('partialListSchema', () => {
+describe('listRequestSchema', () => {
   test('valid', () => {
     const input = { offset: 0, limit: '20', filters: {}, sort: {} };
 
-    expect(partialListSchema.parse(input)).toEqual({ ...input, limit: 20 });
+    expect(listRequestSchema.parse(input)).toEqual({ ...input, limit: 20 });
   });
 
   test('invalid', () => {
     const input = { offset: 0, limit: 20, filters: { name: 'name' }, sort: {} };
 
     try {
-      partialListSchema.parse(input);
+      listRequestSchema.parse(input);
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`

@@ -16,11 +16,11 @@ import { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-fact
 import { MongoClient } from 'mongodb';
 import { createResolveList, createFindById, createPersist, createRemove } from '../repository';
 import {
-  partialPetSchema,
-  partialPetListSchema,
+  petRequestSchema,
+  petRequestListSchema,
   petResponseSchema,
   petListResponseSchema,
-  partialPetListResponseSchema,
+  petRequestListResponseSchema,
 } from './model';
 import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
 import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
@@ -39,7 +39,7 @@ extendZodWithOpenApi(z);
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createCreateHandler(
     container.get<Decoder>('decoder'),
-    partialPetSchema,
+    petRequestSchema,
     await container.get<Promise<Persist>>('petPersist'),
     container.get<ResponseFactory>('responseFactory'),
     petResponseSchema,
@@ -79,7 +79,7 @@ export const petFindByIdServiceFactory = async (container: Container): Promise<F
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createListHandler(
-    partialPetListSchema,
+    petRequestListSchema,
     await container.get<Promise<ResolveList>>('petResolveList'),
     container.get<ResponseFactory>('responseFactory'),
     petListResponseSchema,
@@ -120,7 +120,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     operationId: 'listPets',
     tags: ['Pets'],
     request: {
-      query: partialPetListResponseSchema.strip(),
+      query: petRequestListResponseSchema.strip(),
     },
     responses: {
       200: {
@@ -139,7 +139,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     operationId: 'createPet',
     tags: ['Pets'],
     request: {
-      body: partialPetSchema.strip(),
+      body: petRequestSchema.strip(),
     },
     responses: {
       201: {
@@ -182,7 +182,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
       params: z.object({
         id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
       }),
-      body: partialPetSchema.strip(),
+      body: petRequestSchema.strip(),
     },
     responses: {
       200: {
@@ -263,7 +263,7 @@ export const petUpdateHandlerServiceFactory = async (container: Container): Prom
   return createUpdateHandler(
     await container.get<Promise<FindById>>('petFindById'),
     container.get<Decoder>('decoder'),
-    partialPetSchema,
+    petRequestSchema,
     await container.get<Promise<Persist>>('petPersist'),
     container.get<ResponseFactory>('responseFactory'),
     petResponseSchema,

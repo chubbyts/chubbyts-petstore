@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { linkSchema, modelResponseSchema, modelSchema, partialListSchema } from '../model';
+import { linkSchema, modelResponseSchema, modelSchema, listRequestSchema } from '../model';
 
 const vaccinationSchema = z
   .object({
@@ -7,7 +7,7 @@ const vaccinationSchema = z
   })
   .strict();
 
-export const partialPetSchema = z
+export const petRequestSchema = z
   .object({
     name: z.string().min(1),
     tag: z.string().min(1).optional(),
@@ -18,7 +18,7 @@ export const partialPetSchema = z
 export const petResponseSchema = z
   .object({
     ...modelResponseSchema.shape,
-    ...partialPetSchema.shape,
+    ...petRequestSchema.shape,
     _links: z
       .object({
         read: linkSchema.optional(),
@@ -29,9 +29,9 @@ export const petResponseSchema = z
   })
   .strict();
 
-export const partialPetListSchema = z
+export const petRequestListSchema = z
   .object({
-    ...partialListSchema.shape,
+    ...listRequestSchema.shape,
     filters: z.object({ name: z.string().optional() }).strict().optional(),
     sort: z
       .object({ name: z.enum(['asc', 'desc']).optional() })
@@ -40,7 +40,7 @@ export const partialPetListSchema = z
   })
   .strict();
 
-export const partialPetListResponseSchema = z
+export const petRequestListResponseSchema = z
   .object({
     offset: z.number().default(0),
     limit: z.number().default(20),
@@ -51,7 +51,7 @@ export const partialPetListResponseSchema = z
 
 const petListSchema = z
   .object({
-    ...partialPetListSchema.shape,
+    ...petRequestListSchema.shape,
     items: z.array(modelSchema),
     count: z.number(),
   })

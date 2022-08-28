@@ -9,7 +9,7 @@ export const createCleanDirectoriesCommand = (directories: Map<string, string>):
     );
 
     if (unsupportedDirectoryNames.length > 0) {
-      console.error(`Unsupported directory names: ${unsupportedDirectoryNames.join(', ')}`);
+      console.error(`Unsupported directory names: "${unsupportedDirectoryNames.join('", "')}"`);
 
       return 1;
     }

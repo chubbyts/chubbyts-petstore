@@ -17,7 +17,7 @@ describe('command', () => {
 
       command(['cache', 'log']);
 
-      expect(error).toEqual(['Unsupported directory names: cache, log']);
+      expect(error).toEqual(['Unsupported directory names: "cache", "log"']);
     });
 
     test('with known directories', () => {

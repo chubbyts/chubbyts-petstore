@@ -15,8 +15,8 @@ describe('console', () => {
         -h, --help                          display help for command
 
       Commands:
-        clean-directories [directoryNames]  Delete everything within a given
-                                            directory.
+        clean-directories [directoryNames]  clean the given directories by names as
+                                            commaseperated values.
         help [command]                      display help for command
       "
     `);

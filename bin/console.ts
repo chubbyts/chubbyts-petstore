@@ -2,18 +2,35 @@ import { Command } from 'commander';
 import { containerFactory } from '../bootstrap/container';
 import { CleanDirectoriesCommand } from '../src/command';
 
-const program = new Command();
-
 const container = containerFactory(process.env.NODE_ENV as string);
 
-program
-  .command('clean-directories')
-  .argument('[directoryNames]')
-  .description('Delete everything within a given directory.')
-  .action((directoryNamesAsString: string) => {
-    container.get<CleanDirectoriesCommand>('cleanDirectoriesCommand')(
-      directoryNamesAsString.split(',').map((directoryName) => directoryName.trim()),
-    );
-  });
+const program = new Command();
 
-program.parse(process.argv);
+const run = (action: Function) => {
+  return async (...args: Array<unknown>): Promise<void> => {
+    try {
+      process.exit(await action(...args));
+    } catch (e) {
+      console.error(e);
+      process.exit(-999);
+    }
+  };
+};
+
+(async () => {
+  program
+    .command('clean-directories')
+    .argument('[directoryNames]')
+    .description('clean the given directories by names as commaseperated values.')
+    .action(
+      run((directoryNamesAsString: string): number => {
+        const directoryNames = directoryNamesAsString
+          ? directoryNamesAsString.split(',').map((directoryName) => directoryName.trim())
+          : [];
+        const command = container.get<CleanDirectoriesCommand>('cleanDirectoriesCommand');
+        return command(directoryNames);
+      }),
+    );
+
+  await program.parseAsync(process.argv);
+})();

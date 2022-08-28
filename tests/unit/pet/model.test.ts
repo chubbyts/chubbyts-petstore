@@ -1,5 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { partialPetSchema, petHalSchema, partialPetListSchema, petListHalSchema } from '../../../src/pet/model';
+import {
+  partialPetSchema,
+  petResponseSchema,
+  partialPetListSchema,
+  petListResponseSchema,
+} from '../../../src/pet/model';
 
 describe('partialPetSchema', () => {
   test('valid', () => {
@@ -40,7 +45,7 @@ describe('partialPetSchema', () => {
   });
 });
 
-describe('petHalSchema', () => {
+describe('petResponseSchema', () => {
   test('valid', () => {
     const input = {
       id: 'test',
@@ -56,7 +61,7 @@ describe('petHalSchema', () => {
       },
     };
 
-    expect(petHalSchema.parse(input)).toEqual(input);
+    expect(petResponseSchema.parse(input)).toEqual(input);
   });
 
   test('invalid', () => {
@@ -71,7 +76,7 @@ describe('petHalSchema', () => {
     };
 
     try {
-      petHalSchema.parse(input);
+      petResponseSchema.parse(input);
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -122,7 +127,7 @@ describe('partialPetListSchema', () => {
   });
 });
 
-describe('petListHalSchema', () => {
+describe('petListResponseSchema', () => {
   test('valid', () => {
     const input = {
       offset: 0,
@@ -150,7 +155,7 @@ describe('petListHalSchema', () => {
       },
     };
 
-    expect(petListHalSchema.parse(input)).toEqual({ ...input, limit: 20 });
+    expect(petListResponseSchema.parse(input)).toEqual({ ...input, limit: 20 });
   });
 
   test('invalid', () => {

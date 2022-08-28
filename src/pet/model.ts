@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { linkSchema, modelHalSchema, modelSchema, partialListHalSchema, partialListSchema } from '../model';
+import { linkSchema, modelResponseSchema, modelSchema, partialListSchema } from '../model';
 
 const vaccinationSchema = z
   .object({
@@ -15,9 +15,9 @@ export const partialPetSchema = z
   })
   .strict();
 
-export const petHalSchema = z
+export const petResponseSchema = z
   .object({
-    ...modelHalSchema.shape,
+    ...modelResponseSchema.shape,
     ...partialPetSchema.shape,
     _links: z
       .object({
@@ -40,9 +40,10 @@ export const partialPetListSchema = z
   })
   .strict();
 
-export const partialPetListHalSchema = z
+export const partialPetListResponseSchema = z
   .object({
-    ...partialListHalSchema.shape,
+    offset: z.number().default(0),
+    limit: z.number().default(20),
     'filters[name]': z.string().optional(),
     'sort[name]': z.enum(['asc', 'desc']).optional(),
   })
@@ -56,12 +57,12 @@ const petListSchema = z
   })
   .strict();
 
-export const petListHalSchema = z
+export const petListResponseSchema = z
   .object({
     ...petListSchema.shape,
     offset: z.number(),
     limit: z.number(),
-    items: z.array(petHalSchema),
+    items: z.array(petResponseSchema),
     _links: z
       .object({
         create: linkSchema.optional(),

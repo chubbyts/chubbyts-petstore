@@ -18,9 +18,9 @@ import { createResolveList, createFindById, createPersist, createRemove } from '
 import {
   partialPetSchema,
   partialPetListSchema,
-  petHalSchema,
-  petListHalSchema,
-  partialPetListHalSchema,
+  petResponseSchema,
+  petListResponseSchema,
+  partialPetListResponseSchema,
 } from './model';
 import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
 import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
@@ -42,7 +42,7 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
     partialPetSchema,
     await container.get<Promise<Persist>>('petPersist'),
     container.get<ResponseFactory>('responseFactory'),
-    petHalSchema,
+    petResponseSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel>('petEnrichModel'),
   );
@@ -82,7 +82,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
     partialPetListSchema,
     await container.get<Promise<ResolveList>>('petResolveList'),
     container.get<ResponseFactory>('responseFactory'),
-    petListHalSchema,
+    petListResponseSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichList>('petEnrichList'),
   );
@@ -96,7 +96,7 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
   return createReadHandler(
     await container.get<Promise<FindById>>('petFindById'),
     container.get<ResponseFactory>('responseFactory'),
-    petHalSchema,
+    petResponseSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel>('petEnrichModel'),
   );
@@ -120,12 +120,12 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     operationId: 'listPets',
     tags: ['Pets'],
     request: {
-      query: partialPetListHalSchema.strip(),
+      query: partialPetListResponseSchema.strip(),
     },
     responses: {
       200: {
         mediaType: 'application/json',
-        schema: petListHalSchema.openapi({
+        schema: petListResponseSchema.openapi({
           description: 'Pets',
         }),
       },
@@ -144,7 +144,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       201: {
         mediaType: 'application/json',
-        schema: petHalSchema.openapi({
+        schema: petResponseSchema.openapi({
           description: 'Pet',
         }),
       },
@@ -165,7 +165,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       200: {
         mediaType: 'application/json',
-        schema: petHalSchema.openapi({
+        schema: petResponseSchema.openapi({
           description: 'Pet',
         }),
       },
@@ -187,7 +187,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       200: {
         mediaType: 'application/json',
-        schema: petHalSchema.openapi({
+        schema: petResponseSchema.openapi({
           description: 'Pet',
         }),
       },
@@ -266,7 +266,7 @@ export const petUpdateHandlerServiceFactory = async (container: Container): Prom
     partialPetSchema,
     await container.get<Promise<Persist>>('petPersist'),
     container.get<ResponseFactory>('responseFactory'),
-    petHalSchema,
+    petResponseSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel>('petEnrichModel'),
   );

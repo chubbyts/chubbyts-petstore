@@ -27,7 +27,7 @@ export const modelSchema = z
   })
   .strict();
 
-export const modelHalSchema = z
+export const modelResponseSchema = z
   .object({
     id: z.string(),
     createdAt: z.string(),
@@ -41,12 +41,5 @@ export const partialListSchema = z
     limit: numberSchema.default(20),
     filters: z.object({}).strict().optional(),
     sort: z.object({}).strict().optional(),
-  })
-  .strict();
-
-export const partialListHalSchema = z
-  .object({
-    offset: z.number().default(0),
-    limit: z.number().default(20),
   })
   .strict();

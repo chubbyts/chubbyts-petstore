@@ -3,7 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as digitalocean from '@pulumi/digitalocean';
 import { createContainerRegistry, createContainerRegistryDockerCredentials } from './src/build';
 import { buildDockerImage, directoryChecksum, pushDockerImage } from './src/build';
-import { createMongoDbCluster, createMongoDbFirewall } from './src/mongodb';
+import { createMongoDbCluster, createMongoDbFirewall, resolveMongoDbUri } from './src/mongodb';
 import { createVpc } from './src/network';
 import {
   installK8sHelmCertManager,
@@ -38,20 +38,13 @@ const nodeFactory = (
 
   const labels = { appClass: name };
 
-  const mongoUri = pulumi
-    .all([mongoDbCluster.user, mongoDbCluster.password, mongoDbCluster.privateHost, mongoDbCluster.name])
-    .apply(
-      ([user, password, host, replicaSet]) =>
-        `mongodb+srv://${user}:${password}@${host}/petstore?tls=true&authSource=admin&replicaSet=${replicaSet}`,
-    );
-
   createK8sHttpDeployment(
     k8sProvider,
     labels,
     image,
     [
       { name: 'NODE_ENV', value: 'production' },
-      { name: 'MONGO_URI', value: mongoUri },
+      { name: 'MONGO_URI', value: resolveMongoDbUri(mongoDbCluster) },
       { name: 'SERVER_HOST', value: '0.0.0.0' },
       { name: 'SERVER_PORT', value: '10080' },
     ],

@@ -1,4 +1,5 @@
 import * as digitalocean from '@pulumi/digitalocean';
+import * as pulumi from '@pulumi/pulumi';
 
 export const createMongoDbCluster = (
   region: digitalocean.Region,
@@ -12,6 +13,10 @@ export const createMongoDbCluster = (
     nodeCount: 1, // or 3
     privateNetworkUuid: vpc.id,
   });
+};
+
+export const resolveMongoDbUri = (mongoDbCluster: digitalocean.DatabaseCluster): pulumi.Output<string> => {
+  return pulumi.interpolate`mongodb+srv://${mongoDbCluster.user}:${mongoDbCluster.password}@${mongoDbCluster.privateHost}/petstore?tls=true&authSource=admin&replicaSet=${mongoDbCluster.name}`;
 };
 
 export const createMongoDbFirewall = (

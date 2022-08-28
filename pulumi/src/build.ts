@@ -1,6 +1,32 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
+import * as docker from '@pulumi/docker';
 import { execSync } from 'child_process';
+
+export const createContainerRegistry = (region: digitalocean.Region): digitalocean.ContainerRegistry => {
+  return new digitalocean.ContainerRegistry('container-registry', {
+    subscriptionTierSlug: 'basic',
+    region,
+  });
+};
+
+export const createContainerRegistryDockerReadCredentials = (
+  registry: digitalocean.ContainerRegistry,
+): digitalocean.ContainerRegistryDockerCredentials => {
+  return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials-read', {
+    registryName: registry.name,
+    write: false,
+  });
+};
+
+export const createContainerRegistryDockerReadWriteCredentials = (
+  registry: digitalocean.ContainerRegistry,
+): digitalocean.ContainerRegistryDockerCredentials => {
+  return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials-read-write', {
+    registryName: registry.name,
+    write: true,
+  });
+};
 
 export const directoryChecksum = (cwd: string): string => {
   const ignorePaths = [
@@ -26,7 +52,7 @@ export const directoryChecksum = (cwd: string): string => {
   const flatIgnorePaths = ignorePaths.map((ignorePath) => `-path ${ignorePath}`).join(' -o ');
 
   const output = execSync(
-    `find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec md5sum {} + | LC_ALL=C sort | md5sum | cut -c 1-32`,
+    `find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-32`,
     {
       cwd,
       encoding: 'utf-8',
@@ -36,78 +62,46 @@ export const directoryChecksum = (cwd: string): string => {
   return output.trim();
 };
 
-const dockerImageExists = (repositoryTag: string): boolean => {
-  const output = execSync(`docker images -q ${repositoryTag}`, {
-    encoding: 'utf-8',
-  });
-
-  return output.trim() !== '';
+type DockerCredentials = {
+  auths: {
+    [host: string]: {
+      auth: string;
+    };
+  };
 };
 
-const dockerBuildx = (cwd: string, name: string, repositoryTag: string): string => {
-  const output = execSync(`docker buildx build -f docker/production/${name}/Dockerfile -t ${repositoryTag} .`, {
-    cwd,
-    encoding: 'utf-8',
-  });
-
-  return output.trim();
-};
-
-const dockerTag = (repositoryTag: string, remoteRepositoryTag: pulumi.Input<string>): pulumi.Output<string> => {
-  return pulumi.output(remoteRepositoryTag).apply((resolvedTemoteRepositoryTag) => {
-    const output = execSync(`docker tag ${repositoryTag} ${resolvedTemoteRepositoryTag}`, {
-      encoding: 'utf-8',
-    });
-
-    return output.trim();
-  });
-};
-
-const dockerPush = (remoteRepositoryTag: pulumi.Input<string>): pulumi.Output<string> => {
-  return pulumi.output(remoteRepositoryTag).apply((resolvedTemoteRepositoryTag) => {
-    const output = execSync(`docker push ${resolvedTemoteRepositoryTag}`, {
-      encoding: 'utf-8',
-    });
-
-    return output.trim();
-  });
-};
-
-export const buildDockerImage = (directory: string, name: string, imageTag: string): void => {
-  const repositoryTag = `${name}:${imageTag}`;
-
-  if (dockerImageExists(repositoryTag)) {
-    return;
-  }
-
-  console.log(dockerBuildx(directory, name, repositoryTag));
-};
-
-export const pushDockerImage = (
+export const createAndPushImage = (
   name: string,
-  imageTag: string,
-  repository: digitalocean.ContainerRegistry,
+  context: string,
+  containerRegistry: digitalocean.ContainerRegistry,
+  containerRegistryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials,
 ): pulumi.Output<string> => {
-  const repositoryTag = `${name}:${imageTag}`;
-  const remoteRepositoryTag = pulumi.interpolate`${repository.endpoint}/${name}:${imageTag}`;
+  const checksum = directoryChecksum(context);
+  const localImageName = `${name}:sha1-${checksum}`;
+  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${localImageName}`;
 
-  dockerTag(repositoryTag, remoteRepositoryTag);
-  dockerPush(remoteRepositoryTag);
+  containerRegistryDockerCredentials.dockerCredentials.apply((dockerCredentials) => {
+    const parsedDockerCredentials = JSON.parse(dockerCredentials) as DockerCredentials;
 
-  return remoteRepositoryTag;
-};
+    const server = Object.keys(parsedDockerCredentials.auths)[0];
+    const auth = parsedDockerCredentials.auths[server].auth;
+    const username = Buffer.from(auth, 'base64').toString('utf-8').split(':')[0];
+    const password = username;
 
-export const createContainerRegistry = (region: digitalocean.Region): digitalocean.ContainerRegistry => {
-  return new digitalocean.ContainerRegistry('container-registry', {
-    subscriptionTierSlug: 'basic',
-    region,
+    new docker.Image(name, {
+      imageName,
+      localImageName,
+      build: {
+        dockerfile: `${context}/docker/production/${name}/Dockerfile`,
+        context,
+      },
+      registry: {
+        server,
+        username,
+        password,
+      },
+    });
   });
-};
 
-export const createContainerRegistryDockerCredentials = (
-  registry: digitalocean.ContainerRegistry,
-): digitalocean.ContainerRegistryDockerCredentials => {
-  return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials', {
-    registryName: registry.name,
-  });
+  return imageName;
 };

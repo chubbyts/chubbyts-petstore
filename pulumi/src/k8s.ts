@@ -50,14 +50,14 @@ export const createK8sHttpDeployment = (
   env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
   port: number,
   path: string,
-  scheme: 'HTTP' | 'HTTPS' = 'HTTP',
+  replicas: number = 2,
 ): k8s.apps.v1.Deployment => {
   return new k8s.apps.v1.Deployment(
     `${labels.appClass}-deployment`,
     {
       metadata: { labels },
       spec: {
-        replicas: 2,
+        replicas,
         minReadySeconds: 15,
         selector: { matchLabels: labels },
         template: {
@@ -74,14 +74,14 @@ export const createK8sHttpDeployment = (
                   httpGet: {
                     path,
                     port,
-                    scheme,
+                    scheme: 'HTTP',
                   },
                 },
                 livenessProbe: {
                   httpGet: {
                     path,
                     port,
-                    scheme,
+                    scheme: 'HTTP',
                   },
                 },
               },

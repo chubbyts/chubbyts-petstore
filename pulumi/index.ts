@@ -73,6 +73,7 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
     ],
     8080,
     '/swagger',
+    1
   );
 
   createK8sInternalHttpService(k8sProvider, labels, 8080);

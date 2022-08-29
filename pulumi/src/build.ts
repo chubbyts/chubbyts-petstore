@@ -52,7 +52,7 @@ export const directoryChecksum = (cwd: string): string => {
   const flatIgnorePaths = ignorePaths.map((ignorePath) => `-path ${ignorePath}`).join(' -o ');
 
   const output = execSync(
-    `find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-32`,
+    `find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`,
     {
       cwd,
       encoding: 'utf-8',

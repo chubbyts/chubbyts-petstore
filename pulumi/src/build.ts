@@ -2,6 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
 import * as docker from '@pulumi/docker';
 import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
 
 export const createContainerRegistry = (region: digitalocean.Region): digitalocean.ContainerRegistry => {
   return new digitalocean.ContainerRegistry('container-registry', {
@@ -28,36 +29,16 @@ export const createContainerRegistryDockerReadWriteCredentials = (
   });
 };
 
-export const directoryChecksum = (cwd: string): string => {
-  const ignorePaths = [
-    './.git',
-    './.github',
-    './.gitignore',
-    './.stryker-tmp',
-    './coverage',
-    './database',
-    './dist',
-    './docker-compose.ci.yml',
-    './docker-compose.yml',
-    './docker/development',
-    './LICENSE',
-    './node_modules',
-    './nodemon.json',
-    './pulumi',
-    './README.md',
-    './sonar-project.properties',
-    './var',
-  ];
+const calculateChecksum = (cwd: string): string => {
+  const ignorePaths = readFileSync(`${cwd}/.dockerignore`, 'utf-8')
+    .split('\n')
+    .filter((line) => line !== '')
+    .map((ignorePath) => `-path ./${ignorePath}`)
+    .join(' -o ');
 
-  const flatIgnorePaths = ignorePaths.map((ignorePath) => `-path ${ignorePath}`).join(' -o ');
+  const command = `find . \\( ${ignorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`;
 
-  const output = execSync(
-    `find . \\( ${flatIgnorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`,
-    {
-      cwd,
-      encoding: 'utf-8',
-    },
-  );
+  const output = execSync(command, { cwd, encoding: 'utf-8' });
 
   return output.trim();
 };
@@ -76,7 +57,7 @@ export const createAndPushImage = (
   containerRegistry: digitalocean.ContainerRegistry,
   containerRegistryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials,
 ): pulumi.Output<string> => {
-  const checksum = directoryChecksum(context);
+  const checksum = calculateChecksum(context);
   const localImageName = `${name}:sha1-${checksum}`;
   const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${localImageName}`;
 

@@ -7,8 +7,28 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
+  docker:
+    name: docker (development container)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: docker build
+        run: docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -f docker/development/node/Dockerfile . -t node
+      - name: npm install
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm install'
+      - name: npm run cs
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run cs'
+      - name: npm run test -- --coverage --no-cache
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run test -- --coverage --no-cache'
+      - name: npm run test:integration --no-cache
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run test:integration --no-cache'
+      - name: npm run infection
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run infection'
+      - name: npm run build
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run build'
   docker-compose:
-    name: docker-compose
+    name: docker-compose (production container)
     runs-on: ubuntu-20.04
     steps:
       - name: checkout

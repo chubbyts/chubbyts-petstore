@@ -56,9 +56,9 @@ jobs:
       - run: npm run test -- --coverage --no-cache
       - run: npm run test:integration --no-cache
       - run: npm run infection
-      - run: npm run build
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - run: npm run build
   node16:
     name: Node 16
     runs-on: ubuntu-20.04
@@ -74,9 +74,9 @@ jobs:
       - run: npm run test -- --coverage --no-cache
       - run: npm run test:integration --no-cache
       - run: npm run infection
-      - run: npm run build
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - run: npm run build
   node18:
     name: Node 18
     runs-on: ubuntu-20.04
@@ -92,9 +92,9 @@ jobs:
       - run: npm run test -- --coverage --no-cache
       - run: npm run test:integration --no-cache
       - run: npm run infection
-      - run: npm run build
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - run: npm run build
       - name: coveralls.io
         uses: coverallsapp/github-action@master
         with:

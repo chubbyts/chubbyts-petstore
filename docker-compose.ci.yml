@@ -10,7 +10,7 @@ services:
       NODE_ENV: production
       MONGO_URI: 'mongodb://petstore:KVKtkrTHhKuTJTor8pCP@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
-      SERVER_PORT: '10080'
+      SERVER_PORT: '1234'
     depends_on:
       - mongo
   mongo:

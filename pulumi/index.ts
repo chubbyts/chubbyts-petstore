@@ -49,13 +49,13 @@ const nodeFactory = (
       { name: 'NODE_ENV', value: 'production' },
       { name: 'MONGO_URI', value: resolveMongoDbUri(mongoDbCluster) },
       { name: 'SERVER_HOST', value: '0.0.0.0' },
-      { name: 'SERVER_PORT', value: '10080' },
+      { name: 'SERVER_PORT', value: '1234' },
     ],
-    10080,
+    1234,
     '/ping',
   );
 
-  createK8sInternalHttpService(k8sProvider, labels, 10080);
+  createK8sInternalHttpService(k8sProvider, labels, 1234);
 };
 
 const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
@@ -130,7 +130,7 @@ const ingress = createK8sIngressNginx(
               service: {
                 name: 'node',
                 port: {
-                  number: 10080,
+                  number: 1234,
                 },
               },
             },
@@ -142,7 +142,7 @@ const ingress = createK8sIngressNginx(
               service: {
                 name: 'node',
                 port: {
-                  number: 10080,
+                  number: 1234,
                 },
               },
             },
@@ -154,7 +154,7 @@ const ingress = createK8sIngressNginx(
               service: {
                 name: 'node',
                 port: {
-                  number: 10080,
+                  number: 1234,
                 },
               },
             },

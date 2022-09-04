@@ -73,16 +73,16 @@ npm start
 
 ## Urls
 
-* GET https://localhost:10443/ping
-* GET https://localhost:10443/swagger (https://localhost:10443/openapi)
+* GET https://localhost/ping
+* GET https://localhost/swagger (https://localhost/openapi)
 
 ### Pet
 
-* GET https://localhost:10443/api/pets?sort[name]=asc
-* POST https://localhost:10443/api/pets
-* GET https://localhost:10443/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
-* PUT https://localhost:10443/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
-* DELETE https://localhost:10443/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* GET https://localhost/api/pets?sort[name]=asc
+* POST https://localhost/api/pets
+* GET https://localhost/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* PUT https://localhost/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* DELETE https://localhost/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
 
 ## Structure
 

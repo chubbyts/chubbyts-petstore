@@ -53,7 +53,7 @@ describe('handler', () => {
       },
       servers: [
         {
-          url: 'https://localhost:10443',
+          url: 'https://localhost',
         },
       ],
       components: {

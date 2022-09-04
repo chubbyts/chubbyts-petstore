@@ -7,9 +7,14 @@ RUN dnf upgrade -y --refresh
 
 RUN dnf install -y \
     compat-openssl11 \
+    glibc-langpack-de \
+    langpacks-de \
     nmap-ncat \
     procps-ng \
     unzip
+
+RUN echo "LANG=de_CH.UTF-8" > /etc/locale.conf \
+    && cp -f /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 
 COPY docker/production/node/files /
 

@@ -7,21 +7,10 @@ setopt hist_ignore_dups
 setopt hist_ignore_space
 setopt hist_expire_dups_first
 setopt inc_append_history
+
 export HISTFILE=~/.zsh_history
-export HISTSIZE=5000
-export SAVEHIST=100000
 
-alias cls="printf '\033c'; printf '\033[3J'"
-
-alias ls='ls -ahl --color=auto'
-alias mkdir='mkdir -pv'
-
-alias cp='cp -i'
-alias ln='ln -i'
-alias mv='mv -i'
-alias rm='rm -i'
-
-export EDITOR='vim'
+source $HOME/.sharedrc
 
 export PATH=$HOME/.fnm:$PATH
 eval "$(fnm env --shell=zsh --use-on-cd)"

@@ -1,0 +1,14 @@
+export HISTSIZE=5000
+export SAVEHIST=100000
+
+export EDITOR='vim'
+
+alias cls="printf '\033c'; printf '\033[3J'"
+
+alias ls='ls -ahl --color=auto'
+alias mkdir='mkdir -pv'
+
+alias cp='cp -i'
+alias ln='ln -i'
+alias mv='mv -i'
+alias rm='rm -i'

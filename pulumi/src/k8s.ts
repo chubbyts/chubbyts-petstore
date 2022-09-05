@@ -15,7 +15,7 @@ export const createK8sCluster = (
       nodeCount,
     },
     region,
-    version: '1.23.9-do.0',
+    version: '1.24.4-do.0',
     vpcUuid: vpc.id,
   });
 };
@@ -147,7 +147,7 @@ export const installK8sHelmIngressNginxController = (provider: k8s.Provider): k8
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.2.1',
+      version: '4.2.4',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },

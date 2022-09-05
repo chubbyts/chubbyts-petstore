@@ -19,6 +19,7 @@ import {
   createK8sProvider,
   createK8sCertManager,
   createK8sDockerRegistrySecret,
+  createK8sTokenKubeconfig,
 } from './src/k8s';
 import { realpathSync } from 'fs';
 
@@ -82,6 +83,7 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
 const directory = realpathSync(`${process.cwd()}/../`);
 
 let config = new pulumi.Config();
+let digitaloceanConfig = new pulumi.Config('digitalocean');
 
 const region = digitalocean.Region.FRA1;
 
@@ -93,7 +95,8 @@ const containerRegistryDockerReadCredentials = createContainerRegistryDockerRead
 const vpc = createVpc(region);
 
 const k8sCluster = createK8sCluster(region, vpc);
-const k8sProvider = createK8sProvider(k8sCluster);
+const k8sTokenKubeconfig = createK8sTokenKubeconfig(k8sCluster, 'admin', digitaloceanConfig.require('token'));
+const k8sProvider = createK8sProvider(k8sTokenKubeconfig);
 
 createK8sDockerRegistrySecret(k8sProvider, containerRegistryDockerReadCredentials);
 

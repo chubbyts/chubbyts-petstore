@@ -20,8 +20,34 @@ export const createK8sCluster = (
   });
 };
 
-export const createK8sProvider = (cluster: digitalocean.KubernetesCluster): k8s.Provider => {
-  return new k8s.Provider('k8s-provider', { kubeconfig: cluster.kubeConfigs[0].rawConfig });
+// https://github.com/pulumi/pulumi-digitalocean/issues/78#issuecomment-639669865
+export const createK8sTokenKubeconfig = (
+  cluster: digitalocean.KubernetesCluster,
+  user: pulumi.Input<string>,
+  apiToken: pulumi.Input<string>,
+): pulumi.Output<string> => {
+  return pulumi.interpolate`apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ${cluster.kubeConfigs[0].clusterCaCertificate}
+    server: ${cluster.endpoint}
+  name: ${cluster.name}
+contexts:
+- context:
+    cluster: ${cluster.name}
+    user: ${cluster.name}-${user}
+  name: ${cluster.name}
+current-context: ${cluster.name}
+kind: Config
+users:
+- name: ${cluster.name}-${user}
+  user:
+    token: ${apiToken}
+`;
+}
+
+export const createK8sProvider = (kubeconfig: pulumi.Input<string>): k8s.Provider => {
+  return new k8s.Provider('k8s-provider', { kubeconfig });
 };
 
 export const createK8sDockerRegistrySecret = (

@@ -12,7 +12,7 @@ const getRandomInt = (min, max) => {
 const testServerHost = '127.0.0.1';
 const testServerPort = getRandomInt(49152, 65535);
 
-const timeout = 10000;
+const timeout = 20000;
 const iterationTimeout = 500;
 
 const startServer = async () => {

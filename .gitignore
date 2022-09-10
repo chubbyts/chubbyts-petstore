@@ -5,5 +5,4 @@ dist
 globalConfig.json
 node_modules
 package-lock.json
-pulumi
 var

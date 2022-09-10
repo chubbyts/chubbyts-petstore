@@ -36,11 +36,11 @@ describe('update', () => {
     const responseData = await response.json();
 
     expect(responseData).toMatchInlineSnapshot(`
-      Object {
+      {
         "_httpError": "UnsupportedMediaType",
-        "detail": "Allowed content-types: \\"application/json\\", \\"application/jsonx+xml\\", \\"application/x-www-form-urlencoded\\", \\"application/x-yaml\\"",
+        "detail": "Allowed content-types: "application/json", "application/jsonx+xml", "application/x-www-form-urlencoded", "application/x-yaml"",
         "status": 415,
-        "supportedValues": Array [
+        "supportedValues": [
           "application/json",
           "application/jsonx+xml",
           "application/x-www-form-urlencoded",
@@ -69,7 +69,7 @@ describe('update', () => {
     const responseData = await response.json();
 
     expect(responseData).toMatchInlineSnapshot(`
-      Object {
+      {
         "_httpError": "NotFound",
         "detail": "There is no entry with id babb8c3c-788e-4bd8-aac2-d2b1a098a5c8",
         "status": 404,
@@ -109,11 +109,11 @@ describe('update', () => {
     const responseData = await response.json();
 
     expect(responseData).toMatchInlineSnapshot(`
-      Object {
+      {
         "_httpError": "BadRequest",
-        "invalidParameters": Array [
-          Object {
-            "context": Object {
+        "invalidParameters": [
+          {
+            "context": {
               "code": "invalid_type",
               "expected": "string",
               "received": "undefined",

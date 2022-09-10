@@ -89,13 +89,13 @@ describe('createResolveList', () => {
     const resolveList = createResolveList(mongoClient, collectionName);
 
     expect(await resolveList(list)).toMatchInlineSnapshot(`
-      Object {
+      {
         "count": 2,
-        "filters": Object {
+        "filters": {
           "name": "name1",
         },
-        "items": Array [
-          Object {
+        "items": [
+          {
             "createdAt": 2022-06-12T20:08:24.793Z,
             "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
             "name": "name1",
@@ -104,7 +104,7 @@ describe('createResolveList', () => {
         ],
         "limit": 1,
         "offset": 1,
-        "sort": Object {
+        "sort": {
           "name": "desc",
         },
       }
@@ -150,7 +150,7 @@ describe('createFindById', () => {
     const findById = createFindById(mongoClient, collectionName);
 
     expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
-      Object {
+      {
         "createdAt": 2022-06-12T20:08:24.793Z,
         "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
         "name": "name1",
@@ -229,7 +229,7 @@ test('createPersist', async () => {
   const persist = createPersist(mongoClient, collectionName);
 
   expect(await persist(model)).toMatchInlineSnapshot(`
-    Object {
+    {
       "createdAt": 2022-06-12T20:08:24.793Z,
       "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
       "name": "name1",

@@ -21,8 +21,8 @@ describe('createEnrichModel', () => {
         { request },
       ),
     ).toMatchInlineSnapshot(`
-      Object {
-        "_links": Object {},
+      {
+        "_links": {},
         "createdAt": 2022-06-12T20:08:24.793Z,
         "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
         "updatedAt": 2022-06-12T20:08:35.208Z,
@@ -54,22 +54,22 @@ describe('createEnrichModel', () => {
         { request },
       ),
     ).toMatchInlineSnapshot(`
-      Object {
-        "_links": Object {
-          "delete": Object {
-            "attributes": Object {
+      {
+        "_links": {
+          "delete": {
+            "attributes": {
               "method": "DELETE",
             },
             "href": "model_delete",
           },
-          "read": Object {
-            "attributes": Object {
+          "read": {
+            "attributes": {
               "method": "GET",
             },
             "href": "model_read",
           },
-          "update": Object {
-            "attributes": Object {
+          "update": {
+            "attributes": {
               "method": "PUT",
             },
             "href": "model_update",
@@ -113,13 +113,13 @@ describe('createEnrichList', () => {
         { request },
       ),
     ).toMatchInlineSnapshot(`
-      Object {
-        "_links": Object {},
+      {
+        "_links": {},
         "count": 1,
-        "filters": Object {},
-        "items": Array [
-          Object {
-            "_links": Object {},
+        "filters": {},
+        "items": [
+          {
+            "_links": {},
             "createdAt": 2022-06-12T20:08:24.793Z,
             "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
             "updatedAt": 2022-06-12T20:08:35.208Z,
@@ -127,7 +127,7 @@ describe('createEnrichList', () => {
         ],
         "limit": 20,
         "offset": 0,
-        "sort": Object {},
+        "sort": {},
       }
     `);
 
@@ -166,34 +166,34 @@ describe('createEnrichList', () => {
         { request },
       ),
     ).toMatchInlineSnapshot(`
-      Object {
-        "_links": Object {
-          "create": Object {
-            "attributes": Object {
+      {
+        "_links": {
+          "create": {
+            "attributes": {
               "method": "POST",
             },
             "href": "model_create",
           },
         },
         "count": 1,
-        "filters": Object {},
-        "items": Array [
-          Object {
-            "_links": Object {
-              "delete": Object {
-                "attributes": Object {
+        "filters": {},
+        "items": [
+          {
+            "_links": {
+              "delete": {
+                "attributes": {
                   "method": "DELETE",
                 },
                 "href": "model_delete",
               },
-              "read": Object {
-                "attributes": Object {
+              "read": {
+                "attributes": {
                   "method": "GET",
                 },
                 "href": "model_read",
               },
-              "update": Object {
-                "attributes": Object {
+              "update": {
+                "attributes": {
                   "method": "PUT",
                 },
                 "href": "model_update",
@@ -206,7 +206,7 @@ describe('createEnrichList', () => {
         ],
         "limit": 20,
         "offset": 0,
-        "sort": Object {},
+        "sort": {},
       }
     `);
 

@@ -8,7 +8,7 @@ describe('console', () => {
     const output = execSync(consoleCommand + ' -h', options);
 
     expect(output).toMatchInlineSnapshot(`
-      "Loading \\"jest\\" config
+      "Loading "jest" config
       Usage: console [options] [command]
 
       Options:

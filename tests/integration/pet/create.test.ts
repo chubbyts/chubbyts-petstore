@@ -36,11 +36,11 @@ describe('create', () => {
     const responseData = await response.json();
 
     expect(responseData).toMatchInlineSnapshot(`
-      Object {
+      {
         "_httpError": "UnsupportedMediaType",
-        "detail": "Allowed content-types: \\"application/json\\", \\"application/jsonx+xml\\", \\"application/x-www-form-urlencoded\\", \\"application/x-yaml\\"",
+        "detail": "Allowed content-types: "application/json", "application/jsonx+xml", "application/x-www-form-urlencoded", "application/x-yaml"",
         "status": 415,
-        "supportedValues": Array [
+        "supportedValues": [
           "application/json",
           "application/jsonx+xml",
           "application/x-www-form-urlencoded",
@@ -69,11 +69,11 @@ describe('create', () => {
     const responseData = await response.json();
 
     expect(responseData).toMatchInlineSnapshot(`
-      Object {
+      {
         "_httpError": "BadRequest",
-        "invalidParameters": Array [
-          Object {
-            "context": Object {
+        "invalidParameters": [
+          {
+            "context": {
               "code": "invalid_type",
               "expected": "string",
               "received": "undefined",

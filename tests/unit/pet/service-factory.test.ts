@@ -244,73 +244,73 @@ describe('service-factory', () => {
     expect(routes).toBeInstanceOf(Array);
 
     expect(routes).toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "_route": "Route",
-          "attributes": Object {},
+          "attributes": {},
           "handler": [Function],
           "method": "GET",
-          "middlewares": Array [
+          "middlewares": [
             [Function],
             [Function],
           ],
           "name": "pet_list",
           "path": "/api/pets",
-          "pathOptions": Object {},
+          "pathOptions": {},
         },
-        Object {
+        {
           "_route": "Route",
-          "attributes": Object {},
+          "attributes": {},
           "handler": [Function],
           "method": "POST",
-          "middlewares": Array [
+          "middlewares": [
             [Function],
             [Function],
             [Function],
           ],
           "name": "pet_create",
           "path": "/api/pets",
-          "pathOptions": Object {},
+          "pathOptions": {},
         },
-        Object {
+        {
           "_route": "Route",
-          "attributes": Object {},
+          "attributes": {},
           "handler": [Function],
           "method": "GET",
-          "middlewares": Array [
+          "middlewares": [
             [Function],
             [Function],
           ],
           "name": "pet_read",
           "path": "/api/pets/:id",
-          "pathOptions": Object {},
+          "pathOptions": {},
         },
-        Object {
+        {
           "_route": "Route",
-          "attributes": Object {},
+          "attributes": {},
           "handler": [Function],
           "method": "PUT",
-          "middlewares": Array [
+          "middlewares": [
             [Function],
             [Function],
             [Function],
           ],
           "name": "pet_update",
           "path": "/api/pets/:id",
-          "pathOptions": Object {},
+          "pathOptions": {},
         },
-        Object {
+        {
           "_route": "Route",
-          "attributes": Object {},
+          "attributes": {},
           "handler": [Function],
           "method": "DELETE",
-          "middlewares": Array [
+          "middlewares": [
             [Function],
             [Function],
           ],
           "name": "pet_delete",
           "path": "/api/pets/:id",
-          "pathOptions": Object {},
+          "pathOptions": {},
         },
       ]
     `);

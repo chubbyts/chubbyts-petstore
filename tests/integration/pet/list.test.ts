@@ -33,13 +33,13 @@ describe('list', () => {
     const responseData = await response.json();
 
     expect(responseData).toMatchInlineSnapshot(`
-      Object {
+      {
         "_httpError": "BadRequest",
-        "invalidParameters": Array [
-          Object {
-            "context": Object {
+        "invalidParameters": [
+          {
+            "context": {
               "code": "unrecognized_keys",
-              "keys": Array [
+              "keys": [
                 "name1",
               ],
             },

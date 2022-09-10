@@ -42,11 +42,11 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-pino-adapter][17]: ^1.1.0
  * [commander][18]: ^9.3.0
  * [get-stream][19]: ^6.0.1
- * [mongodb][20]: ^4.9.0
- * [openapi3-ts][21]: ^3.0.1
- * [pino][22]: ^8.4.2
- * [uuid][23]: ^8.3.2
- * [zod][24]: ^3.18.0
+ * [mongodb][20]: ^4.9.1
+ * [openapi3-ts][21]: ^3.0.2
+ * [pino][22]: ^8.5.0
+ * [uuid][23]: ^9.0.0
+ * [zod][24]: ^3.19.0
 
 ## Environment
 

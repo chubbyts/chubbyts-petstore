@@ -7,6 +7,22 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
+  docker-compose:
+    name: docker-compose (production container)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: docker build / start
+        run: docker-compose -f docker-compose.ci.yml up -d
+      - name: wait for nginx
+        run: while ! nc -z localhost 443; do sleep 0.1; done
+      - name: ping
+        run: curl --insecure https://localhost/ping -vvv
+      - name: openapi
+        run: curl --insecure https://localhost/openapi -vvv
+      - name: docker stop
+        run: docker-compose -f docker-compose.ci.yml stop
   docker:
     name: docker (development container)
     runs-on: ubuntu-20.04
@@ -27,20 +43,6 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run infection'
       - name: npm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run build'
-  docker-compose:
-    name: docker-compose (production container)
-    runs-on: ubuntu-20.04
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: docker build / start
-        run: docker-compose -f docker-compose.ci.yml up -d
-      - name: wait for server
-        run: docker-compose -f docker-compose.ci.yml exec -T node bash -c 'while ! nc -z localhost 1234; do sleep 0.1; done'
-      - name: ping
-        run: docker-compose -f docker-compose.ci.yml exec -T node bash -c 'curl http://localhost:1234/ping -vvv'
-      - name: docker stop
-        run: docker-compose -f docker-compose.ci.yml stop
   node14:
     name: Node 14
     runs-on: ubuntu-20.04

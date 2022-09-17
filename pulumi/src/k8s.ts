@@ -6,7 +6,7 @@ export const createK8sCluster = (
   region: digitalocean.Region,
   vpc: digitalocean.Vpc,
   size: string = digitalocean.DropletSlug.DropletS2VCPU2GB,
-  nodeCount: number = 2,
+  nodeCount: number = 1,
 ): digitalocean.KubernetesCluster => {
   return new digitalocean.KubernetesCluster('k8s-cluster', {
     nodePool: {
@@ -76,7 +76,7 @@ export const createK8sHttpDeployment = (
   env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
   port: number,
   path: string,
-  replicas: number = 2,
+  replicas: number = 1,
 ): k8s.apps.v1.Deployment => {
   return new k8s.apps.v1.Deployment(
     `${labels.appClass}-deployment`,

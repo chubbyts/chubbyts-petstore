@@ -61,7 +61,10 @@ import {
   createOriginNegotiator,
 } from '@chubbyts/chubbyts-cors/dist/negotiation';
 import { OpenAPIComponentObject, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
-import { OpenAPIGenerator } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi, OpenAPIGenerator } from '@asteasolutions/zod-to-openapi';
+import { z } from 'zod';
+
+extendZodWithOpenApi(z);
 
 export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
@@ -183,7 +186,24 @@ export const openApiObjectServiceFactory = (container: Container): OpenAPICompon
 };
 
 export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
-  return new OpenAPIRegistry();
+  const registry = new OpenAPIRegistry();
+
+  registry.registerPath({
+    path: '/ping',
+    method: 'get',
+    operationId: 'ping',
+    tags: ['system'],
+    responses: {
+      200: {
+        mediaType: 'application/json',
+        schema: z.object({ data: z.string() }).openapi({
+          description: 'Ping',
+        }),
+      },
+    },
+  });
+
+  return registry;
 };
 
 export const pingHandlerServiceFactory = (container: Container) => {

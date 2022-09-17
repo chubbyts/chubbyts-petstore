@@ -33,7 +33,7 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-framework][8]: ^1.3.2
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][9]: ^1.0.3
  * [@chubbyts/chubbyts-http][10]: ^1.0.1
- * [@chubbyts/chubbyts-http-error][11]: ^1.0.0
+ * [@chubbyts/chubbyts-http-error][11]: ^2.0.1
  * [@chubbyts/chubbyts-http-types][12]: ^1.0.0
  * [@chubbyts/chubbyts-log-types][13]: ^1.0.0
  * [@chubbyts/chubbyts-mongodb][14]: ^1.0.1

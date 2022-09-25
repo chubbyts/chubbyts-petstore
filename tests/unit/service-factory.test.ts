@@ -98,7 +98,7 @@ describe('service-factory', () => {
   });
 
   test('generatePathServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['routesByName', () => new Map()]];
+    const calls: Array<[string, unknown]> = [['routesByName', new Map()]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -252,7 +252,7 @@ describe('service-factory', () => {
   });
 
   test('matchServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['routesByName', () => new Map()]];
+    const calls: Array<[string, unknown]> = [['routesByName', new Map()]];
 
     const get = jest.fn(createGetMock(calls));
 
@@ -440,7 +440,7 @@ describe('service-factory', () => {
 
     const container = { get } as unknown as Container;
 
-    expect(routesByNameServiceFactory(container)).toBeInstanceOf(Function);
+    expect(routesByNameServiceFactory(container)).toBeInstanceOf(Map);
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });

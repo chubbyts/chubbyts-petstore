@@ -29,7 +29,7 @@ import {
   createPathToRegexpPathGenerator,
 } from '@chubbyts/chubbyts-framework-router-path-to-regexp/dist/path-to-regexp-router';
 import pino from 'pino';
-import { createRoutesByName, Routes } from '@chubbyts/chubbyts-framework/dist/router/routes';
+import { createRoutesByName, RoutesByName } from '@chubbyts/chubbyts-framework/dist/router/routes-by-name';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import { createGetRoute, Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { createOpenApiHandler, createPingHandler } from './handler';
@@ -144,7 +144,7 @@ export const errorMiddlewareServiceFactory = (container: Container): Middleware 
 };
 
 export const generatePathServiceFactory = (container: Container): GeneratePath => {
-  return createPathToRegexpPathGenerator(container.get<Routes>('routesByName'));
+  return createPathToRegexpPathGenerator(container.get<RoutesByName>('routesByName'));
 };
 
 export const loggerServiceFactory = (container: Container): Logger => {
@@ -154,7 +154,7 @@ export const loggerServiceFactory = (container: Container): Logger => {
 };
 
 export const matchServiceFactory = (container: Container): Match => {
-  return createPathToRegexpRouteMatcher(container.get<Routes>('routesByName'));
+  return createPathToRegexpRouteMatcher(container.get<RoutesByName>('routesByName'));
 };
 
 export const middlewaresServiceFactory = (container: Container): Array<Middleware> => {
@@ -239,7 +239,7 @@ export const routesServiceFactory = (container: Container): Array<Route> => {
   ];
 };
 
-export const routesByNameServiceFactory = (container: Container): Routes => {
+export const routesByNameServiceFactory = (container: Container): RoutesByName => {
   return createRoutesByName(container.get<Array<Route>>('routes'));
 };
 

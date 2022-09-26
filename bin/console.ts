@@ -6,9 +6,8 @@ const container = containerFactory(process.env.NODE_ENV as string);
 
 const program = new Command();
 
-/* eslint-disable @typescript-eslint/ban-types */
-const run = (action: Function) => {
-  return async (...args: Array<unknown>): Promise<void> => {
+const run = (action: (...args: Array<string>) => Promise<number> | number) => {
+  return async (...args: Array<string>): Promise<void> => {
     try {
       process.exit(await action(...args));
     } catch (e) {

@@ -6,6 +6,7 @@ const container = containerFactory(process.env.NODE_ENV as string);
 
 const program = new Command();
 
+/* eslint-disable @typescript-eslint/ban-types */
 const run = (action: Function) => {
   return async (...args: Array<unknown>): Promise<void> => {
     try {

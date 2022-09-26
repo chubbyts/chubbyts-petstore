@@ -7,7 +7,7 @@ export const configFactory = (env: string): Config => {
     ...config,
     cors: {
       ...config.cors,
-      allowOrigins: { createAllowOriginRegex: [/^https?\:\/\/(localhost|127\.\d+.\d+.\d+)(\:\d+)?$/] },
+      allowOrigins: { createAllowOriginRegex: [/^https?:\/\/(localhost|127\.\d+.\d+.\d+)(:\d+)?$/] },
     },
     debug: true,
     pino: {

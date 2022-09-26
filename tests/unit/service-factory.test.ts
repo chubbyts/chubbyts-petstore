@@ -182,7 +182,7 @@ describe('service-factory', () => {
           {
             cors: {
               allowOrigins: {
-                createAllowOriginRegex: [/^http?\:\/\/localhost(\:\d+)?$/],
+                createAllowOriginRegex: [/^http?:\/\/localhost(:\d+)?$/],
               },
               allowMethods: [],
               allowHeaders: [],

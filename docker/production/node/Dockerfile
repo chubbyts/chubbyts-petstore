@@ -48,6 +48,7 @@ WORKDIR /app-build
 RUN source ~/.bashrc \
     && npm install \
     && npm run cs \
+    && npm run lint \
     && npm run test --no-cache \
     && npm run test:integration --no-cache \
     && npm run infection \

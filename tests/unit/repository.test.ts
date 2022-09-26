@@ -69,6 +69,7 @@ describe('createResolveList', () => {
 
     const find = jest.fn((givenFilters: Filter<SomeModel>, options?: FindOptions): FindCursor<WithId<SomeModel>> => {
       expect(givenFilters).toBe(list.filters);
+      expect(options).toBeUndefined();
 
       return cursor;
     });
@@ -135,6 +136,7 @@ describe('createFindById', () => {
     const findOne = jest.fn(
       async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
         expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
+        expect(options).toBeUndefined();
 
         return { _id: new ObjectId(), ...model };
       },
@@ -169,6 +171,7 @@ describe('createFindById', () => {
     const findOne = jest.fn(
       async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
         expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
+        expect(options).toBeUndefined();
 
         return null;
       },
@@ -183,7 +186,7 @@ describe('createFindById', () => {
 
     const findById = createFindById(mongoClient, collectionName);
 
-    expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBe(undefined);
+    expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
 
     expect(collection).toHaveBeenCalledTimes(1);
     expect(db).toHaveBeenCalledTimes(1);
@@ -214,6 +217,7 @@ test('createPersist', async () => {
   const findOne = jest.fn(
     async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
       expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
+      expect(options).toBeUndefined();
 
       return { _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model };
     },

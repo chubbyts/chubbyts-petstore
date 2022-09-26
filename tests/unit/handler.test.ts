@@ -20,7 +20,7 @@ describe('handler', () => {
 
     const responseFactory: ResponseFactory = jest.fn((givenStatus: number, givenReasonPhrase?: string) => {
       expect(givenStatus).toBe(200);
-      expect(givenReasonPhrase).toBe(undefined);
+      expect(givenReasonPhrase).toBeUndefined();
 
       return response;
     });
@@ -76,7 +76,7 @@ describe('handler', () => {
 
     const responseFactory: ResponseFactory = jest.fn((givenStatus: number, givenReasonPhrase?: string) => {
       expect(givenStatus).toBe(200);
-      expect(givenReasonPhrase).toBe(undefined);
+      expect(givenReasonPhrase).toBeUndefined();
 
       return response;
     });

@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { ServerRequest, Response } from '@chubbyts/chubbyts-http-types/dist/message';
 import { createOpenApiHandler, createPingHandler } from '../../src/handler';
 import { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';

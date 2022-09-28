@@ -1,5 +1,5 @@
 import { List, Model } from '@chubbyts/chubbyts-api/dist/model';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import {
   Collection,
   Db,

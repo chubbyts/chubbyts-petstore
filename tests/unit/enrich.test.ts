@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import { createEnrichList, createEnrichModel } from '../../src/enrich';
 import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';

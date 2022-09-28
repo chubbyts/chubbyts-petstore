@@ -1,6 +1,6 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { Db, MongoClient } from 'mongodb';
 import {
   petCreateHandlerServiceFactory,

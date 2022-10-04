@@ -195,10 +195,14 @@ export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
     tags: ['system'],
     responses: {
       200: {
-        mediaType: 'application/json',
-        schema: z.object({ data: z.string() }).openapi({
-          description: 'Ping',
-        }),
+        description: 'Ping response with current date',
+        content: {
+          'application/json': {
+            schema: z.object({ data: z.string() }).openapi({
+              description: 'Ping',
+            }),
+          },
+        },
       },
     },
   });

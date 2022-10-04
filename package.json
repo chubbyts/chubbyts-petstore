@@ -52,7 +52,7 @@
     "node": ">=14"
   },
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^1.4.0",
+    "@asteasolutions/zod-to-openapi": "^2.0.0",
     "@chubbyts/chubbyts-api": "^2.1.0",
     "@chubbyts/chubbyts-cors": "^1.0.3",
     "@chubbyts/chubbyts-decode-encode": "^1.1.1",

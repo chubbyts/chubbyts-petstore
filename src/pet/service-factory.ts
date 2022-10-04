@@ -124,10 +124,14 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     },
     responses: {
       200: {
-        mediaType: 'application/json',
-        schema: petListResponseSchema.openapi({
-          description: 'Pets',
-        }),
+        description: 'Pets',
+        content: {
+          'application/json': {
+            schema: petListResponseSchema.openapi({
+              description: 'Pets',
+            }),
+          },
+        },
       },
     },
   });
@@ -139,14 +143,26 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     operationId: 'createPet',
     tags: ['Pets'],
     request: {
-      body: petRequestSchema.strip(),
+      body: {
+        description: 'Pet data',
+        content: {
+          'application/json': {
+            schema: petRequestSchema.strip(),
+          },
+        },
+        required: true,
+      },
     },
     responses: {
       201: {
-        mediaType: 'application/json',
-        schema: petResponseSchema.openapi({
-          description: 'Pet',
-        }),
+        description: 'Pet',
+        content: {
+          'application/json': {
+            schema: petResponseSchema.openapi({
+              description: 'Pet',
+            }),
+          },
+        },
       },
     },
   });
@@ -164,10 +180,14 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     },
     responses: {
       200: {
-        mediaType: 'application/json',
-        schema: petResponseSchema.openapi({
-          description: 'Pet',
-        }),
+        description: 'Pet',
+        content: {
+          'application/json': {
+            schema: petResponseSchema.openapi({
+              description: 'Pet',
+            }),
+          },
+        },
       },
     },
   });
@@ -182,14 +202,26 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
       params: z.object({
         id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
       }),
-      body: petRequestSchema.strip(),
+      body: {
+        description: 'Pet data',
+        content: {
+          'application/json': {
+            schema: petRequestSchema.strip(),
+          },
+        },
+        required: true,
+      },
     },
     responses: {
       200: {
-        mediaType: 'application/json',
-        schema: petResponseSchema.openapi({
-          description: 'Pet',
-        }),
+        description: 'Pet',
+        content: {
+          'application/json': {
+            schema: petResponseSchema.openapi({
+              description: 'Pet',
+            }),
+          },
+        },
       },
     },
   });
@@ -205,7 +237,11 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
       }),
     },
-    responses: {},
+    responses: {
+      204: {
+        description: 'Empty response',
+      },
+    },
   });
 
   return registry;

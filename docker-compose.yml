@@ -15,6 +15,8 @@ services:
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
       SSH_AUTH_SOCK: /ssh-agent
+    ports:
+      - '1235:1235'
     volumes:
       - ${PWD}:/app
       - ~/.bash_docker:/home/node/.bash_docker

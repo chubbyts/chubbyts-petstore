@@ -32,7 +32,16 @@ export const createContainerRegistryDockerReadWriteCredentials = (
 const calculateChecksum = (cwd: string): string => {
   const ignorePaths = readFileSync(`${cwd}/.dockerignore`, 'utf-8')
     .split('\n')
-    .filter((line) => line !== '')
+    .map((line) => {
+      line = line.trim();
+
+      if (line[line.length - 1] === '/') {
+        line = line.substring(0, line.length - 2);
+      }
+
+      return line;
+    })
+    .filter((line) => line !== '' && line !== '/' && line[0] !== '#')
     .map((ignorePath) => `-path ./${ignorePath}`)
     .join(' -o ');
 

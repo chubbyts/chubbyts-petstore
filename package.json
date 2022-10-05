@@ -21,7 +21,7 @@
     "test:integration": "jest --config jest.integration.config.js",
     "infection": "stryker run",
     "build": "rm -Rf dist && tsc",
-    "develop": "ts-node-dev --respawn bootstrap/index.ts",
+    "start": "ts-node-dev --respawn bootstrap/index.ts",
     "debug": "ts-node-dev --inspect=0.0.0.0:1235 --respawn bootstrap/index.ts",
     "command": "ts-node bin/console.ts"
   },

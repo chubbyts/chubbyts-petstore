@@ -44,7 +44,7 @@ users:
   user:
     token: ${apiToken}
 `;
-}
+};
 
 export const createK8sProvider = (kubeconfig: pulumi.Input<string>): k8s.Provider => {
   return new k8s.Provider('k8s-provider', { kubeconfig });
@@ -63,6 +63,78 @@ export const createK8sDockerRegistrySecret = (
       },
       stringData: {
         '.dockerconfigjson': registryDockerCredentials.dockerCredentials,
+      },
+    },
+    { provider },
+  );
+};
+
+export const createK8sHttpStatefulSet = (
+  provider: k8s.Provider,
+  labels: { appClass: string },
+  image: pulumi.Input<string>,
+  env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
+  port: number,
+  path: string,
+  volumes: Array<{ name: string; mountPath: string; storage: string }>,
+  replicas: number = 2,
+): k8s.apps.v1.StatefulSet => {
+  return new k8s.apps.v1.StatefulSet(
+    `${labels.appClass}-stateful-set`,
+    {
+      metadata: { labels },
+      spec: {
+        replicas,
+        minReadySeconds: 15,
+        selector: { matchLabels: labels },
+        serviceName: labels.appClass,
+        template: {
+          metadata: { labels },
+          spec: {
+            containers: [
+              {
+                name: labels.appClass,
+                image,
+                imagePullPolicy: 'IfNotPresent',
+                env,
+                ports: [{ name: 'http', containerPort: port }],
+                readinessProbe: {
+                  httpGet: {
+                    path,
+                    port,
+                    scheme: 'HTTP',
+                  },
+                },
+                livenessProbe: {
+                  httpGet: {
+                    path,
+                    port,
+                    scheme: 'HTTP',
+                  },
+                },
+                volumeMounts: volumes.map((volume) => ({ name: volume.name, mountPath: volume.mountPath })),
+              },
+            ],
+            initContainers: volumes.map((volume) => ({
+              name: `${volume.name}-permission-fix`,
+              image: 'busybox',
+              command: ['/bin/chmod', '-R', '777', volume.mountPath],
+              volumeMounts: [{ name: volume.name, mountPath: volume.mountPath }],
+            })),
+            imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
+          },
+        },
+        volumeClaimTemplates: volumes.map((volume) => ({
+          metadata: { name: volume.name },
+          spec: {
+            accessModes: ['ReadWriteOnce'],
+            resources: {
+              requests: {
+                storage: volume.storage,
+              },
+            },
+          },
+        })),
       },
     },
     { provider },

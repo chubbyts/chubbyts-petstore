@@ -170,6 +170,12 @@ export const configFactory = (env: string): Config => {
             key: { name: 1 },
             name: 'pet.name',
           },
+          {
+            key: { tag: 1 },
+            name: 'pet.tag',
+            unique: true,
+            sparse: true,
+          },
         ],
       },
     },

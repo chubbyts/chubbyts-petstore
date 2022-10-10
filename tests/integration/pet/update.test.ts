@@ -154,7 +154,7 @@ describe('update', () => {
         createdAt: createResponseData.createdAt,
         updatedAt: createResponseData.updatedAt,
         name: 'update.test',
-        tag: 'tag',
+        tag: 'tag2',
         vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
         _links: {
           read: {
@@ -178,7 +178,7 @@ describe('update', () => {
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
       name: 'update.test',
-      tag: 'tag',
+      tag: 'tag2',
       vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
       _links: {
         read: {

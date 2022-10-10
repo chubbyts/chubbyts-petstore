@@ -98,7 +98,7 @@ describe('create', () => {
       },
       body: JSON.stringify({
         name: 'create.test',
-        tag: 'tag',
+        tag: 'tag1',
         vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
       }),
     });
@@ -113,7 +113,7 @@ describe('create', () => {
       id: expect.any(String),
       createdAt: expect.any(String),
       name: 'create.test',
-      tag: 'tag',
+      tag: 'tag1',
       vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
       _links: {
         read: {

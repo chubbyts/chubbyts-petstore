@@ -45,9 +45,9 @@ const startServer = async () => {
   throw new Error(`Timeout in starting the server`);
 };
 
-module.exports = async () => {
+module.exports = async (config) => {
   if (!process.env.INTEGRATION_ENDPOINT) {
-    await mongoDbSetup();
+    await mongoDbSetup(config);
     process.env.INTEGRATION_ENDPOINT = `http://${testServerHost}:${testServerPort}`;
     global.__HTTP_SERVER__ = await startServer();
   }

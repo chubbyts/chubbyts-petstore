@@ -7,7 +7,7 @@ import { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/open
 
 describe('handler', () => {
   test('createPingHandler', async () => {
-    const end = jest.fn((givenChunk) => {
+    const end = jest.fn((givenChunk: string) => {
       const data = JSON.parse(givenChunk);
 
       expect(data).toEqual({ datetime: expect.any(String) });
@@ -63,7 +63,7 @@ describe('handler', () => {
       paths: {},
     };
 
-    const end = jest.fn((givenChunk) => {
+    const end = jest.fn((givenChunk: string) => {
       const data = JSON.parse(givenChunk);
 
       expect(data).toEqual(openApiObject);

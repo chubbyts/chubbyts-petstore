@@ -1,8 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
 import * as docker from '@pulumi/docker';
-import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
 
 export const createContainerRegistry = (region: digitalocean.Region): digitalocean.ContainerRegistry => {
   return new digitalocean.ContainerRegistry('container-registry', {
@@ -29,29 +27,6 @@ export const createContainerRegistryDockerReadWriteCredentials = (
   });
 };
 
-const calculateChecksum = (cwd: string): string => {
-  const ignorePaths = readFileSync(`${cwd}/.dockerignore`, 'utf-8')
-    .split('\n')
-    .map((line) => {
-      line = line.trim();
-
-      if (line[line.length - 1] === '/') {
-        line = line.substring(0, line.length - 2);
-      }
-
-      return line;
-    })
-    .filter((line) => line !== '' && line !== '/' && line[0] !== '#')
-    .map((ignorePath) => `-path ./${ignorePath}`)
-    .join(' -o ');
-
-  const command = `find . \\( ${ignorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`;
-
-  const output = execSync(command, { cwd, encoding: 'utf-8' });
-
-  return output.trim();
-};
-
 type DockerCredentials = {
   auths: {
     [host: string]: {
@@ -61,16 +36,15 @@ type DockerCredentials = {
 };
 
 export const createAndPushImage = (
+  directory: string,
   name: string,
-  context: string,
   containerRegistry: digitalocean.ContainerRegistry,
   containerRegistryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials,
 ): pulumi.Output<string> => {
-  const checksum = calculateChecksum(context);
-  const localImageName = `${name}:sha1-${checksum}`;
+  const localImageName = `${name}`;
   const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${localImageName}`;
 
-  containerRegistryDockerCredentials.dockerCredentials.apply((dockerCredentials) => {
+  return containerRegistryDockerCredentials.dockerCredentials.apply((dockerCredentials) => {
     const parsedDockerCredentials = JSON.parse(dockerCredentials) as DockerCredentials;
 
     const server = Object.keys(parsedDockerCredentials.auths)[0];
@@ -78,12 +52,12 @@ export const createAndPushImage = (
     const username = Buffer.from(auth, 'base64').toString('utf-8').split(':')[0];
     const password = username;
 
-    new docker.Image(name, {
+    return new docker.Image(name, {
       imageName,
       localImageName,
       build: {
-        dockerfile: `${context}/docker/production/${name}/Dockerfile`,
-        context,
+        context: `${directory}/${name}`,
+        dockerfile: `${directory}/${name}/docker/production/Dockerfile`,
       },
       registry: {
         server,
@@ -91,7 +65,5 @@ export const createAndPushImage = (
         password,
       },
     });
-  });
-
-  return imageName;
+  }).imageName;
 };

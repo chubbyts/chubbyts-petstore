@@ -26,7 +26,7 @@ USER node
 
 WORKDIR /home/node
 
-RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell \
+RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/.fnm" --skip-shell \
     && source ~/.bashrc \
     && fnm install 18 \
     && fnm default 18 \

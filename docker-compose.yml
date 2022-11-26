@@ -29,7 +29,7 @@ services:
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
-    image: mongo:5.0
+    image: mongo:5.0.8
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
       MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
@@ -40,14 +40,14 @@ services:
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui
     hostname: chubbyts-petstore-swagger-ui
-    image: swaggerapi/swagger-ui
+    image: swaggerapi/swagger-ui:v4.15.5
     environment:
       BASE_URL: /swagger
       URLS: '[ { url: "/openapi" } ]'
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
-    image: nginx
+    image: nginx:1.23.2
     environment:
       SERVER_PORT: '443'
       NODE_SERVER_HOST: 'node'

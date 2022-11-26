@@ -34,7 +34,7 @@ const nodeFactory = (
 ): void => {
   const name = 'node';
 
-  const image = createAndPushImage(name, directory, containerRegistry, containerRegistryDockerCredentials);
+  const image = createAndPushImage(directory, name, containerRegistry, containerRegistryDockerCredentials);
 
   const mongoDbCluster = createMongoDbCluster(region, vpc);
 
@@ -70,7 +70,7 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
     'swaggerapi/swagger-ui',
     [
       { name: 'BASE_URL', value: '/swagger' },
-      { name: 'URLS', value: "[ { url: '/openapi' } ]" },
+      { name: 'URLS', value: '[ { url: \'/openapi\' } ]' },
     ],
     8080,
     '/swagger',
@@ -82,8 +82,8 @@ const swaggerUiFactory = (k8sProvider: k8s.Provider): void => {
 
 const directory = realpathSync(`${process.cwd()}/../`);
 
-let config = new pulumi.Config();
-let digitaloceanConfig = new pulumi.Config('digitalocean');
+const config = new pulumi.Config();
+const digitaloceanConfig = new pulumi.Config('digitalocean');
 
 const region = digitalocean.Region.FRA1;
 

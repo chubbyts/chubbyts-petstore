@@ -56,8 +56,8 @@ export const createAndPushImage = (
       imageName,
       localImageName,
       build: {
-        context: `${directory}/${name}`,
-        dockerfile: `${directory}/${name}/docker/production/Dockerfile`,
+        context: `${directory}`,
+        dockerfile: `${directory}/docker/production/${name}/Dockerfile`,
       },
       registry: {
         server,

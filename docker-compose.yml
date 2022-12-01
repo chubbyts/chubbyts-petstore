@@ -26,6 +26,20 @@ services:
       - $SSH_AUTH_SOCK:/ssh-agent
     depends_on:
       - mongo
+  node-fluentd:
+    container_name: chubbyts-petstore-node-fluentd
+    hostname: chubbyts-petstore-node-fluentd
+    image: bitnami/fluentd:1.15.3
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    environment:
+      FLUENTD_DAEMON_USER: ${USER_ID:-1000}
+      FLUENTD_DAEMON_GROUP: ${GROUP_ID:-1000}
+      ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
+    volumes:
+      - ${PWD}/var/log:/app/var/log
+      - ${PWD}/fluentd.conf:/opt/bitnami/fluentd/conf/fluentd.conf
+    depends_on:
+      - elasticsearch
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
@@ -61,3 +75,28 @@ services:
     depends_on:
       - node
       - swagger-ui
+  elasticsearch:
+    container_name: chubbyts-petstore-elasticsearch
+    hostname: chubbyts-petstore-elasticsearch
+    image: elasticsearch:8.5.2
+    environment:
+      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+      bootstrap.memory_lock: 'true'
+      discovery.type: 'single-node'
+      xpack.security.enabled: 'false'
+      xpack.security.enrollment.enabled: 'false'
+    ports:
+      - 9200:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  kibana:
+    container_name: chubbyts-petstore-kibana
+    hostname: chubbyts-petstore-kibana
+    image: kibana:8.5.2
+    environment:
+      XPACK_APM_SERVICEMAPENABLED: 'true'
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 0557aa47-1706-48df-8f2b-b7a5eddcbdf2
+    ports:
+      - 5601:5601

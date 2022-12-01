@@ -150,7 +150,21 @@ export const generatePathServiceFactory = (container: Container): GeneratePath =
 export const loggerServiceFactory = (container: Container): Logger => {
   const { options, stream } = container.get<Config>('config').pino;
 
-  return createLogger(createPinoAdapter(pino(options, stream)));
+  return createLogger(
+    createPinoAdapter(
+      pino(
+        {
+          timestamp: () => `,"time":${(Date.now() / 1000).toString()}`,
+          messageKey: 'message',
+          formatters: {
+            level: (label: string, number: number) => ({ level: label, level_number: number }),
+          },
+          ...options,
+        },
+        stream,
+      ),
+    ),
+  );
 };
 
 export const matchServiceFactory = (container: Container): Match => {

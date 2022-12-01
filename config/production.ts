@@ -77,7 +77,7 @@ export type Config = {
     info: InfoObject;
   };
   pino: {
-    options: Omit<LoggerOptions, 'level'> & { level: 'fatal' | 'error' | 'warn' | 'info' | 'debug' };
+    options: LoggerOptions;
     stream: DestinationStream;
   };
   server: {

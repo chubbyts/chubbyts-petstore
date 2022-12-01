@@ -230,13 +230,15 @@ describe('service-factory', () => {
   });
 
   test('loggerServiceFactory', () => {
+    const messages: Array<string> = [];
+
     const calls: Array<[string, unknown]> = [
       [
         'config',
         {
           pino: {
             options: {},
-            stream: { write: () => undefined },
+            stream: { write: (msg: string) => messages.push(msg) },
           },
         },
       ],
@@ -246,7 +248,23 @@ describe('service-factory', () => {
 
     const container = { get } as unknown as Container;
 
-    expect(loggerServiceFactory(container)).toBeInstanceOf(Object);
+    const loggerService = loggerServiceFactory(container);
+
+    expect(loggerService).toBeInstanceOf(Object);
+
+    loggerService.info('text', { additionalKey: 'additionalValue' });
+
+    expect(messages.length).toBe(1);
+
+    expect(JSON.parse(messages[0])).toEqual({
+      additionalKey: 'additionalValue',
+      hostname: expect.any(String),
+      level: 'info',
+      level_number: 30,
+      message: 'text',
+      pid: expect.any(Number),
+      time: expect.any(Number),
+    });
 
     expect(get).toHaveBeenCalledTimes(calls.length);
   });

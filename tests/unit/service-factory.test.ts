@@ -1,6 +1,7 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, jest, test } from '@jest/globals';
+import { MongoClient } from 'mongodb';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -32,11 +33,7 @@ import {
   uriFactoryServiceFactory,
 } from '../../src/service-factory';
 
-jest.mock('mongodb', () => ({
-  MongoClient: {
-    connect: async () => ({}),
-  },
-}));
+MongoClient.connect = jest.fn(async () => ({} as MongoClient));
 
 const createGetMock = (givenCalls: Array<[string, unknown]>) => {
   const calls = [...givenCalls];

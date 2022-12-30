@@ -1,7 +1,8 @@
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const fetch = require('cross-fetch');
 
 const mongoDbSetup = require('@shelf/jest-mongodb/lib/setup');
+const build = require('./build');
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -16,7 +17,9 @@ const timeout = 20000;
 const iterationTimeout = 500;
 
 const startServer = async () => {
-  const child = spawn(process.argv[0], ['node_modules/.bin/ts-node', 'bootstrap/index.ts'], {
+  await build();
+
+  const child = spawn(process.argv[0], ['dist/bootstrap/index.js'], {
     env: {
       NODE_ENV: 'jest',
       MONGO_URI: process.env.MONGO_URI,

@@ -36,7 +36,7 @@ services:
       FLUENTD_DAEMON_GROUP: ${GROUP_ID:-1000}
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
     volumes:
-      - ${PWD}/var/log:/app/var/log
+      - ${PWD}/dist/var/log:/app/var/log
       - ${PWD}/fluentd.conf:/opt/bitnami/fluentd/conf/fluentd.conf
     depends_on:
       - elasticsearch

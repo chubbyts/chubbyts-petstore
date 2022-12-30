@@ -6,7 +6,7 @@ export const createK8sCluster = (
   region: digitalocean.Region,
   vpc: digitalocean.Vpc,
   size: string = digitalocean.DropletSlug.DropletS2VCPU2GB,
-  nodeCount: number = 1,
+  nodeCount = 1,
 ): digitalocean.KubernetesCluster => {
   return new digitalocean.KubernetesCluster('k8s-cluster', {
     nodePool: {
@@ -77,7 +77,7 @@ export const createK8sHttpStatefulSet = (
   port: number,
   path: string,
   volumes: Array<{ name: string; mountPath: string; storage: string }>,
-  replicas: number = 2,
+  replicas = 2,
 ): k8s.apps.v1.StatefulSet => {
   return new k8s.apps.v1.StatefulSet(
     `${labels.appClass}-stateful-set`,
@@ -148,7 +148,7 @@ export const createK8sHttpDeployment = (
   env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
   port: number,
   path: string,
-  replicas: number = 1,
+  replicas = 1,
 ): k8s.apps.v1.Deployment => {
   return new k8s.apps.v1.Deployment(
     `${labels.appClass}-deployment`,
@@ -219,7 +219,7 @@ export const installK8sHelmIngressNginxController = (provider: k8s.Provider): k8
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.2.4',
+      version: '4.4.2',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -259,7 +259,7 @@ export const installK8sHelmCertManager = (provider: k8s.Provider): k8s.helm.v3.R
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.9.1',
+      version: '1.10.1',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },

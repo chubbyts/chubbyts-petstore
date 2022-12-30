@@ -1,4 +1,4 @@
-const { spawn, spawnSync } = require('child_process');
+const { spawn } = require('child_process');
 const fetch = require('cross-fetch');
 
 const mongoDbSetup = require('@shelf/jest-mongodb/lib/setup');

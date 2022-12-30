@@ -55,8 +55,14 @@ module.exports = async (config) => {
     global.__HTTP_SERVER__ = await startServer();
   }
 
-  console.log(JSON.stringify({
-    INTEGRATION_ENDPOINT: process.env.INTEGRATION_ENDPOINT,
-    MONGO_URI: process.env.MONGO_URI,
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        INTEGRATION_ENDPOINT: process.env.INTEGRATION_ENDPOINT,
+        MONGO_URI: process.env.MONGO_URI,
+      },
+      null,
+      2,
+    ),
+  );
 };

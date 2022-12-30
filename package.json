@@ -13,7 +13,7 @@
   "license": "MIT",
   "repository": "chubbyts/petstore",
   "scripts": {
-    "cs-fix": "prettier --write bin bootstrap config src tests",
+    "cs-fix": "prettier --write bin bootstrap config src tests *.js",
     "cs": "prettier --check bin bootstrap config src tests",
     "lint-fix": "eslint bin bootstrap config src tests --fix",
     "lint": "eslint bin bootstrap config src tests",

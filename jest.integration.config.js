@@ -2,9 +2,7 @@ module.exports = {
   transform: {
     '\\.ts$': '@swc/jest',
   },
-  testMatch: [
-    '<rootDir>/tests/integration/**/*.test.ts',
-  ],
+  testMatch: ['<rootDir>/tests/integration/**/*.test.ts'],
   globalSetup: '<rootDir>/jest.integration.global-setup.js',
   globalTeardown: '<rootDir>/jest.integration.global-teardown.js',
   testEnvironment: '@shelf/jest-mongodb/lib/environment.js',

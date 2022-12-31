@@ -13,18 +13,20 @@
   "license": "MIT",
   "repository": "chubbyts/petstore",
   "scripts": {
+    "build-watch": "node build-cli.js -w",
+    "build": "node build-cli.js",
+    "command": "npm run build && node dist/bin/console.js",
     "cs-fix": "prettier --write bin bootstrap config src tests *.js",
-    "cs": "prettier --check bin bootstrap config src tests",
+    "cs": "prettier --check bin bootstrap config src tests *.js",
+    "infection": "stryker run",
     "lint-fix": "eslint bin bootstrap config src tests --fix",
     "lint": "eslint bin bootstrap config src tests",
-    "test": "jest",
-    "test:integration": "jest --config jest.integration.config.js",
-    "infection": "stryker run",
-    "build": "node build-cli.js",
-    "build-watch": "node build-cli.js -w",
-    "watch-server": "nodemon --watch \"dist/**/*\" dist/bootstrap/index.js",
+    "start-debug": "concurrently \"npm run build-watch\" \"sleep 0.1 && npm run watch-server-debug\"",
     "start": "concurrently \"npm run build-watch\" \"sleep 0.1 && npm run watch-server\"",
-    "command": "npm run build && node dist/bin/console.js"
+    "test:integration": "jest --config jest.integration.config.js",
+    "test": "jest",
+    "watch-server-debug": "nodemon --watch \"dist/**/*\" --inspect=0.0.0.0:1235 dist/bootstrap/index.js",
+    "watch-server": "nodemon --watch \"dist/**/*\" dist/bootstrap/index.js"
   },
   "jest": {
     "transform": {

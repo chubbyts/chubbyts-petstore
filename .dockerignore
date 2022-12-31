@@ -1,5 +1,4 @@
 .git
-.stryker-tmp
 coverage
 database
 dist

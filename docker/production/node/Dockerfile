@@ -51,7 +51,6 @@ RUN source ~/.bashrc \
     && npm run lint \
     && npm run test --no-cache \
     && npm run test:integration --no-cache \
-    && npm run infection \
     && npm run build
 
 # prod

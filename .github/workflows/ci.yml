@@ -41,8 +41,6 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run test -- --coverage --no-cache'
       - name: npm run test:integration --no-cache
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run test:integration --no-cache'
-      - name: npm run infection
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run infection'
       - name: npm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run build'
   node14:
@@ -60,9 +58,6 @@ jobs:
       - run: npm run lint
       - run: npm run test -- --coverage --no-cache
       - run: npm run test:integration --no-cache
-      - run: npm run infection
-        env:
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
       - run: npm run build
   node16:
     name: Node 16
@@ -79,9 +74,6 @@ jobs:
       - run: npm run lint
       - run: npm run test -- --coverage --no-cache
       - run: npm run test:integration --no-cache
-      - run: npm run infection
-        env:
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
       - run: npm run build
   node18:
     name: Node 18
@@ -98,9 +90,6 @@ jobs:
       - run: npm run lint
       - run: npm run test -- --coverage --no-cache
       - run: npm run test:integration --no-cache
-      - run: npm run infection
-        env:
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
       - run: npm run build
       - name: coveralls.io
         uses: coverallsapp/github-action@master

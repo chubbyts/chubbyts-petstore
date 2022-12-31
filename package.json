@@ -18,7 +18,6 @@
     "command": "npm run build && node dist/bin/console.js",
     "cs-fix": "prettier --write bin bootstrap config src tests *.js",
     "cs": "prettier --check bin bootstrap config src tests *.js",
-    "infection": "stryker run",
     "lint-fix": "eslint bin bootstrap config src tests --fix",
     "lint": "eslint bin bootstrap config src tests",
     "start-debug": "concurrently \"npm run build-watch\" \"sleep 0.1 && npm run watch-server-debug\"",
@@ -85,8 +84,6 @@
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^4.1.3",
-    "@stryker-mutator/core": "^6.3.0",
-    "@stryker-mutator/jest-runner": "^6.3.0",
     "@swc/cli": "^0.1.59",
     "@swc/core": "^1.3.24",
     "@swc/jest": "^0.2.24",

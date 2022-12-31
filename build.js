@@ -1,8 +1,6 @@
 const { spawn } = require('child_process');
 
-const build = async () => {
-  const [_node, _script, ...args] = process.argv;
-
+const build = async (watch = false) => {
   return Promise.all(
     ['bin', 'bootstrap', 'config', 'src'].map((dir) => {
       return new Promise((resolve, reject) => {
@@ -11,7 +9,7 @@ const build = async () => {
           dir,
           '--out-dir',
           `dist/${dir}`,
-          ...(args[0] === '-w' ? ['-w'] : []),
+          ...(watch ? ['-w'] : []),
         ]);
 
         subProcess.on('close', (code) => {

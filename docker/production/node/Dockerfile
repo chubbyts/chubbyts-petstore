@@ -13,8 +13,10 @@ RUN dnf install -y \
     procps-ng \
     unzip
 
+ENV TZ=Europe/Zurich
+
 RUN echo "LANG=de_CH.UTF-8" > /etc/locale.conf \
-    && cp -f /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+    && cp -f /usr/share/zoneinfo/${TZ} /etc/localtime
 
 COPY docker/production/node/files /
 

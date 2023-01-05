@@ -10,13 +10,13 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@types/node": "^14",
+    "@types/node": "^14.18.36",
     "prettier": "^2.8.1"
   },
   "dependencies": {
     "@pulumi/digitalocean": "^4.16.0",
     "@pulumi/docker": "^3.6.1",
     "@pulumi/kubernetes": "^3.23.1",
-    "@pulumi/pulumi": "^3.50.2"
+    "@pulumi/pulumi": "^3.51.0"
   }
 }

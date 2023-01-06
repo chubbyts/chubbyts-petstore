@@ -176,7 +176,7 @@ kubectl exec -it <podname> -- /bin/bash
 
 ## Copyright
 
-Dominik Zogg 2022
+2023 Dominik Zogg
 
 [1]: https://www.npmjs.com/package/@asteasolutions/zod-to-openapi
 [2]: https://www.npmjs.com/package/@chubbyts/chubbyts-api

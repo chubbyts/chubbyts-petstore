@@ -43,4 +43,4 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/
 
 WORKDIR /app
 
-CMD tail -f /dev/null
+CMD trap "exit $?" TERM; while :; do sleep 1; done

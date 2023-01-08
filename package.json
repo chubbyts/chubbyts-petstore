@@ -75,7 +75,6 @@
     "@chubbyts/chubbyts-node-http-bridge": "^1.0.0",
     "@chubbyts/chubbyts-pino-adapter": "^1.1.1",
     "commander": "^9.4.1",
-    "get-stream": "^6.0.1",
     "mongodb": "^4.13.0",
     "openapi3-ts": "^3.1.2",
     "pino": "^8.8.0",

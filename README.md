@@ -40,12 +40,11 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-node-http-bridge][16]: ^1.0.0
  * [@chubbyts/chubbyts-pino-adapter][17]: ^1.1.1
  * [commander][18]: ^9.4.1
- * [get-stream][19]: ^6.0.1
- * [mongodb][20]: ^4.13.0
- * [openapi3-ts][21]: ^3.1.2
- * [pino][22]: ^8.8.0
- * [uuid][23]: ^9.0.0
- * [zod][24]: ^3.20.2
+ * [mongodb][19]: ^4.13.0
+ * [openapi3-ts][20]: ^3.1.2
+ * [pino][21]: ^8.8.0
+ * [uuid][22]: ^9.0.0
+ * [zod][23]: ^3.20.2
 
 ## Environment
 
@@ -196,12 +195,11 @@ kubectl exec -it <podname> -- /bin/bash
 [16]: https://www.npmjs.com/package/@chubbyts/chubbyts-node-http-bridge
 [17]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
 [18]: https://www.npmjs.com/package/commander
-[19]: https://www.npmjs.com/package/get-stream
-[20]: https://www.npmjs.com/package/mongodb
-[21]: https://www.npmjs.com/package/openapi3-ts
-[22]: https://www.npmjs.com/package/pino
-[23]: https://www.npmjs.com/package/uuid
-[24]: https://www.npmjs.com/package/zod
+[19]: https://www.npmjs.com/package/mongodb
+[20]: https://www.npmjs.com/package/openapi3-ts
+[21]: https://www.npmjs.com/package/pino
+[22]: https://www.npmjs.com/package/uuid
+[23]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

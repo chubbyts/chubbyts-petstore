@@ -29,15 +29,17 @@ services:
   node-fluentd:
     container_name: chubbyts-petstore-node-fluentd
     hostname: chubbyts-petstore-node-fluentd
-    image: bitnami/fluentd:1.15.3
+    build:
+      dockerfile: ./docker/production/node-fluentd/Dockerfile
+      context: ./
     user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
     environment:
       FLUENTD_DAEMON_USER: ${USER_ID:-1000}
       FLUENTD_DAEMON_GROUP: ${GROUP_ID:-1000}
+      STACK: 'local'
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
     volumes:
       - ${PWD}/dist/var/log:/app/var/log
-      - ${PWD}/fluentd.conf:/opt/bitnami/fluentd/conf/fluentd.conf
     depends_on:
       - elasticsearch
   mongo:

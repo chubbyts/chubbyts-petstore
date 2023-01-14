@@ -267,6 +267,98 @@ export const createK8sHttpDeployment = ({
   );
 };
 
+type CreateK8sCronjobProps = {
+  k8sProvider: k8s.Provider;
+  labels: { appClass: string };
+  cronjobName: string;
+  schedule: string;
+  command: string;
+  image: pulumi.Input<string>;
+  env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
+  fluentdImage?: pulumi.Input<string>;
+  fluentdEnv?: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
+};
+
+export const createK8sCronjob = ({
+  k8sProvider,
+  labels,
+  cronjobName,
+  schedule,
+  command,
+  image,
+  env,
+  fluentdImage = undefined,
+  fluentdEnv = [],
+}: CreateK8sCronjobProps): k8s.batch.v1.CronJob => {
+  return new k8s.batch.v1.CronJob(
+    `${labels.appClass}-cronjob-${cronjobName}`,
+    {
+      metadata: { labels: labels },
+      spec: {
+        schedule,
+        concurrencyPolicy: 'Forbid',
+        jobTemplate: {
+          spec: {
+            template: {
+              spec: {
+                containers: [
+                  {
+                    name: `${labels.appClass}-cronjob-${cronjobName}`,
+                    image,
+                    env,
+                    imagePullPolicy: 'IfNotPresent',
+                    command: ['/bin/bash', '-c', command],
+                    volumeMounts: [
+                      {
+                        name: 'var-log',
+                        mountPath: '/app/var/log',
+                      },
+                    ],
+                  },
+                  ...(fluentdImage
+                    ? [
+                        {
+                          name: `${labels.appClass}-cronjob-${cronjobName}-fluentd`,
+                          image: fluentdImage,
+                          env: fluentdEnv,
+                          livenessProbe: {
+                            httpGet: {
+                              path: '/',
+                              port: 9999,
+                              scheme: 'HTTP',
+                            },
+                            initialDelaySeconds: 1,
+                            periodSeconds: 1,
+                            terminationGracePeriodSeconds: 5,
+                          },
+                          volumeMounts: [
+                            {
+                              name: 'var-log',
+                              mountPath: '/app/var/log',
+                            },
+                          ],
+                        },
+                      ]
+                    : []),
+                ],
+                imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
+                restartPolicy: 'Never',
+                volumes: [
+                  {
+                    name: 'var-log',
+                    emptyDir: {},
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    { provider: k8sProvider },
+  );
+};
+
 type CreateK8sInternalHttpServiceProps = {
   k8sProvider: k8s.Provider;
   labels: { appClass: string };

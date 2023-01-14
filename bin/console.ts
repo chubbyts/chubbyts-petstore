@@ -1,19 +1,34 @@
 import { Command } from 'commander';
 import { containerFactory } from '../bootstrap/container';
 import { CleanDirectoriesCommand } from '../src/command';
-
-const container = containerFactory(process.env.NODE_ENV as string);
+import { createServer } from 'http';
 
 const program = new Command();
 
+const container = containerFactory(process.env.NODE_ENV as string);
+
 const run = (action: (...args: Array<string>) => Promise<number> | number) => {
   return async (...args: Array<string>): Promise<void> => {
+    const server = createServer((_, res) => {
+      res.writeHead(200);
+      res.end();
+    });
+
+    server.listen(9999);
+
+    let exitCode = 0;
+
     try {
-      process.exit(await action(...args));
+      exitCode = await action(...args);
     } catch (e) {
       console.error(e);
-      process.exit(-999);
+      exitCode = -999;
     }
+
+    setTimeout(() => {
+      server.close();
+      process.exit(exitCode);
+    }, 1000);
   };
 };
 
@@ -21,14 +36,11 @@ const run = (action: (...args: Array<string>) => Promise<number> | number) => {
   program
     .command('clean-directories')
     .argument('[directoryNames]')
-    .description('clean the given directories by names as commaseperated values.')
+    .description('Delete everything within a given directory.')
     .action(
       run((directoryNamesAsString: string): number => {
-        const directoryNames = directoryNamesAsString
-          ? directoryNamesAsString.split(',').map((directoryName) => directoryName.trim())
-          : [];
         const command = container.get<CleanDirectoriesCommand>('cleanDirectoriesCommand');
-        return command(directoryNames);
+        return command(directoryNamesAsString.split(',').map((directoryName) => directoryName.trim()));
       }),
     );
 

@@ -1,8 +1,13 @@
 import * as digitalocean from '@pulumi/digitalocean';
 
-export const createVpc = (region: digitalocean.Region): digitalocean.Vpc => {
+type CreateVpcProps = {
+  region: digitalocean.Region;
+  ipRange: string;
+};
+
+export const createVpc = ({ region, ipRange }: CreateVpcProps): digitalocean.Vpc => {
   return new digitalocean.Vpc('vpc', {
-    ipRange: '10.10.11.0/24',
+    ipRange,
     region,
   });
 };

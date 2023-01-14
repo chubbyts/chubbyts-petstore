@@ -2,27 +2,49 @@ import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
 import * as docker from '@pulumi/docker';
 
-export const createContainerRegistry = (region: digitalocean.Region): digitalocean.ContainerRegistry => {
+type createContainerRegistryProps = {
+  region: digitalocean.Region;
+  stack: string;
+};
+
+export const createContainerRegistry = ({
+  region,
+  stack,
+}: createContainerRegistryProps): digitalocean.ContainerRegistry => {
+  if (stack !== 'dev') {
+    const staging = new pulumi.StackReference('chubbyts-petstore/dev');
+
+    return digitalocean.ContainerRegistry.get('container-registry', staging.getOutput('containerRegistryId'));
+  }
+
   return new digitalocean.ContainerRegistry('container-registry', {
     subscriptionTierSlug: 'basic',
     region,
   });
 };
 
-export const createContainerRegistryDockerReadCredentials = (
-  registry: digitalocean.ContainerRegistry,
-): digitalocean.ContainerRegistryDockerCredentials => {
+type CreateContainerRegistryDockerReadCredentialsProps = {
+  containerRegistry: digitalocean.ContainerRegistry;
+};
+
+export const createContainerRegistryDockerReadCredentials = ({
+  containerRegistry,
+}: CreateContainerRegistryDockerReadCredentialsProps): digitalocean.ContainerRegistryDockerCredentials => {
   return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials-read', {
-    registryName: registry.name,
+    registryName: containerRegistry.name,
     write: false,
   });
 };
 
-export const createContainerRegistryDockerReadWriteCredentials = (
-  registry: digitalocean.ContainerRegistry,
-): digitalocean.ContainerRegistryDockerCredentials => {
+type CreateContainerRegistryDockerReadWriteCredentials = {
+  containerRegistry: digitalocean.ContainerRegistry;
+};
+
+export const createContainerRegistryDockerReadWriteCredentials = ({
+  containerRegistry,
+}: CreateContainerRegistryDockerReadWriteCredentials): digitalocean.ContainerRegistryDockerCredentials => {
   return new digitalocean.ContainerRegistryDockerCredentials('container-registry-credentials-read-write', {
-    registryName: registry.name,
+    registryName: containerRegistry.name,
     write: true,
   });
 };
@@ -35,16 +57,23 @@ type DockerCredentials = {
   };
 };
 
-export const createAndPushImage = (
-  directory: string,
-  name: string,
-  containerRegistry: digitalocean.ContainerRegistry,
-  containerRegistryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials,
-): pulumi.Output<string> => {
+type CreateAndPushImageProps = {
+  context: string;
+  name: string;
+  containerRegistry: digitalocean.ContainerRegistry;
+  containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
+};
+
+export const createAndPushImage = ({
+  context,
+  name,
+  containerRegistry,
+  containerRegistryDockerReadWriteCredentials,
+}: CreateAndPushImageProps): pulumi.Output<string> => {
   const localImageName = `${name}`;
   const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${localImageName}`;
 
-  return containerRegistryDockerCredentials.dockerCredentials.apply((dockerCredentials) => {
+  return containerRegistryDockerReadWriteCredentials.dockerCredentials.apply((dockerCredentials) => {
     const parsedDockerCredentials = JSON.parse(dockerCredentials) as DockerCredentials;
 
     const server = Object.keys(parsedDockerCredentials.auths)[0];
@@ -56,8 +85,8 @@ export const createAndPushImage = (
       imageName,
       localImageName,
       build: {
-        context: `${directory}`,
-        dockerfile: `${directory}/docker/production/${name}/Dockerfile`,
+        context,
+        dockerfile: `${context}/docker/production/${name}/Dockerfile`,
       },
       registry: {
         server,

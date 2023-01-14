@@ -2,12 +2,19 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
 
-export const createK8sCluster = (
-  region: digitalocean.Region,
-  vpc: digitalocean.Vpc,
-  size: string = digitalocean.DropletSlug.DropletS2VCPU2GB,
+type CreateK8sClusterProps = {
+  region: digitalocean.Region;
+  vpc: digitalocean.Vpc;
+  nodeCount?: number;
+  size?: string;
+};
+
+export const createK8sCluster = ({
+  region,
+  vpc,
   nodeCount = 1,
-): digitalocean.KubernetesCluster => {
+  size = digitalocean.DropletSlug.DropletS2VCPU2GB,
+}: CreateK8sClusterProps): digitalocean.KubernetesCluster => {
   return new digitalocean.KubernetesCluster('k8s-cluster', {
     nodePool: {
       name: 'default',
@@ -20,40 +27,55 @@ export const createK8sCluster = (
   });
 };
 
+type CreateK8sTokenKubeconfigProps = {
+  k8sCluster: digitalocean.KubernetesCluster;
+  user: pulumi.Input<string>;
+  apiToken: pulumi.Input<string>;
+};
+
 // https://github.com/pulumi/pulumi-digitalocean/issues/78#issuecomment-639669865
-export const createK8sTokenKubeconfig = (
-  cluster: digitalocean.KubernetesCluster,
-  user: pulumi.Input<string>,
-  apiToken: pulumi.Input<string>,
-): pulumi.Output<string> => {
+export const createK8sTokenKubeconfig = ({
+  k8sCluster,
+  user,
+  apiToken,
+}: CreateK8sTokenKubeconfigProps): pulumi.Output<string> => {
   return pulumi.interpolate`apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: ${cluster.kubeConfigs[0].clusterCaCertificate}
-    server: ${cluster.endpoint}
-  name: ${cluster.name}
+    certificate-authority-data: ${k8sCluster.kubeConfigs[0].clusterCaCertificate}
+    server: ${k8sCluster.endpoint}
+  name: ${k8sCluster.name}
 contexts:
 - context:
-    cluster: ${cluster.name}
-    user: ${cluster.name}-${user}
-  name: ${cluster.name}
-current-context: ${cluster.name}
+    cluster: ${k8sCluster.name}
+    user: ${k8sCluster.name}-${user}
+  name: ${k8sCluster.name}
+current-context: ${k8sCluster.name}
 kind: Config
 users:
-- name: ${cluster.name}-${user}
+- name: ${k8sCluster.name}-${user}
   user:
     token: ${apiToken}
 `;
 };
 
-export const createK8sProvider = (kubeconfig: pulumi.Input<string>): k8s.Provider => {
-  return new k8s.Provider('k8s-provider', { kubeconfig });
+type CreateK8sProviderProps = {
+  k8sTokenKubeConfig: pulumi.Input<string>;
 };
 
-export const createK8sDockerRegistrySecret = (
-  provider: k8s.Provider,
-  registryDockerCredentials: digitalocean.ContainerRegistryDockerCredentials,
-): k8s.core.v1.Secret => {
+export const createK8sProvider = ({ k8sTokenKubeConfig }: CreateK8sProviderProps): k8s.Provider => {
+  return new k8s.Provider('k8s-provider', { kubeconfig: k8sTokenKubeConfig });
+};
+
+type InstallK8sDockerRegistrySecretProps = {
+  k8sProvider: k8s.Provider;
+  containerRegistryDockerReadCredentials: digitalocean.ContainerRegistryDockerCredentials;
+};
+
+export const installK8sDockerRegistrySecret = ({
+  k8sProvider,
+  containerRegistryDockerReadCredentials,
+}: InstallK8sDockerRegistrySecretProps): k8s.core.v1.Secret => {
   return new k8s.core.v1.Secret(
     'do-docker-registry-secret',
     {
@@ -62,23 +84,34 @@ export const createK8sDockerRegistrySecret = (
         name: 'do-docker-registry-secret',
       },
       stringData: {
-        '.dockerconfigjson': registryDockerCredentials.dockerCredentials,
+        '.dockerconfigjson': containerRegistryDockerReadCredentials.dockerCredentials,
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const createK8sHttpStatefulSet = (
-  provider: k8s.Provider,
-  labels: { appClass: string },
-  image: pulumi.Input<string>,
-  env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
-  port: number,
-  path: string,
-  volumes: Array<{ name: string; mountPath: string; storage: string }>,
+type CreateK8sHttpStatefulSetProps = {
+  k8sProvider: k8s.Provider;
+  labels: { appClass: string };
+  image: pulumi.Input<string>;
+  env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
+  port: number;
+  path: string;
+  volumes: Array<{ name: string; mountPath: string; storage: string }>;
+  replicas?: number;
+};
+
+export const createK8sHttpStatefulSet = ({
+  k8sProvider,
+  labels,
+  image,
+  env,
+  port,
+  path,
+  volumes,
   replicas = 2,
-): k8s.apps.v1.StatefulSet => {
+}: CreateK8sHttpStatefulSetProps): k8s.apps.v1.StatefulSet => {
   return new k8s.apps.v1.StatefulSet(
     `${labels.appClass}-stateful-set`,
     {
@@ -137,19 +170,33 @@ export const createK8sHttpStatefulSet = (
         })),
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const createK8sHttpDeployment = (
-  provider: k8s.Provider,
-  labels: { appClass: string },
-  image: pulumi.Input<string>,
-  env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>,
-  port: number,
-  path: string,
-  replicas = 1,
-): k8s.apps.v1.Deployment => {
+type CreateK8sHttpDeploymentProps = {
+  k8sProvider: k8s.Provider;
+  labels: { appClass: string };
+  image: pulumi.Input<string>;
+  env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
+  port: number;
+  path: string;
+  replicas?: number;
+  fluentdImage?: pulumi.Input<string>;
+  fluentdEnv?: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
+};
+
+export const createK8sHttpDeployment = ({
+  k8sProvider,
+  labels,
+  image,
+  env,
+  port,
+  path,
+  replicas = 2,
+  fluentdImage = undefined,
+  fluentdEnv = [],
+}: CreateK8sHttpDeploymentProps): k8s.apps.v1.Deployment => {
   return new k8s.apps.v1.Deployment(
     `${labels.appClass}-deployment`,
     {
@@ -182,22 +229,55 @@ export const createK8sHttpDeployment = (
                     scheme: 'HTTP',
                   },
                 },
+                volumeMounts: [
+                  {
+                    name: 'var-log',
+                    mountPath: '/app/var/log',
+                  },
+                ],
               },
+              ...(fluentdImage
+                ? [
+                    {
+                      name: `${labels.appClass}-fluentd`,
+                      image: fluentdImage,
+                      env: fluentdEnv,
+                      volumeMounts: [
+                        {
+                          name: 'var-log',
+                          mountPath: '/app/var/log',
+                        },
+                      ],
+                    },
+                  ]
+                : []),
             ],
             imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
+            volumes: [
+              {
+                name: 'var-log',
+                emptyDir: {},
+              },
+            ],
           },
         },
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const createK8sInternalHttpService = (
-  provider: k8s.Provider,
-  labels: { appClass: string },
-  port: number,
-): k8s.core.v1.Service => {
+type CreateK8sInternalHttpServiceProps = {
+  k8sProvider: k8s.Provider;
+  labels: { appClass: string };
+  port: number;
+};
+
+export const createK8sInternalHttpService = ({
+  k8sProvider,
+  labels,
+  port,
+}: CreateK8sInternalHttpServiceProps): k8s.core.v1.Service => {
   return new k8s.core.v1.Service(
     `${labels.appClass}-internal-service`,
     {
@@ -208,18 +288,24 @@ export const createK8sInternalHttpService = (
         selector: labels,
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const installK8sHelmIngressNginxController = (provider: k8s.Provider): k8s.helm.v3.Release => {
+type InstallK8sHelmIngressNginxControllerProps = {
+  k8sProvider: k8s.Provider;
+};
+
+export const installK8sHelmIngressNginxController = ({
+  k8sProvider,
+}: InstallK8sHelmIngressNginxControllerProps): k8s.helm.v3.Release => {
   // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/ingress-nginx
   // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/ingress-nginx/values.yml
   return new k8s.helm.v3.Release(
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.4.2',
+      version: '4.4.0',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -248,11 +334,15 @@ export const installK8sHelmIngressNginxController = (provider: k8s.Provider): k8
         },
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const installK8sHelmCertManager = (provider: k8s.Provider): k8s.helm.v3.Release => {
+type InstallK8sHelmCertManagerProps = {
+  k8sProvider: k8s.Provider;
+};
+
+export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertManagerProps): k8s.helm.v3.Release => {
   // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/cert-manager
   // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/cert-manager/values.yml
   return new k8s.helm.v3.Release(
@@ -272,16 +362,25 @@ export const installK8sHelmCertManager = (provider: k8s.Provider): k8s.helm.v3.R
         },
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const createK8sIngressNginx = (
-  provider: k8s.Provider,
-  helm: k8s.helm.v3.Release,
-  rules: Array<k8s.types.input.networking.v1.IngressRule>,
-  annotations: { [key: string]: string } = {},
-): k8s.networking.v1.Ingress => {
+type CreateK8sIngressNginxProps = {
+  k8sProvider: k8s.Provider;
+  helmIngressNginxController: k8s.helm.v3.Release;
+  rules: Array<k8s.types.input.networking.v1.IngressRule>;
+  addWwwAliasForHosts?: Array<string>;
+  annotations?: { [key: string]: string };
+};
+
+export const createK8sIngressNginx = ({
+  k8sProvider,
+  helmIngressNginxController,
+  rules,
+  addWwwAliasForHosts = [],
+  annotations = {},
+}: CreateK8sIngressNginxProps): k8s.networking.v1.Ingress => {
   return new k8s.networking.v1.Ingress(
     'nginx-ingress',
     {
@@ -293,29 +392,39 @@ export const createK8sIngressNginx = (
           'nginx.ingress.kubernetes.io/proxy-body-size': '0',
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
+          'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
           ...annotations,
-          helmId: helm.id,
+          helmId: helmIngressNginxController.id,
         },
       },
       spec: {
         rules,
         tls: [
           {
-            hosts: rules.filter((rule) => rule.host !== undefined).map((rule) => rule.host) as Array<string>,
+            hosts: [
+              ...(rules.filter((rule) => rule.host !== undefined).map((rule) => rule.host) as Array<string>),
+              ...addWwwAliasForHosts.map((host) => `www.${host}`),
+            ],
             secretName: 'letsencrypt-tls',
           },
         ],
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };
 
-export const createK8sCertManager = (
-  provider: k8s.Provider,
-  helm: k8s.helm.v3.Release,
-  email: string,
-): k8s.apiextensions.CustomResource => {
+type CreateK8sCertManagerProps = {
+  k8sProvider: k8s.Provider;
+  helmCertManager: k8s.helm.v3.Release;
+  email: string;
+};
+
+export const createK8sCertManager = ({
+  k8sProvider,
+  helmCertManager,
+  email,
+}: CreateK8sCertManagerProps): k8s.apiextensions.CustomResource => {
   return new k8s.apiextensions.CustomResource(
     'cert-manager',
     {
@@ -325,7 +434,7 @@ export const createK8sCertManager = (
         name: 'letsencrypt-prod',
         namespace: 'cert-manager',
         annotations: {
-          helmId: helm.id,
+          helmId: helmCertManager.id,
         },
       },
       spec: {
@@ -347,6 +456,6 @@ export const createK8sCertManager = (
         },
       },
     },
-    { provider },
+    { provider: k8sProvider },
   );
 };

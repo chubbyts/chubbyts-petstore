@@ -171,8 +171,6 @@ kubectl get pod <podname> -o yaml
 kubectl exec -it <podname> -- /bin/bash
 ```
 
-###
-
 ## Copyright
 
 2023 Dominik Zogg

@@ -133,6 +133,8 @@ cd pulumi
 npm install
 pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:certManagerEmail XXXXXXXXXXXXXX --secret
+pulumi config set chubbyts-petstore:ipRange 10.10.11.0/24
+pulumi config set chubbyts-petstore:nodeCount: "1"
 pulumi up
 ```
 

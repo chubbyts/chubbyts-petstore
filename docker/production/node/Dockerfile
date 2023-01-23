@@ -32,7 +32,8 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/
     && source ~/.bashrc \
     && fnm install 18 \
     && fnm default 18 \
-    && fnm use 18
+    && fnm use 18 \
+    && npm install -g npm@latest
 
 # build
 FROM base as build

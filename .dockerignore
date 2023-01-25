@@ -1,6 +1,5 @@
 .git
 coverage
-database
 dist
 globalConfig.json
 node_modules

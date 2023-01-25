@@ -52,7 +52,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - ./database/mongo:/data/db
+      - mongo:/data/db
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui
     hostname: chubbyts-petstore-swagger-ui
@@ -102,3 +102,6 @@ services:
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 0557aa47-1706-48df-8f2b-b7a5eddcbdf2
     ports:
       - 5601:5601
+
+volumes:
+  mongo:

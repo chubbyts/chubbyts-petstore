@@ -5,15 +5,15 @@ import * as digitalocean from '@pulumi/digitalocean';
 type CreateK8sClusterProps = {
   region: digitalocean.Region;
   vpc: digitalocean.Vpc;
-  nodeCount?: number;
+  nodeCount: number;
   size?: string;
 };
 
 export const createK8sCluster = ({
   region,
   vpc,
-  nodeCount = 1,
   size = digitalocean.DropletSlug.DropletS2VCPU2GB,
+  nodeCount,
 }: CreateK8sClusterProps): digitalocean.KubernetesCluster => {
   return new digitalocean.KubernetesCluster('k8s-cluster', {
     nodePool: {
@@ -91,6 +91,8 @@ export const installK8sDockerRegistrySecret = ({
   );
 };
 
+type Resources = { requests: { memory: string; }; limits: { memory: string; }; };
+
 type CreateK8sHttpStatefulSetProps = {
   k8sProvider: k8s.Provider;
   labels: { appClass: string };
@@ -99,7 +101,8 @@ type CreateK8sHttpStatefulSetProps = {
   port: number;
   path: string;
   volumes: Array<{ name: string; mountPath: string; storage: string }>;
-  replicas?: number;
+  replicas: number;
+  resources?: Resources;
 };
 
 export const createK8sHttpStatefulSet = ({
@@ -110,7 +113,8 @@ export const createK8sHttpStatefulSet = ({
   port,
   path,
   volumes,
-  replicas = 2,
+  replicas,
+  resources = undefined,
 }: CreateK8sHttpStatefulSetProps): k8s.apps.v1.StatefulSet => {
   return new k8s.apps.v1.StatefulSet(
     `${labels.appClass}-stateful-set`,
@@ -146,6 +150,7 @@ export const createK8sHttpStatefulSet = ({
                   },
                 },
                 volumeMounts: volumes.map((volume) => ({ name: volume.name, mountPath: volume.mountPath })),
+                resources,
               },
             ],
             initContainers: volumes.map((volume) => ({
@@ -181,9 +186,10 @@ type CreateK8sHttpDeploymentProps = {
   env: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
   port: number;
   path: string;
-  replicas?: number;
+  replicas: number;
   fluentdImage?: pulumi.Input<string>;
   fluentdEnv?: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
+  resources?: Resources;
 };
 
 export const createK8sHttpDeployment = ({
@@ -193,9 +199,10 @@ export const createK8sHttpDeployment = ({
   env,
   port,
   path,
-  replicas = 2,
+  replicas,
   fluentdImage = undefined,
   fluentdEnv = [],
+  resources = undefined,
 }: CreateK8sHttpDeploymentProps): k8s.apps.v1.Deployment => {
   return new k8s.apps.v1.Deployment(
     `${labels.appClass}-deployment`,
@@ -235,21 +242,22 @@ export const createK8sHttpDeployment = ({
                     mountPath: '/app/var/log',
                   },
                 ],
+                resources,
               },
               ...(fluentdImage
                 ? [
-                    {
-                      name: `${labels.appClass}-fluentd`,
-                      image: fluentdImage,
-                      env: fluentdEnv,
-                      volumeMounts: [
-                        {
-                          name: 'var-log',
-                          mountPath: '/app/var/log',
-                        },
-                      ],
-                    },
-                  ]
+                  {
+                    name: `${labels.appClass}-fluentd`,
+                    image: fluentdImage,
+                    env: fluentdEnv,
+                    volumeMounts: [
+                      {
+                        name: 'var-log',
+                        mountPath: '/app/var/log',
+                      },
+                    ],
+                  },
+                ]
                 : []),
             ],
             imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
@@ -378,6 +386,34 @@ export const createK8sInternalHttpService = ({
         type: 'ClusterIP',
         ports: [{ name: 'http', port, targetPort: 'http' }],
         selector: labels,
+      },
+    },
+    { provider: k8sProvider },
+  );
+};
+
+type InstallK8sHelmMetricsServerProps = {
+  k8sProvider: k8s.Provider;
+};
+
+export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetricsServerProps): k8s.helm.v3.Release => {
+  // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/metrics-server
+  // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/metrics-server/values.yml
+  return new k8s.helm.v3.Release(
+    'helm-metrics-server',
+    {
+      chart: 'metrics-server',
+      version: '3.8.3',
+      repositoryOpts: {
+        repo: 'https://kubernetes-sigs.github.io/metrics-server',
+      },
+      namespace: 'metrics-server',
+      createNamespace: true,
+      values: {
+        replicas: 2,
+        apiService: {
+          create: true,
+        }
       },
     },
     { provider: k8sProvider },

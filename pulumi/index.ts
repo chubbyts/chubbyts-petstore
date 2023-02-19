@@ -26,6 +26,7 @@ import {
   createK8sCertManager,
   installK8sDockerRegistrySecret,
   createK8sTokenKubeconfig,
+  installK8sHelmMetricsServer,
 } from './src/k8s';
 import { realpathSync } from 'fs';
 
@@ -84,6 +85,14 @@ const nodeFactory = ({
     //   { name: 'STACK', value: stack },
     //   { name: 'ELASTICSEARCH_HOSTS', value: config.require('elasticsearchHosts') },
     // ],
+    resources: {
+      requests: {
+        memory: '100Mi',
+      },
+      limits: {
+        memory: '200Mi',
+      },
+    },
   });
 
   createK8sInternalHttpService({ k8sProvider, labels, port: 1234 });
@@ -157,6 +166,9 @@ nodeFactory({
 
 swaggerUiFactory({ k8sProvider });
 
+// install metrics server
+installK8sHelmMetricsServer({ k8sProvider });
+
 // install cert manager
 const helmCertManager = installK8sHelmCertManager({ k8sProvider });
 
@@ -226,6 +238,7 @@ const ingress = createK8sIngressNginx({
     },
   ],
   annotations: { 'nginx.ingress.kubernetes.io/configuration-snippet': 'rewrite ^/$ /swagger redirect;' },
+  addWwwAliasForHosts: ['chubbyts-petstore.dev'],
 });
 
 export const containerRegistryId = containerRegistry.id;

@@ -5,10 +5,16 @@ SHELL ["/bin/bash", "-c"]
 
 RUN dnf upgrade -y --refresh
 
+RUN dnf install -y 'dnf-command(config-manager)' \
+    && dnf config-manager --set-enabled crb \
+    && dnf install -y epel-release
+
 RUN dnf install -y \
     compat-openssl11 \
     glibc-langpack-de \
     langpacks-de \
+    jemalloc \
+    jemalloc-devel \
     nmap-ncat \
     procps-ng \
     unzip
@@ -75,4 +81,5 @@ RUN source ~/.bashrc \
     && npm install --omit=dev
 
 CMD source ~/.bashrc \
+    && export LD_PRELOAD=`jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision` \
     && node bootstrap/index.js

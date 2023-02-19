@@ -4,11 +4,17 @@ SHELL ["/bin/bash", "-c"]
 
 RUN dnf upgrade -y --refresh
 
+RUN dnf install -y 'dnf-command(config-manager)' \
+    && dnf config-manager --set-enabled crb \
+    && dnf install -y epel-release
+
 RUN dnf install -y \
     compat-openssl11 \
     git \
     glibc-langpack-de \
     langpacks-de \
+    jemalloc \
+    jemalloc-devel \
     nmap-ncat \
     procps-ng \
     sudo \
@@ -44,4 +50,5 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/
 
 WORKDIR /app
 
-CMD trap "exit $?" TERM; while :; do sleep 1; done
+CMD export LD_PRELOAD=`jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision` \
+    && trap "exit $?" TERM; while :; do sleep 1; done

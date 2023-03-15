@@ -1,6 +1,8 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
 import * as docker from '@pulumi/docker';
+import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
 
 type createContainerRegistryProps = {
   region: digitalocean.Region;
@@ -49,6 +51,29 @@ export const createContainerRegistryDockerReadWriteCredentials = ({
   });
 };
 
+const calculateTag = (context: string): string => {
+  const ignorePaths = readFileSync(`${context}/.dockerignore`, 'utf-8')
+    .split('\n')
+    .map((line) => {
+      line = line.trim();
+
+      if (line[line.length - 1] === '/') {
+        line = line.substring(0, line.length - 2);
+      }
+
+      return line;
+    })
+    .filter((line) => line !== '' && line[0] !== '#')
+    .map((ignorePath) => `-path ./${ignorePath}`)
+    .join(' -o ');
+
+  const command = `find . \\( ${ignorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`;
+
+  const output = execSync(command, { cwd: context, encoding: 'utf-8' });
+
+  return output.trim();
+};
+
 type DockerCredentials = {
   auths: {
     [host: string]: {
@@ -70,29 +95,27 @@ export const createAndPushImage = ({
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
 }: CreateAndPushImageProps): pulumi.Output<string> => {
-  const localImageName = `${name}`;
-  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${localImageName}`;
+  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${name}:${calculateTag(context)}`;
 
-  return containerRegistryDockerReadWriteCredentials.dockerCredentials.apply((dockerCredentials) => {
+  return containerRegistryDockerReadWriteCredentials.dockerCredentials.apply((dockerCredentials): string => {
     const parsedDockerCredentials = JSON.parse(dockerCredentials) as DockerCredentials;
 
     const server = Object.keys(parsedDockerCredentials.auths)[0];
     const auth = parsedDockerCredentials.auths[server].auth;
-    const username = Buffer.from(auth, 'base64').toString('utf-8').split(':')[0];
-    const password = username;
+    const [username, password] = Buffer.from(auth, 'base64').toString('utf-8').split(':');
 
     return new docker.Image(name, {
       imageName,
-      localImageName,
       build: {
         context,
-        dockerfile: `${context}/docker/production/${name}/Dockerfile`,
+        dockerfile: `docker/production/${name}/Dockerfile`,
+        platform: 'linux/amd64',
       },
       registry: {
         server,
         username,
         password,
       },
-    });
-  }).imageName;
+    }).imageName as unknown as string;
+  });
 };

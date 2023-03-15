@@ -91,7 +91,7 @@ export const installK8sDockerRegistrySecret = ({
   );
 };
 
-type Resources = { requests: { memory: string; }; limits: { memory: string; }; };
+type Resources = { requests: { memory: string }; limits: { memory: string } };
 
 type CreateK8sHttpStatefulSetProps = {
   k8sProvider: k8s.Provider;
@@ -246,18 +246,18 @@ export const createK8sHttpDeployment = ({
               },
               ...(fluentdImage
                 ? [
-                  {
-                    name: `${labels.appClass}-fluentd`,
-                    image: fluentdImage,
-                    env: fluentdEnv,
-                    volumeMounts: [
-                      {
-                        name: 'var-log',
-                        mountPath: '/app/var/log',
-                      },
-                    ],
-                  },
-                ]
+                    {
+                      name: `${labels.appClass}-fluentd`,
+                      image: fluentdImage,
+                      env: fluentdEnv,
+                      volumeMounts: [
+                        {
+                          name: 'var-log',
+                          mountPath: '/app/var/log',
+                        },
+                      ],
+                    },
+                  ]
                 : []),
             ],
             imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
@@ -413,7 +413,7 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
         replicas: 2,
         apiService: {
           create: true,
-        }
+        },
       },
     },
     { provider: k8sProvider },

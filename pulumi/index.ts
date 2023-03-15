@@ -32,7 +32,7 @@ import { realpathSync } from 'fs';
 
 type NodeFactoryProps = {
   k8sProvider: k8s.Provider;
-  directory: string;
+  context: string;
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
   mongoDbCluster: digitalocean.DatabaseCluster;
@@ -41,7 +41,7 @@ type NodeFactoryProps = {
 
 const nodeFactory = ({
   k8sProvider,
-  directory,
+  context,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,
@@ -51,7 +51,7 @@ const nodeFactory = ({
   const labels = { appClass: name };
 
   const image = createAndPushImage({
-    context: directory,
+    context,
     name,
     containerRegistry,
     containerRegistryDockerReadWriteCredentials,
@@ -123,7 +123,7 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
   createK8sInternalHttpService({ k8sProvider, labels, port: 8080 });
 };
 
-const directory = realpathSync(`${process.cwd()}/../`);
+const context = realpathSync(`${process.cwd()}/../`);
 
 const config = new pulumi.Config();
 const digitaloceanConfig = new pulumi.Config('digitalocean');
@@ -157,7 +157,7 @@ createMongoDbFirewall({ mongoDbCluster, k8sCluster });
 
 nodeFactory({
   k8sProvider,
-  directory,
+  context,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,

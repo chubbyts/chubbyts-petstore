@@ -4,6 +4,29 @@ import * as docker from '@pulumi/docker';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
+export const calculateTag = (context: string): string => {
+  const ignorePaths = readFileSync(`${context}/.dockerignore`, 'utf-8')
+    .split('\n')
+    .map((line) => {
+      line = line.trim();
+
+      if (line[line.length - 1] === '/') {
+        line = line.substring(0, line.length - 2);
+      }
+
+      return line;
+    })
+    .filter((line) => line !== '' && line[0] !== '#')
+    .map((ignorePath) => `-path ./${ignorePath}`)
+    .join(' -o ');
+
+  const command = `find . \\( ${ignorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`;
+
+  const output = execSync(command, { cwd: context, encoding: 'utf-8' });
+
+  return output.trim();
+};
+
 type createContainerRegistryProps = {
   region: digitalocean.Region;
   stack: string;
@@ -51,29 +74,6 @@ export const createContainerRegistryDockerReadWriteCredentials = ({
   });
 };
 
-const calculateTag = (context: string): string => {
-  const ignorePaths = readFileSync(`${context}/.dockerignore`, 'utf-8')
-    .split('\n')
-    .map((line) => {
-      line = line.trim();
-
-      if (line[line.length - 1] === '/') {
-        line = line.substring(0, line.length - 2);
-      }
-
-      return line;
-    })
-    .filter((line) => line !== '' && line[0] !== '#')
-    .map((ignorePath) => `-path ./${ignorePath}`)
-    .join(' -o ');
-
-  const command = `find . \\( ${ignorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`;
-
-  const output = execSync(command, { cwd: context, encoding: 'utf-8' });
-
-  return output.trim();
-};
-
 type DockerCredentials = {
   auths: {
     [host: string]: {
@@ -83,19 +83,21 @@ type DockerCredentials = {
 };
 
 type CreateAndPushImageProps = {
-  context: string;
   name: string;
+  tag: string;
+  context: string;
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
 };
 
 export const createAndPushImage = ({
-  context,
   name,
+  tag,
+  context,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
 }: CreateAndPushImageProps): pulumi.Output<string> => {
-  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${name}:${calculateTag(context)}`;
+  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${name}:${tag}`;
 
   return containerRegistryDockerReadWriteCredentials.dockerCredentials.apply((dockerCredentials): string => {
     const parsedDockerCredentials = JSON.parse(dockerCredentials) as DockerCredentials;

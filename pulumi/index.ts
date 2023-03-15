@@ -2,6 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as digitalocean from '@pulumi/digitalocean';
 import {
+  calculateTag,
   createAndPushImage,
   createContainerRegistry,
   createContainerRegistryDockerReadCredentials,
@@ -33,6 +34,7 @@ import { realpathSync } from 'fs';
 type NodeFactoryProps = {
   k8sProvider: k8s.Provider;
   context: string;
+  tag: string;
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
   mongoDbCluster: digitalocean.DatabaseCluster;
@@ -42,6 +44,7 @@ type NodeFactoryProps = {
 const nodeFactory = ({
   k8sProvider,
   context,
+  tag,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,
@@ -51,15 +54,17 @@ const nodeFactory = ({
   const labels = { appClass: name };
 
   const image = createAndPushImage({
-    context,
     name,
+    tag,
+    context,
     containerRegistry,
     containerRegistryDockerReadWriteCredentials,
   });
 
   // const fluentdImage = createAndPushImage({
-  //   context: directory,
   //   name: `${name}-fluentd`,
+  //   context: directory,
+  //   tag,
   //   containerRegistry,
   //   containerRegistryDockerReadWriteCredentials,
   // });
@@ -124,6 +129,7 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
 };
 
 const context = realpathSync(`${process.cwd()}/../`);
+const tag = calculateTag(context);
 
 const config = new pulumi.Config();
 const digitaloceanConfig = new pulumi.Config('digitalocean');
@@ -158,6 +164,7 @@ createMongoDbFirewall({ mongoDbCluster, k8sCluster });
 nodeFactory({
   k8sProvider,
   context,
+  tag,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,

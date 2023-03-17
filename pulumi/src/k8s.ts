@@ -429,6 +429,7 @@ export const installK8sHelmIngressNginxController = ({
 }: InstallK8sHelmIngressNginxControllerProps): k8s.helm.v3.Release => {
   // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/ingress-nginx
   // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/ingress-nginx/values.yml
+  // https://docs.digitalocean.com/products/kubernetes/how-to/configure-load-balancers/#protocol
   return new k8s.helm.v3.Release(
     'helm-ingress-nginx',
     {
@@ -444,6 +445,17 @@ export const installK8sHelmIngressNginxController = ({
           replicaCount: 2,
           service: {
             type: 'LoadBalancer',
+            annotations: {
+              'service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol': 'true',
+            },
+          },
+          publishService: {
+            enable: true,
+          },
+          config: {
+            'use-forward-headers': 'true',
+            'compute-full-forward-for': 'true',
+            'use-proxy-protocol': 'true',
           },
           metrics: {
             enabled: true,

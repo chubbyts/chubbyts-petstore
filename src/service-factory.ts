@@ -28,7 +28,7 @@ import {
   createPathToRegexpRouteMatcher,
   createPathToRegexpPathGenerator,
 } from '@chubbyts/chubbyts-framework-router-path-to-regexp/dist/path-to-regexp-router';
-import pino from 'pino';
+import { pino } from 'pino';
 import { createRoutesByName, RoutesByName } from '@chubbyts/chubbyts-framework/dist/router/routes-by-name';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import { createGetRoute, Route } from '@chubbyts/chubbyts-framework/dist/router/route';

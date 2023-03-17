@@ -5,7 +5,9 @@ module.exports = {
   },
   'extends': [
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
   ],
   'overrides': [
   ],
@@ -18,11 +20,6 @@ module.exports = {
     '@typescript-eslint'
   ],
   'rules': {
-    'indent': [
-      'error',
-      2,
-      { 'SwitchCase': 1 },
-    ],
     'linebreak-style': [
       'error',
       'unix'
@@ -30,10 +27,9 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
-        "argsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
-        ,
+        'argsIgnorePattern': '^_',
+        'destructuredArrayIgnorePattern': '^_',
+        'varsIgnorePattern': '^_',
       }
     ],
     'quotes': [
@@ -44,5 +40,11 @@ module.exports = {
       'error',
       'always'
     ],
+  },
+  'settings': {
+    'import/resolver': {
+      typescript: true,
+      node: true,
+    }
   }
 };

@@ -1,31 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as digitalocean from '@pulumi/digitalocean';
 import * as docker from '@pulumi/docker';
-import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
-
-export const calculateTag = (context: string): string => {
-  const ignorePaths = readFileSync(`${context}/.dockerignore`, 'utf-8')
-    .split('\n')
-    .map((line) => {
-      line = line.trim();
-
-      if (line[line.length - 1] === '/') {
-        line = line.substring(0, line.length - 2);
-      }
-
-      return line;
-    })
-    .filter((line) => line !== '' && line[0] !== '#')
-    .map((ignorePath) => `-path ./${ignorePath}`)
-    .join(' -o ');
-
-  const command = `find . \\( ${ignorePaths} \\) -prune -o -type f -exec sha1sum {} + | LC_ALL=C sort | sha1sum | cut -c 1-40`;
-
-  const output = execSync(command, { cwd: context, encoding: 'utf-8' });
-
-  return output.trim();
-};
 
 type createContainerRegistryProps = {
   region: digitalocean.Region;
@@ -83,21 +58,21 @@ type DockerCredentials = {
 };
 
 type CreateAndPushImageProps = {
-  name: string;
-  tag: string;
   context: string;
+  name: string;
+  stack: string;
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
 };
 
 export const createAndPushImage = ({
-  name,
-  tag,
   context,
+  name,
+  stack,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
 }: CreateAndPushImageProps): pulumi.Output<string> => {
-  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${name}:${tag}`;
+  const imageName = pulumi.interpolate`${containerRegistry.endpoint}/${name}:${stack}`;
 
   return containerRegistryDockerReadWriteCredentials.dockerCredentials.apply((dockerCredentials): string => {
     const parsedDockerCredentials = JSON.parse(dockerCredentials) as DockerCredentials;
@@ -110,7 +85,7 @@ export const createAndPushImage = ({
       imageName,
       build: {
         context,
-        dockerfile: `docker/production/${name}/Dockerfile`,
+        dockerfile: `${context}/docker/production/${name}/Dockerfile`,
         platform: 'linux/amd64',
       },
       registry: {

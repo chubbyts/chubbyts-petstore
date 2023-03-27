@@ -1,7 +1,8 @@
-.git
-coverage
-dist
-globalConfig.json
-node_modules
-pulumi
-var
+/.git
+/.github
+/coverage
+/dist
+/globalConfig.json
+/node_modules
+/pulumi
+/var

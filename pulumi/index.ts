@@ -2,7 +2,6 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as digitalocean from '@pulumi/digitalocean';
 import {
-  calculateTag,
   createAndPushImage,
   createContainerRegistry,
   createContainerRegistryDockerReadCredentials,
@@ -34,37 +33,37 @@ import { realpathSync } from 'fs';
 type NodeFactoryProps = {
   k8sProvider: k8s.Provider;
   context: string;
-  tag: string;
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
   mongoDbCluster: digitalocean.DatabaseCluster;
   config: pulumi.Config;
+  stack: string;
 };
 
 const nodeFactory = ({
   k8sProvider,
   context,
-  tag,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,
+  stack,
 }: NodeFactoryProps): void => {
   const name = 'node';
 
   const labels = { appClass: name };
 
   const image = createAndPushImage({
-    name,
-    tag,
     context,
+    name,
+    stack,
     containerRegistry,
     containerRegistryDockerReadWriteCredentials,
   });
 
   // const fluentdImage = createAndPushImage({
+  //   context,
   //   name: `${name}-fluentd`,
-  //   context: directory,
-  //   tag,
+  //   stack,
   //   containerRegistry,
   //   containerRegistryDockerReadWriteCredentials,
   // });
@@ -128,14 +127,13 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
   createK8sInternalHttpService({ k8sProvider, labels, port: 8080 });
 };
 
-const context = realpathSync(`${process.cwd()}/../`);
-const tag = calculateTag(context);
-
 const config = new pulumi.Config();
 const digitaloceanConfig = new pulumi.Config('digitalocean');
 
 const region = digitalocean.Region.FRA1;
 const stack = pulumi.getStack();
+
+const context = realpathSync(`${process.cwd()}/../`);
 
 // setup container registry
 const containerRegistry = createContainerRegistry({ region, stack });
@@ -164,11 +162,11 @@ createMongoDbFirewall({ mongoDbCluster, k8sCluster });
 nodeFactory({
   k8sProvider,
   context,
-  tag,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,
   config,
+  stack,
 });
 
 swaggerUiFactory({ k8sProvider });

@@ -1,5 +1,5 @@
 import { configFactory as developmentConfigFactory } from './development';
-import { Config } from './production';
+import type { Config } from './production';
 
 export const configFactory = (env: string): Config => {
   return developmentConfigFactory(env);

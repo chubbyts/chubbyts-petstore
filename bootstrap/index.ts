@@ -1,18 +1,19 @@
+import type { IncomingMessage, ServerResponse } from 'http';
+import { createServer } from 'http';
 import { createApplication } from '@chubbyts/chubbyts-framework/dist/application';
-import { createServer, IncomingMessage, ServerResponse } from 'http';
 import {
   createNodeToServerRequestFactory,
   createResponseToNodeEmitter,
 } from '@chubbyts/chubbyts-node-http-bridge/dist/node-http';
-import { containerFactory } from '../bootstrap/container';
-import { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
-import {
+import type { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
+import type {
   ServerRequestFactory,
   StreamFromResourceFactory,
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { Config } from '../config/production';
-import { MongoClient } from 'mongodb';
+import type { MongoClient } from 'mongodb';
+import type { Config } from '../config/production';
+import { containerFactory } from '../bootstrap/container';
 
 (async () => {
   const container = containerFactory(process.env.NODE_ENV as string);

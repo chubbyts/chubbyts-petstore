@@ -1,7 +1,7 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import { createEnrichList, createEnrichModel } from '../../src/enrich';
-import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 
 describe('createEnrichModel', () => {
   test('without links', async () => {

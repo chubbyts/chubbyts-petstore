@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync } from 'fs';
-import { Config } from '../config/production';
-import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createContainerByConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
+import type { Config } from '../config/production';
 
 export const containerFactory = (env: string): Container => {
   /* eslint-disable @typescript-eslint/no-var-requires */

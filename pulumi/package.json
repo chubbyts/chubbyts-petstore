@@ -16,7 +16,7 @@
     "@pulumi/pulumi": "^3.60.0"
   },
   "devDependencies": {
-    "@types/node": "^18.15.10",
+    "@types/node": "^18.15.11",
     "prettier": "^2.8.7"
   }
 }

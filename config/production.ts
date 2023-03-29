@@ -1,6 +1,24 @@
-import { DestinationStream, LoggerOptions } from 'pino';
-import { createWriteStream, realpathSync, WriteStream } from 'fs';
-import { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
+import { createWriteStream, realpathSync } from 'fs';
+import type { DestinationStream, LoggerOptions } from 'pino';
+import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
+import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
+import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { InfoObject } from 'openapi3-ts';
+import {
+  petCreateHandlerServiceFactory,
+  petFindByIdServiceFactory,
+  petResolveListServiceFactory,
+  petListHandlerServiceFactory,
+  petPersistServiceFactory,
+  petReadHandlerServiceFactory,
+  petUpdateHandlerServiceFactory,
+  petDeleteHandlerServiceFactory,
+  petRemoveServiceFactory,
+  petRoutesServiceDelegator,
+  petEnrichModelServiceFactory,
+  petEnrichListServiceFactory,
+  petOpenApiRegistryServiceDelegator,
+} from '../src/pet/service-factory';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -31,24 +49,6 @@ import {
   streamFromResourceFactoryServiceFactory,
   uriFactoryServiceFactory,
 } from '../src/service-factory';
-import {
-  petCreateHandlerServiceFactory,
-  petFindByIdServiceFactory,
-  petResolveListServiceFactory,
-  petListHandlerServiceFactory,
-  petPersistServiceFactory,
-  petReadHandlerServiceFactory,
-  petUpdateHandlerServiceFactory,
-  petDeleteHandlerServiceFactory,
-  petRemoveServiceFactory,
-  petRoutesServiceDelegator,
-  petEnrichModelServiceFactory,
-  petEnrichListServiceFactory,
-  petOpenApiRegistryServiceDelegator,
-} from '../src/pet/service-factory';
-import { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
-import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
-import { InfoObject } from 'openapi3-ts';
 
 export type Config = {
   cors: {
@@ -94,7 +94,7 @@ export const configFactory = (env: string): Config => {
   const cacheDir = rootDir + '/var/cache';
   const logDir = rootDir + '/var/log';
 
-  let logStream: WriteStream | undefined;
+  const logStream = createWriteStream(logDir + '/application.log', { flags: 'a' });
 
   return {
     cors: {
@@ -196,11 +196,8 @@ export const configFactory = (env: string): Config => {
       },
       stream: {
         write: (msg: string): void => {
-          if (!logStream) {
-            logStream = createWriteStream(logDir + '/application.log', { flags: 'a' });
-          }
-
           logStream.write(msg);
+          console.log(msg);
         },
       },
     },

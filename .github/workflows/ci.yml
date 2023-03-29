@@ -43,22 +43,6 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run test:integration --no-cache'
       - name: npm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run build'
-  node14:
-    name: Node 14
-    runs-on: ubuntu-20.04
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: checkout node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-      - run: npm install
-      - run: npm run cs
-      - run: npm run lint
-      - run: npm run test -- --coverage --no-cache
-      - run: npm run test:integration --no-cache
-      - run: npm run build
   node16:
     name: Node 16
     runs-on: ubuntu-20.04

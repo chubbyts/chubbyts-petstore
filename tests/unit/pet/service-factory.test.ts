@@ -1,7 +1,7 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, jest, test } from '@jest/globals';
-import { Db, MongoClient } from 'mongodb';
+import type { Db, MongoClient } from 'mongodb';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -17,27 +17,12 @@ import {
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
-
-const createGetMock = (givenCalls: Array<[string, unknown]>) => {
-  const calls = [...givenCalls];
-
-  return (givenId: string) => {
-    const call = calls.shift();
-    if (!call) {
-      fail('Missing call');
-    }
-
-    const [id, service] = call;
-
-    expect(givenId).toBe(id);
-
-    return service;
-  };
-};
+import type { CallMock } from '../service-factory.test';
+import { createContainerGetCallsMock } from '../service-factory.test';
 
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['decoder', {}],
       ['petPersist', () => undefined],
       ['responseFactory', () => undefined],
@@ -45,7 +30,7 @@ describe('service-factory', () => {
       ['petEnrichModel', {}],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -55,13 +40,13 @@ describe('service-factory', () => {
   });
 
   test('petDeleteHandlerServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['petFindById', () => undefined],
       ['petRemove', () => undefined],
       ['responseFactory', () => undefined],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -71,9 +56,9 @@ describe('service-factory', () => {
   });
 
   test('petEnrichModelServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [['generatePath', () => undefined]];
+    const calls: Array<CallMock> = [['generatePath', () => undefined]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -83,9 +68,9 @@ describe('service-factory', () => {
   });
 
   test('petEnrichListServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [['generatePath', () => undefined]];
+    const calls: Array<CallMock> = [['generatePath', () => undefined]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -101,9 +86,9 @@ describe('service-factory', () => {
 
     const mongoClient: MongoClient = { db } as unknown as MongoClient;
 
-    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
+    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -115,14 +100,14 @@ describe('service-factory', () => {
   });
 
   test('petListHandlerServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['petResolveList', () => undefined],
       ['responseFactory', () => undefined],
       ['encoder', {}],
       ['petEnrichList', {}],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -138,9 +123,9 @@ describe('service-factory', () => {
 
     const mongoClient: MongoClient = { db } as unknown as MongoClient;
 
-    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
+    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -152,14 +137,14 @@ describe('service-factory', () => {
   });
 
   test('petReadHandlerServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['petFindById', () => undefined],
       ['responseFactory', () => undefined],
       ['encoder', {}],
       ['petEnrichModel', {}],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -175,9 +160,9 @@ describe('service-factory', () => {
 
     const mongoClient: MongoClient = { db } as unknown as MongoClient;
 
-    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
+    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -195,9 +180,9 @@ describe('service-factory', () => {
 
     const mongoClient: MongoClient = { db } as unknown as MongoClient;
 
-    const calls: Array<[string, unknown]> = [['mongoClient', mongoClient]];
+    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -209,9 +194,9 @@ describe('service-factory', () => {
   });
 
   test('petOpenApiRegistryServiceDelegator', async () => {
-    const calls: Array<[string, unknown]> = [];
+    const calls: Array<CallMock> = [];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -233,9 +218,9 @@ describe('service-factory', () => {
   });
 
   test('petRoutesServiceDelegator', () => {
-    const calls: Array<[string, unknown]> = [];
+    const calls: Array<CallMock> = [];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -319,7 +304,7 @@ describe('service-factory', () => {
   });
 
   test('petUpdateHandlerServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['petFindById', () => undefined],
       ['decoder', {}],
       ['petPersist', () => undefined],
@@ -328,7 +313,7 @@ describe('service-factory', () => {
       ['petEnrichModel', {}],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 

@@ -1,13 +1,24 @@
+import { createServer } from 'http';
 import { Command } from 'commander';
 import { containerFactory } from '../bootstrap/container';
-import { CleanDirectoriesCommand } from '../src/command';
-import { createServer } from 'http';
+import type { CleanDirectoriesCommand } from '../src/command';
 
 const program = new Command();
 
 const container = containerFactory(process.env.NODE_ENV as string);
 
-const run = (action: (...args: Array<string>) => Promise<number> | number) => {
+type Action = (...args: Array<string>) => Promise<number> | number;
+
+const runAction = async (action: Action, args: Array<string>): Promise<number> => {
+  try {
+    return await action(...args);
+  } catch (e) {
+    console.error(e);
+    return -999;
+  }
+};
+
+const run = (action: Action) => {
   return async (...args: Array<string>): Promise<void> => {
     const server = createServer((_, res) => {
       res.writeHead(200);
@@ -16,14 +27,7 @@ const run = (action: (...args: Array<string>) => Promise<number> | number) => {
 
     server.listen(9999);
 
-    let exitCode = 0;
-
-    try {
-      exitCode = await action(...args);
-    } catch (e) {
-      console.error(e);
-      exitCode = -999;
-    }
+    const exitCode = await runAction(action, args);
 
     setTimeout(() => {
       server.close();

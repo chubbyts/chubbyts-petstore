@@ -114,7 +114,7 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
   createK8sHttpDeployment({
     k8sProvider,
     labels,
-    image: 'swaggerapi/swagger-ui:v4.15.5',
+    image: 'swaggerapi/swagger-ui:v4.18.1',
     env: [
       { name: 'BASE_URL', value: '/swagger' },
       { name: 'URLS', value: "[ { url: '/openapi' } ]" },

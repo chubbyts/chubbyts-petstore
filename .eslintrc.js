@@ -17,13 +17,10 @@ module.exports = {
     'sourceType': 'module'
   },
   'plugins': [
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'functional'
   ],
   'rules': {
-    'linebreak-style': [
-      'error',
-      'unix'
-    ],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -31,6 +28,14 @@ module.exports = {
         'destructuredArrayIgnorePattern': '^_',
         'varsIgnorePattern': '^_',
       }
+    ],
+    'linebreak-style': [
+      'error',
+      'unix'
+    ],
+    'no-constant-condition': [
+      'error',
+      { 'checkLoops': false },
     ],
     'quotes': [
       'error',
@@ -40,6 +45,14 @@ module.exports = {
       'error',
       'always'
     ],
+    '@typescript-eslint/consistent-type-imports': 'error',
+    'functional/immutable-data': 'error',
+    'functional/no-let': 'error',
+    'functional/prefer-tacit': 'error',
+    'import/order': 'error',
+    'no-param-reassign': 'error',
+    'no-var': 'error',
+    'prefer-const': 'error',
   },
   'settings': {
     'import/resolver': {

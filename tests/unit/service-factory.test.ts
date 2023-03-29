@@ -1,5 +1,5 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, jest, test } from '@jest/globals';
 import { MongoClient } from 'mongodb';
 import {
@@ -33,15 +33,20 @@ import {
   uriFactoryServiceFactory,
 } from '../../src/service-factory';
 
+// eslint-disable-next-line functional/immutable-data
 MongoClient.connect = jest.fn(async () => ({} as MongoClient));
 
-const createGetMock = (givenCalls: Array<[string, unknown]>) => {
-  const calls = [...givenCalls];
+export type CallMock = [string, unknown];
+
+export const createContainerGetCallsMock = (callMocks: Array<CallMock>) => {
+  const calls = [...callMocks];
 
   return (givenId: string) => {
+    // eslint-disable-next-line functional/immutable-data
     const call = calls.shift();
+
     if (!call) {
-      fail('Missing call');
+      throw new Error('Missing call');
     }
 
     const [id, service] = call;
@@ -54,9 +59,9 @@ const createGetMock = (givenCalls: Array<[string, unknown]>) => {
 
 describe('service-factory', () => {
   test('acceptNegotiationMiddlewareServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['acceptNegotiator', {}]];
+    const calls: Array<CallMock> = [['acceptNegotiator', {}]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -66,9 +71,9 @@ describe('service-factory', () => {
   });
 
   test('acceptNegotiatorServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['encoder', { contentTypes: ['application/json'] }]];
+    const calls: Array<CallMock> = [['encoder', { contentTypes: ['application/json'] }]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -78,14 +83,14 @@ describe('service-factory', () => {
   });
 
   test('apiErrorMiddlewareServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['responseFactory', () => undefined],
       ['encoder', {}],
       ['config', { debug: true }],
       ['logger', () => undefined],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -95,9 +100,9 @@ describe('service-factory', () => {
   });
 
   test('generatePathServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['routesByName', new Map()]];
+    const calls: Array<CallMock> = [['routesByName', new Map()]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -107,9 +112,12 @@ describe('service-factory', () => {
   });
 
   test('cleanDirectoriesCommandServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['config', { directories: new Map([]) }]];
+    const calls: Array<CallMock> = [
+      ['config', { directories: new Map([]) }],
+      ['logger', () => ({})],
+    ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -119,9 +127,9 @@ describe('service-factory', () => {
   });
 
   test('contentTypeNegotiationMiddlewareServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['contentTypeNegotiator', {}]];
+    const calls: Array<CallMock> = [['contentTypeNegotiator', {}]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -131,9 +139,9 @@ describe('service-factory', () => {
   });
 
   test('contentTypeNegotiatorServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['decoder', { contentTypes: ['application/json'] }]];
+    const calls: Array<CallMock> = [['decoder', { contentTypes: ['application/json'] }]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -144,7 +152,7 @@ describe('service-factory', () => {
 
   describe('corsMiddlewareServiceFactory', () => {
     test('with createAllowOriginExact', () => {
-      const calls: Array<[string, unknown]> = [
+      const calls: Array<CallMock> = [
         [
           'config',
           {
@@ -163,7 +171,7 @@ describe('service-factory', () => {
         ['responseFactory', () => undefined],
       ];
 
-      const get = jest.fn(createGetMock(calls));
+      const get = jest.fn(createContainerGetCallsMock(calls));
 
       const container = { get } as unknown as Container;
 
@@ -173,7 +181,7 @@ describe('service-factory', () => {
     });
 
     test('with createAllowOriginRegex', () => {
-      const calls: Array<[string, unknown]> = [
+      const calls: Array<CallMock> = [
         [
           'config',
           {
@@ -192,7 +200,7 @@ describe('service-factory', () => {
         ['responseFactory', () => undefined],
       ];
 
-      const get = jest.fn(createGetMock(calls));
+      const get = jest.fn(createContainerGetCallsMock(calls));
 
       const container = { get } as unknown as Container;
 
@@ -211,13 +219,13 @@ describe('service-factory', () => {
   });
 
   test('errorMiddlewareServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['responseFactory', () => undefined],
       ['config', { debug: true }],
       ['logger', () => undefined],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -229,19 +237,24 @@ describe('service-factory', () => {
   test('loggerServiceFactory', () => {
     const messages: Array<string> = [];
 
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       [
         'config',
         {
           pino: {
             options: {},
-            stream: { write: (msg: string) => messages.push(msg) },
+            stream: {
+              write: (msg: string) => {
+                // eslint-disable-next-line functional/immutable-data
+                messages.push(msg);
+              },
+            },
           },
         },
       ],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -267,9 +280,9 @@ describe('service-factory', () => {
   });
 
   test('matchServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['routesByName', new Map()]];
+    const calls: Array<CallMock> = [['routesByName', new Map()]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -279,9 +292,9 @@ describe('service-factory', () => {
   });
 
   test('middlewaresServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [];
+    const calls: Array<CallMock> = [];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -301,7 +314,7 @@ describe('service-factory', () => {
   });
 
   test('mongoClientServiceFactory', async () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       [
         'config',
         {
@@ -313,7 +326,7 @@ describe('service-factory', () => {
       ],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -325,12 +338,12 @@ describe('service-factory', () => {
   });
 
   test('openApiHandlerServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['openApiObject', {}],
       ['responseFactory', () => null],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -340,12 +353,12 @@ describe('service-factory', () => {
   });
 
   test('openApiObjectServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['config', { openApi: {} }],
       ['openApiRegistry', { definitions: { sort: () => null, forEach: () => null } }],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -359,9 +372,9 @@ describe('service-factory', () => {
   });
 
   test('pingHandlerServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['responseFactory', () => null]];
+    const calls: Array<CallMock> = [['responseFactory', () => null]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -371,12 +384,12 @@ describe('service-factory', () => {
   });
 
   test('requestFactoryServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [
+    const calls: Array<CallMock> = [
       ['uriFactory', () => undefined],
       ['streamFactory', () => undefined],
     ];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -386,9 +399,9 @@ describe('service-factory', () => {
   });
 
   test('responseFactoryServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['streamFactory', () => undefined]];
+    const calls: Array<CallMock> = [['streamFactory', () => undefined]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -398,9 +411,9 @@ describe('service-factory', () => {
   });
 
   test('routeMatcherMiddlewareServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['match', () => undefined]];
+    const calls: Array<CallMock> = [['match', () => undefined]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -410,9 +423,9 @@ describe('service-factory', () => {
   });
 
   test('routesServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [];
+    const calls: Array<CallMock> = [];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -449,9 +462,9 @@ describe('service-factory', () => {
   });
 
   test('routesByNameServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['routes', []]];
+    const calls: Array<CallMock> = [['routes', []]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 
@@ -461,9 +474,9 @@ describe('service-factory', () => {
   });
 
   test('serverRequestFactoryServiceFactory', () => {
-    const calls: Array<[string, unknown]> = [['requestFactory', () => undefined]];
+    const calls: Array<CallMock> = [['requestFactory', () => undefined]];
 
-    const get = jest.fn(createGetMock(calls));
+    const get = jest.fn(createContainerGetCallsMock(calls));
 
     const container = { get } as unknown as Container;
 

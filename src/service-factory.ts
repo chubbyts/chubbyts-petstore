@@ -1,9 +1,9 @@
-import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
+import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/lazy-middleware';
 import { createErrorMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/error-middleware';
 import { createRouteMatcherMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/route-matcher-middleware';
-import {
+import type {
   RequestFactory,
   ResponseFactory,
   ServerRequestFactory,
@@ -11,10 +11,10 @@ import {
   StreamFromResourceFactory,
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { Config } from '../config/production';
-import { createLogger, Logger } from '@chubbyts/chubbyts-log-types/dist/log';
-import { Match } from '@chubbyts/chubbyts-framework/dist/router/route-matcher';
-import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
+import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
+import { createLogger } from '@chubbyts/chubbyts-log-types/dist/log';
+import type { Match } from '@chubbyts/chubbyts-framework/dist/router/route-matcher';
+import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import {
   createRequestFactory,
   createResponseFactory,
@@ -29,24 +29,26 @@ import {
   createPathToRegexpPathGenerator,
 } from '@chubbyts/chubbyts-framework-router-path-to-regexp/dist/path-to-regexp-router';
 import { pino } from 'pino';
-import { createRoutesByName, RoutesByName } from '@chubbyts/chubbyts-framework/dist/router/routes-by-name';
+import type { RoutesByName } from '@chubbyts/chubbyts-framework/dist/router/routes-by-name';
+import { createRoutesByName } from '@chubbyts/chubbyts-framework/dist/router/routes-by-name';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
-import { createGetRoute, Route } from '@chubbyts/chubbyts-framework/dist/router/route';
-import { createOpenApiHandler, createPingHandler } from './handler';
-import { CleanDirectoriesCommand, createCleanDirectoriesCommand } from './command';
+import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
+import { createGetRoute } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { MongoClient } from 'mongodb';
 import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/accept-negotiation-middleware';
 import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/content-type-negotiation-middleware';
 import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/error-middleware';
 import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-negotiator';
 import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
-import { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
-import { createDecoder, Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
+import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
+import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
 import { createJsonTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/json-type-decoder';
 import { createJsonxTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/jsonx-type-decoder';
 import { createUrlEncodedTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/url-encoded-type-decoder';
 import { createYamlTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/yaml-type-decoder';
-import { createEncoder, Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
 import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/json-type-encoder';
 import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
@@ -60,9 +62,14 @@ import {
   createMethodNegotiator,
   createOriginNegotiator,
 } from '@chubbyts/chubbyts-cors/dist/negotiation';
-import { OpenAPIComponentObject, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
+import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
 import { extendZodWithOpenApi, OpenAPIGenerator } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
+import type { Config } from '../config/production';
+import { createCleanDirectoriesCommand } from './command';
+import type { CleanDirectoriesCommand } from './command';
+import { createOpenApiHandler, createPingHandler } from './handler';
 
 extendZodWithOpenApi(z);
 
@@ -85,7 +92,7 @@ export const apiErrorMiddlewareServiceFactory = (container: Container) => {
 };
 
 export const cleanDirectoriesCommandServiceFactory = (container: Container): CleanDirectoriesCommand => {
-  return createCleanDirectoriesCommand(container.get<Config>('config').directories);
+  return createCleanDirectoriesCommand(container.get<Config>('config').directories, container.get<Logger>('logger'));
 };
 
 export const contentTypeNegotiationMiddlewareServiceFactory = (container: Container): Middleware => {

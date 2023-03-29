@@ -1,7 +1,7 @@
-import { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
-import { Response } from '@chubbyts/chubbyts-http-types/dist/message';
-import { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
+import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
+import type { Response } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
 
 export const createPingHandler = (responseFactory: ResponseFactory): Handler => {
   return async (): Promise<Response> => {

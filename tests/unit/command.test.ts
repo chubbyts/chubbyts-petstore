@@ -1,58 +1,78 @@
-import { describe, expect, test } from '@jest/globals';
 import { randomBytes } from 'crypto';
 import { mkdirSync, readdirSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
+import { describe, expect, test } from '@jest/globals';
+import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { createCleanDirectoriesCommand } from '../../src/command';
 
 describe('command', () => {
   describe('createCleanDirectoriesCommand', () => {
     test('with unknown directories', () => {
-      const error: Array<string> = [];
+      const logs: Array<unknown> = [];
 
-      console.error = (message: string) => {
-        error.push(message);
-      };
+      const error = jest.fn((...args: Array<unknown>) => {
+        // eslint-disable-next-line functional/immutable-data
+        logs.push({ name: 'error', args });
+      });
 
-      const command = createCleanDirectoriesCommand(new Map());
+      const logger = {
+        error,
+      } as unknown as Logger;
 
-      command(['cache', 'log']);
+      const command = createCleanDirectoriesCommand(new Map(), logger);
 
-      expect(error).toEqual(['Unsupported directory names: "cache", "log"']);
+      command(['log']);
+
+      expect(logs).toMatchInlineSnapshot(`
+        [
+          {
+            "args": [
+              "Unsupported directory names",
+              {
+                "unsupportedDirectoryNames": [
+                  "log",
+                ],
+              },
+            ],
+            "name": "error",
+          },
+        ]
+      `);
+
+      expect(error).toHaveBeenCalledTimes(1);
     });
 
     test('with known directories', () => {
-      const info: Array<string> = [];
+      const logs: Array<unknown> = [];
 
-      console.info = (message: string) => {
-        info.push(message);
-      };
+      const info = jest.fn((...args: Array<unknown>) => {
+        // eslint-disable-next-line functional/immutable-data
+        logs.push({ name: 'info', args });
+      });
 
-      const cacheDir = tmpdir() + '/' + randomBytes(8).toString('hex');
-
-      mkdirSync(cacheDir + '/some/subpath/', { recursive: true });
-      writeFileSync(cacheDir + '/some/subpath/cache-file', 'cache-file');
+      const logger = {
+        info,
+      } as unknown as Logger;
 
       const logDir = tmpdir() + '/' + randomBytes(8).toString('hex');
 
       mkdirSync(logDir + '/some/subpath/', { recursive: true });
       writeFileSync(logDir + '/some/subpath/log-file', 'log-file');
 
-      const command = createCleanDirectoriesCommand(
-        new Map([
-          ['cache', cacheDir],
-          ['log', logDir],
-        ]),
-      );
+      const command = createCleanDirectoriesCommand(new Map([['log', logDir]]), logger);
 
-      command(['cache', 'log']);
+      command(['log']);
 
-      expect(readdirSync(cacheDir)).toEqual([]);
       expect(readdirSync(logDir)).toEqual([]);
 
-      expect(info).toEqual([
-        `Start clean directory with name "cache" at path "${cacheDir}"`,
-        `Start clean directory with name "log" at path "${logDir}"`,
+      expect(logs).toEqual([
+        {
+          name: 'info',
+          args: ['Start clean directory', { directory: logDir, directoryName: 'log' }],
+        },
       ]);
+
+      expect(info).toHaveBeenCalledTimes(1);
     });
   });
 });

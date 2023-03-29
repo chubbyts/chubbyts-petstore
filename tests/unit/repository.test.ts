@@ -1,6 +1,6 @@
-import { List, Model } from '@chubbyts/chubbyts-api/dist/model';
+import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
 import { describe, expect, jest, test } from '@jest/globals';
-import {
+import type {
   Collection,
   Db,
   DeleteResult,
@@ -8,12 +8,12 @@ import {
   FindCursor,
   FindOptions,
   MongoClient,
-  ObjectId,
   Sort,
   UpdateResult,
   WithId,
   WithoutId,
 } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { createFindById, createPersist, createRemove, createResolveList } from '../../src/repository';
 
 describe('createResolveList', () => {

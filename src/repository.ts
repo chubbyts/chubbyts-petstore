@@ -1,6 +1,6 @@
-import { List, Model } from '@chubbyts/chubbyts-api/dist/model';
-import { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
-import { MongoClient, WithId } from 'mongodb';
+import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
+import type { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
+import type { MongoClient, WithId } from 'mongodb';
 
 const withoutMongoId = (model: WithId<Model>): Model => {
   const { _id, ...rest } = model;
@@ -18,13 +18,15 @@ export const createResolveList = (mongoClient: MongoClient, collectionName: stri
     cursor.limit(list.limit);
 
     if (list.sort) {
+      // eslint-disable-next-line functional/immutable-data
       cursor.sort(list.sort);
     }
 
-    list.items = (await cursor.toArray()).map(withoutMongoId);
-    list.count = await collection.countDocuments(list.filters);
-
-    return list;
+    return {
+      ...list,
+      items: (await cursor.toArray()).map(withoutMongoId),
+      count: await collection.countDocuments(list.filters),
+    };
   };
 };
 

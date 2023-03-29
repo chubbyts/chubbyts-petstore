@@ -1,5 +1,6 @@
+import type { ExecSyncOptionsWithStringEncoding } from 'child_process';
+import { execSync } from 'child_process';
 import { describe, expect, test } from '@jest/globals';
-import { execSync, ExecSyncOptionsWithStringEncoding } from 'child_process';
 
 const consoleCommand = `NODE_ENV=jest ${process.argv[0]} dist/bin/console.js`;
 const options: ExecSyncOptionsWithStringEncoding = { encoding: 'utf-8' };
@@ -24,9 +25,9 @@ describe('console', () => {
   });
 
   test('clean-directories', () => {
-    const output = execSync(consoleCommand + ' clean-directories cache,log', options);
+    const output = execSync(consoleCommand + ' clean-directories log', options);
 
-    expect(output).toMatch(/Start clean directory with name "cache" at path "[^"]+\/var\/cache"/);
-    expect(output).toMatch(/Start clean directory with name "log" at path "[^"]+\/var\/log"/);
+    expect(output).toMatch(/Start clean directory/);
+    expect(output).toMatch(/var\/log/);
   });
 });

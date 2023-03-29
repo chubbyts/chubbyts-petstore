@@ -1,19 +1,31 @@
-import { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/lazy-middleware';
 import { createGroup, getRoutes } from '@chubbyts/chubbyts-framework/dist/router/group';
+import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import {
   createDeleteRoute,
   createGetRoute,
   createPostRoute,
   createPutRoute,
-  Route,
 } from '@chubbyts/chubbyts-framework/dist/router/route';
-import { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
-import { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { MongoClient } from 'mongodb';
+import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
+import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
+import type { MongoClient } from 'mongodb';
+import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
+import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
+import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
+import { createDeleteHandler } from '@chubbyts/chubbyts-api/dist/handler/delete';
+import { createListHandler } from '@chubbyts/chubbyts-api/dist/handler/list';
+import type { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
+import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
+import type { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
+import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { z } from 'zod';
+import { createEnrichList, createEnrichModel } from '../enrich';
 import { createResolveList, createFindById, createPersist, createRemove } from '../repository';
 import {
   petRequestSchema,
@@ -22,17 +34,6 @@ import {
   petListResponseSchema,
   petRequestListOpenApiSchema,
 } from './model';
-import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
-import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
-import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
-import { createDeleteHandler } from '@chubbyts/chubbyts-api/dist/handler/delete';
-import { createListHandler } from '@chubbyts/chubbyts-api/dist/handler/list';
-import { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
-import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import { createEnrichList, createEnrichModel } from '../enrich';
-import { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
-import { extendZodWithOpenApi, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { z } from 'zod';
 
 extendZodWithOpenApi(z);
 

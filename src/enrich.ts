@@ -1,4 +1,4 @@
-import {
+import type {
   EnrichedList,
   EnrichedModel,
   EnrichList,
@@ -7,7 +7,7 @@ import {
   List,
   Model,
 } from '@chubbyts/chubbyts-api/dist/model';
-import { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
+import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 
 type ModelLinks = {

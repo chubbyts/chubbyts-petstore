@@ -93,6 +93,6 @@ export const createAndPushImage = ({
         username,
         password,
       },
-    }).imageName as unknown as string;
+    }).repoDigest as unknown as string;
   });
 };

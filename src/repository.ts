@@ -1,18 +1,18 @@
 import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
 import type { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
-import type { MongoClient, WithId } from 'mongodb';
+import type { Filter, MongoClient, WithId } from 'mongodb';
 
-const withoutMongoId = (model: WithId<Model>): Model => {
+const withoutMongoId = <C>(model: WithId<Model<C>>): Model<C> => {
   const { _id, ...rest } = model;
 
-  return rest;
+  return rest as Model<C>;
 };
 
-export const createResolveList = (mongoClient: MongoClient, collectionName: string): ResolveList => {
-  const collection = mongoClient.db().collection<Model>(collectionName);
+export const createResolveList = <C>(mongoClient: MongoClient, collectionName: string): ResolveList<Model<C>> => {
+  const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
-  return async (list: List): Promise<List> => {
-    const cursor = collection.find(list.filters);
+  return async (list: List<Model<C>>): Promise<List<Model<C>>> => {
+    const cursor = collection.find(list.filters as Filter<Model<C>>);
 
     cursor.skip(list.offset);
     cursor.limit(list.limit);
@@ -30,11 +30,11 @@ export const createResolveList = (mongoClient: MongoClient, collectionName: stri
   };
 };
 
-export const createFindById = (mongoClient: MongoClient, collectionName: string): FindById => {
-  const collection = mongoClient.db().collection<Model>(collectionName);
+export const createFindById = <C>(mongoClient: MongoClient, collectionName: string): FindById<Model<C>> => {
+  const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
-  return async (id: string): Promise<Model | undefined> => {
-    const modelWithMongoId = await collection.findOne({ id });
+  return async (id: string): Promise<Model<C> | undefined> => {
+    const modelWithMongoId = await collection.findOne({ id } as Filter<Model<C>>);
 
     if (!modelWithMongoId) {
       return undefined;
@@ -44,20 +44,26 @@ export const createFindById = (mongoClient: MongoClient, collectionName: string)
   };
 };
 
-export const createPersist = (mongoClient: MongoClient, collectionName: string): Persist => {
-  const collection = mongoClient.db().collection<Model>(collectionName);
+export const createPersist = <C>(mongoClient: MongoClient, collectionName: string): Persist<Model<C>> => {
+  const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
-  return async (model: Model): Promise<Model> => {
-    await collection.replaceOne({ id: model.id }, model, { upsert: true });
+  return async (model: Model<C>): Promise<Model<C>> => {
+    const filter = { id: model.id } as Filter<Model<C>>;
 
-    return withoutMongoId((await collection.findOne({ id: model.id })) as WithId<Model>);
+    await collection.replaceOne(filter, model, { upsert: true });
+
+    const modelWithMongoId = (await collection.findOne(filter)) as WithId<Model<C>>;
+
+    return withoutMongoId(modelWithMongoId);
   };
 };
 
-export const createRemove = (mongoClient: MongoClient, collectionName: string): Remove => {
-  const collection = mongoClient.db().collection<Model>(collectionName);
+export const createRemove = <C>(mongoClient: MongoClient, collectionName: string): Remove<Model<C>> => {
+  const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
-  return async (model: Model): Promise<void> => {
-    await collection.deleteOne({ id: model.id });
+  return async (model: Model<C>): Promise<void> => {
+    const filter = { id: model.id } as Filter<Model<C>>;
+
+    await collection.deleteOne(filter);
   };
 };

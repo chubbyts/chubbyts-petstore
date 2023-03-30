@@ -18,9 +18,9 @@ import { createFindById, createPersist, createRemove, createResolveList } from '
 
 describe('createResolveList', () => {
   test('with all arguments', async () => {
-    type SomeModel = Model & { name: string };
+    type SomeModel = Model<{ name: string }>;
 
-    const list: List = {
+    const list: List<SomeModel> = {
       offset: 1,
       limit: 1,
       filters: { name: 'name1' },
@@ -124,7 +124,7 @@ describe('createResolveList', () => {
 
 describe('createFindById', () => {
   test('with found model', async () => {
-    type SomeModel = Model & { name: string };
+    type SomeModel = Model<{ name: string }>;
 
     const model: SomeModel = {
       id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
@@ -166,7 +166,7 @@ describe('createFindById', () => {
   });
 
   test('without found model', async () => {
-    type SomeModel = Model & { name: string };
+    type SomeModel = Model<{ name: string }>;
 
     const findOne = jest.fn(
       async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
@@ -195,7 +195,7 @@ describe('createFindById', () => {
 });
 
 test('createPersist', async () => {
-  type SomeModel = Model & { name: string };
+  type SomeModel = Model<{ name: string }>;
 
   const model: SomeModel = {
     id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
@@ -248,7 +248,7 @@ test('createPersist', async () => {
 });
 
 test('createRemove', async () => {
-  type SomeModel = Model & { name: string };
+  type SomeModel = Model<{ name: string }>;
 
   const model: SomeModel = {
     id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
@@ -256,13 +256,11 @@ test('createRemove', async () => {
     name: 'name1',
   };
 
-  const _id = new ObjectId();
-
-  const deleteOne: Collection['deleteOne'] = jest.fn(async (givenFilters: Filter<SomeModel>): Promise<DeleteResult> => {
+  const deleteOne = jest.fn(async (givenFilters: Filter<SomeModel>): Promise<DeleteResult> => {
     expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
 
     return { acknowledged: true, deletedCount: 1 };
-  });
+  }) as Collection['deleteOne'];
 
   const collection = jest.fn((): Collection => ({ deleteOne } as unknown as Collection));
 

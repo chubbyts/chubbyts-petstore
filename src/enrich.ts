@@ -29,7 +29,11 @@ const createLink = (href: string, method: Method): Link => {
   };
 };
 
-const createModelLinks = (generatePath: GeneratePath, model: Model, links: ModelLinks): { [key: string]: Link } => {
+const createModelLinks = <C>(
+  generatePath: GeneratePath,
+  model: Model<C>,
+  links: ModelLinks,
+): { [key: string]: Link } => {
   return {
     ...(links.read ? { read: createLink(generatePath(links.read, { id: model.id }), Method.GET) } : {}),
     ...(links.update ? { update: createLink(generatePath(links.update, { id: model.id }), Method.PUT) } : {}),
@@ -37,15 +41,15 @@ const createModelLinks = (generatePath: GeneratePath, model: Model, links: Model
   };
 };
 
-export const createEnrichModel = (generatePath: GeneratePath, links: ModelLinks): EnrichModel => {
-  return (model: Model): EnrichedModel => ({
+export const createEnrichModel = <C>(generatePath: GeneratePath, links: ModelLinks): EnrichModel<Model<C>> => {
+  return async (model: Model<C>): Promise<EnrichedModel<Model<C>>> => ({
     ...model,
     _links: createModelLinks(generatePath, model, links),
   });
 };
 
-export const createEnrichList = (generatePath: GeneratePath, links: ListLinks): EnrichList => {
-  return (list: List): EnrichedList => ({
+export const createEnrichList = <C>(generatePath: GeneratePath, links: ListLinks): EnrichList<Model<C>> => {
+  return async (list: List<Model<C>>): Promise<EnrichedList<Model<C>>> => ({
     ...list,
     items: list.items.map((model) => ({
       ...model,

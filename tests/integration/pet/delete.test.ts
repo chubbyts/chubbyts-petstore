@@ -35,7 +35,7 @@ describe('delete', () => {
     expect(responseData).toMatchInlineSnapshot(`
       {
         "_httpError": "NotFound",
-        "detail": "There is no entry with id babb8c3c-788e-4bd8-aac2-d2b1a098a5c8",
+        "detail": "There is no entry with id "babb8c3c-788e-4bd8-aac2-d2b1a098a5c8"",
         "status": 404,
         "title": "Not Found",
         "type": "https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.5",

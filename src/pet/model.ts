@@ -15,6 +15,15 @@ export const petRequestSchema = z
   })
   .strict();
 
+export const petSchema = z
+  .object({
+    ...modelSchema.shape,
+    ...petRequestSchema.shape,
+  })
+  .strict();
+
+export type Pet = z.infer<typeof petSchema>;
+
 export const petResponseSchema = z
   .object({
     ...modelResponseSchema.shape,
@@ -32,20 +41,11 @@ export const petResponseSchema = z
 export const petRequestListSchema = z
   .object({
     ...listRequestSchema.shape,
-    filters: z.object({ name: z.string().optional() }).strict().optional(),
+    filters: z.object({ name: z.string().optional() }).strict().default({}),
     sort: z
       .object({ name: z.enum(['asc', 'desc']).optional() })
       .strict()
-      .optional(),
-  })
-  .strict();
-
-export const petRequestListOpenApiSchema = z
-  .object({
-    offset: z.number().default(0),
-    limit: z.number().default(20),
-    'filters[name]': z.string().optional(),
-    'sort[name]': z.enum(['asc', 'desc']).optional(),
+      .default({}),
   })
   .strict();
 
@@ -68,5 +68,14 @@ export const petListResponseSchema = z
         create: linkSchema.optional(),
       })
       .optional(),
+  })
+  .strict();
+
+export const petRequestListOpenApiSchema = z
+  .object({
+    offset: z.number().default(0),
+    limit: z.number().default(20),
+    'filters[name]': z.string().optional(),
+    'sort[name]': z.enum(['asc', 'desc']).optional(),
   })
   .strict();

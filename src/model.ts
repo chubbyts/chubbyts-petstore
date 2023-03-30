@@ -39,7 +39,7 @@ export const listRequestSchema = z
   .object({
     offset: numberSchema.default(0),
     limit: numberSchema.default(20),
-    filters: z.object({}).strict().optional(),
-    sort: z.object({}).strict().optional(),
+    filters: z.object({}).strict().default({}),
+    sort: z.object({}).strict().default({}),
   })
   .strict();

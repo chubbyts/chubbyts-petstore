@@ -96,6 +96,7 @@ describe('list', () => {
       filters: {
         name: 'list.test',
       },
+      sort: {},
       count: 2,
       items: [
         {

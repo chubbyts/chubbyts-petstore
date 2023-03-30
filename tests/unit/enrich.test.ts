@@ -12,7 +12,7 @@ describe('createEnrichModel', () => {
     const enrichModel = createEnrichModel(generatePath, {});
 
     expect(
-      enrichModel(
+      await enrichModel(
         {
           id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
           createdAt: new Date('2022-06-12T20:08:24.793Z'),
@@ -44,7 +44,7 @@ describe('createEnrichModel', () => {
     });
 
     expect(
-      enrichModel(
+      await enrichModel(
         {
           id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
           createdAt: new Date('2022-06-12T20:08:24.793Z'),
@@ -94,7 +94,7 @@ describe('createEnrichList', () => {
     const enrichList = createEnrichList(generatePath, {});
 
     expect(
-      enrichList(
+      await enrichList(
         {
           offset: 0,
           limit: 20,
@@ -147,7 +147,7 @@ describe('createEnrichList', () => {
     });
 
     expect(
-      enrichList(
+      await enrichList(
         {
           offset: 0,
           limit: 20,

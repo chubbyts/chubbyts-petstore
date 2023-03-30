@@ -62,10 +62,9 @@ docker-compose up -d
 docker-compose exec node bash
 ```
 
-## Installation
+## Start
 
 ```sh
-npm install
 npm start
 ```
 

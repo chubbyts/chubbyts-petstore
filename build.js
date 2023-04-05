@@ -10,7 +10,7 @@ const build = async (watch = false) => {
   }
 
   return Promise.all(
-    ['bin', 'bootstrap', 'config', 'src', 'translations'].map((dir) => {
+    ['bin', 'bootstrap', 'config', 'src'].map((dir) => {
       return new Promise((resolve, reject) => {
         if (existsSync(`${rootDir}/dist/${dir}`)) {
           rmSync(`${rootDir}/dist/${dir}`, { recursive: true });

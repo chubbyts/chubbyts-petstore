@@ -422,10 +422,12 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
 
 type InstallK8sHelmIngressNginxControllerProps = {
   k8sProvider: k8s.Provider;
+  doLoadbalancerHostname: string;
 };
 
 export const installK8sHelmIngressNginxController = ({
   k8sProvider,
+  doLoadbalancerHostname,
 }: InstallK8sHelmIngressNginxControllerProps): k8s.helm.v3.Release => {
   // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/ingress-nginx
   // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/ingress-nginx/values.yml
@@ -446,6 +448,7 @@ export const installK8sHelmIngressNginxController = ({
           service: {
             type: 'LoadBalancer',
             annotations: {
+              'service.beta.kubernetes.io/do-loadbalancer-hostname': doLoadbalancerHostname,
               'service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol': 'true',
             },
           },
@@ -533,7 +536,7 @@ export const createK8sIngressNginx = ({
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
           'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
-          'nginx.ingress.kubernetes.io/ssl-redirect': 'false', // do not drop, can lead to issues in certificate creation
+          //'nginx.ingress.kubernetes.io/ssl-redirect': 'false', // do not drop, can lead to issues in certificate creation
           ...annotations,
           helmId: helmIngressNginxController.id,
         },

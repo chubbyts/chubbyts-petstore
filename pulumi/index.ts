@@ -175,7 +175,7 @@ swaggerUiFactory({ k8sProvider });
 installK8sHelmMetricsServer({ k8sProvider });
 
 // install ingress controller (make sure the entry exists)
-const helmIngressNginxController = installK8sHelmIngressNginxController({ k8sProvider });
+const helmIngressNginxController = installK8sHelmIngressNginxController({ k8sProvider, doLoadbalancerHostname: 'kube.chubbyts-petstore.dev' });
 
 const ingress = createK8sIngressNginx({
   k8sProvider,

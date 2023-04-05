@@ -533,6 +533,7 @@ export const createK8sIngressNginx = ({
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
           'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
+          'nginx.ingress.kubernetes.io/ssl-redirect': 'false', // do not drop, can lead to issues in certificate creation
           ...annotations,
           helmId: helmIngressNginxController.id,
         },
@@ -560,6 +561,7 @@ type CreateK8sCertManagerProps = {
   email: string;
 };
 
+// IMPORTANT: Make sure that all domains that are provided by the ingress resolve to the cluster, otherwise the certificated cannot be issued
 export const createK8sCertManager = ({
   k8sProvider,
   helmCertManager,

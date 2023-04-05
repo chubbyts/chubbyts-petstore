@@ -174,12 +174,7 @@ swaggerUiFactory({ k8sProvider });
 // install metrics server
 installK8sHelmMetricsServer({ k8sProvider });
 
-// install cert manager
-const helmCertManager = installK8sHelmCertManager({ k8sProvider });
-
-createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('certManagerEmail') });
-
-// install ingress controller
+// install ingress controller (make sure the entry exists)
 const helmIngressNginxController = installK8sHelmIngressNginxController({ k8sProvider });
 
 const ingress = createK8sIngressNginx({
@@ -245,6 +240,11 @@ const ingress = createK8sIngressNginx({
   annotations: { 'nginx.ingress.kubernetes.io/configuration-snippet': 'rewrite ^/$ /swagger redirect;' },
   addWwwAliasForHosts: ['chubbyts-petstore.dev'],
 });
+
+// install cert manager
+const helmCertManager = installK8sHelmCertManager({ k8sProvider });
+
+createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('certManagerEmail') });
 
 export const containerRegistryId = containerRegistry.id;
 export const ingressIp = ingress.status.loadBalancer.ingress[0].ip;

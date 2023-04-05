@@ -536,7 +536,6 @@ export const createK8sIngressNginx = ({
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
           'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
-          //'nginx.ingress.kubernetes.io/ssl-redirect': 'false', // do not drop, can lead to issues in certificate creation
           ...annotations,
           helmId: helmIngressNginxController.id,
         },

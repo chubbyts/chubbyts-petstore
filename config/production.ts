@@ -3,7 +3,7 @@ import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
-import type { InfoObject } from 'openapi3-ts';
+import type { InfoObject } from 'openapi3-ts/dist/mjs/oas30';
 import {
   petCreateHandlerServiceFactory,
   petFindByIdServiceFactory,
@@ -160,19 +160,19 @@ export const configFactory = (env: string): Config => {
     mongodb: {
       uri: process.env.MONGO_URI as string,
       indexes: {
-        pet: [
+        pets: [
           {
             key: { id: 1 },
-            name: 'pet.id',
+            name: 'pets.id',
             unique: true,
           },
           {
             key: { name: 1 },
-            name: 'pet.name',
+            name: 'pets.name',
           },
           {
             key: { tag: 1 },
-            name: 'pet.tag',
+            name: 'pets.tag',
             unique: true,
             sparse: true,
           },

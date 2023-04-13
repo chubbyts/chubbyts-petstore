@@ -1,24 +1,23 @@
 import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
-import { describe, expect, jest, test } from '@jest/globals';
-import type {
-  Collection,
-  Db,
-  DeleteResult,
-  Filter,
-  FindCursor,
-  FindOptions,
-  MongoClient,
-  Sort,
-  UpdateResult,
-  WithId,
-  WithoutId,
-} from 'mongodb';
+import { describe, expect, test } from '@jest/globals';
+import type { Collection, Db, FindCursor, MongoClient, WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { createFindById, createPersist, createRemove, createResolveList } from '../../src/repository';
 
 describe('createResolveList', () => {
   test('with all arguments', async () => {
     type SomeModel = Model<{ name: string }>;
+
+    const _id = new ObjectId();
+
+    const modelWithId: WithId<SomeModel> = {
+      _id,
+      id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+      createdAt: new Date('2022-06-12T20:08:24.793Z'),
+      updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+      name: 'name1',
+    };
 
     const list: List<SomeModel> = {
       offset: 1,
@@ -29,62 +28,70 @@ describe('createResolveList', () => {
       count: 0,
     };
 
-    const skip: FindCursor<WithId<SomeModel>>['skip'] = jest.fn((givenValue: number): FindCursor<WithId<SomeModel>> => {
-      expect(givenValue).toBe(list.offset);
-
-      return cursor;
-    });
-
-    const limit: FindCursor<WithId<SomeModel>>['limit'] = jest.fn(
-      (givenValue: number): FindCursor<WithId<SomeModel>> => {
-        expect(givenValue).toBe(list.limit);
-
-        return cursor;
+    const [cursor, cursorMocks] = useObjectMock<FindCursor<WithId<SomeModel>>>([
+      {
+        name: 'skip',
+        parameters: [1],
+        returnSelf: true,
       },
-    );
+      {
+        name: 'limit',
+        parameters: [1],
+        returnSelf: true,
+      },
+      {
+        name: 'sort',
+        parameters: [
+          {
+            name: 'desc',
+          },
+        ],
+        returnSelf: true,
+      },
+      {
+        name: 'toArray',
+        parameters: [],
+        return: Promise.resolve([modelWithId]),
+      },
+    ]);
 
-    const sort: FindCursor<WithId<SomeModel>>['sort'] = jest.fn((givenValue: Sort): FindCursor<WithId<SomeModel>> => {
-      expect(givenValue).toBe(list.sort);
+    const [collection, collectionMocks] = useObjectMock<Collection>([
+      {
+        name: 'find',
+        parameters: [
+          {
+            name: 'name1',
+          },
+        ],
+        return: cursor,
+      },
+      {
+        name: 'countDocuments',
+        parameters: [
+          {
+            name: 'name1',
+          },
+        ],
+        return: Promise.resolve(2),
+      },
+    ]);
 
-      return cursor;
-    });
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: ['collectionName'],
+        return: collection,
+      },
+    ]);
 
-    const toArray = jest.fn(async (): Promise<Array<SomeModel>> => {
-      return [
-        {
-          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-          createdAt: new Date('2022-06-12T20:08:24.793Z'),
-          updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-          name: 'name1',
-        },
-      ];
-    });
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
-    const cursor = {
-      skip,
-      limit,
-      sort,
-      toArray,
-    } as unknown as FindCursor<WithId<SomeModel>>;
-
-    const find = jest.fn((givenFilters: Filter<SomeModel>, options?: FindOptions): FindCursor<WithId<SomeModel>> => {
-      expect(givenFilters).toBe(list.filters);
-      expect(options).toBeUndefined();
-
-      return cursor;
-    });
-
-    const countDocuments = jest.fn(async (givenFilters: Filter<SomeModel>): Promise<number> => {
-      expect(givenFilters).toBe(list.filters);
-
-      return 2;
-    });
-
-    const collection = jest.fn((): Collection => ({ find, countDocuments } as unknown as Collection));
-
-    const db = jest.fn(() => ({ collection } as unknown as Db));
-
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
     const collectionName = 'collectionName';
 
     const resolveList = createResolveList(mongoClient, collectionName);
@@ -111,14 +118,10 @@ describe('createResolveList', () => {
       }
     `);
 
-    expect(collection).toHaveBeenCalledTimes(1);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(countDocuments).toHaveBeenCalledTimes(1);
-    expect(find).toHaveBeenCalledTimes(1);
-    expect(toArray).toHaveBeenCalledTimes(1);
-    expect(sort).toHaveBeenCalledTimes(1);
-    expect(limit).toHaveBeenCalledTimes(1);
-    expect(skip).toHaveBeenCalledTimes(1);
+    expect(cursorMocks.length).toBe(0);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
   });
 });
 
@@ -133,21 +136,35 @@ describe('createFindById', () => {
       name: 'name1',
     };
 
-    const findOne = jest.fn(
-      async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
-        expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
-        expect(options).toBeUndefined();
-
-        return { _id: new ObjectId(), ...model };
-      },
-    );
-
-    const collection = jest.fn((): Collection => ({ findOne } as unknown as Collection));
-
-    const db = jest.fn(() => ({ collection } as unknown as Db));
-
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
     const collectionName = 'collectionName';
+
+    const [collection, collectionMocks] = useObjectMock<Collection>([
+      {
+        name: 'findOne',
+        parameters: [
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: Promise.resolve({ _id: new ObjectId(), ...model }),
+      },
+    ]);
+
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: [collectionName],
+        return: collection,
+      },
+    ]);
+
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
     const findById = createFindById(mongoClient, collectionName);
 
@@ -160,37 +177,49 @@ describe('createFindById', () => {
       }
     `);
 
-    expect(collection).toHaveBeenCalledTimes(1);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(findOne).toHaveBeenCalledTimes(1);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
   });
 
   test('without found model', async () => {
-    type SomeModel = Model<{ name: string }>;
-
-    const findOne = jest.fn(
-      async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
-        expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
-        expect(options).toBeUndefined();
-
-        return null;
-      },
-    );
-
-    const collection = jest.fn((): Collection => ({ findOne } as unknown as Collection));
-
-    const db = jest.fn(() => ({ collection } as unknown as Db));
-
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
     const collectionName = 'collectionName';
+
+    const [collection, collectionMocks] = useObjectMock<Collection>([
+      {
+        name: 'findOne',
+        parameters: [
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: Promise.resolve(null),
+      },
+    ]);
+
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: [collectionName],
+        return: collection,
+      },
+    ]);
+
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
     const findById = createFindById(mongoClient, collectionName);
 
     expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
 
-    expect(collection).toHaveBeenCalledTimes(1);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(findOne).toHaveBeenCalledTimes(1);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
   });
 });
 
@@ -205,30 +234,52 @@ test('createPersist', async () => {
 
   const _id = new ObjectId();
 
-  const replaceOne: Collection['replaceOne'] = jest.fn(
-    async (givenFilters: Filter<SomeModel>, replacement: WithoutId<SomeModel>): Promise<UpdateResult> => {
-      expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
-      expect(replacement).toEqual(model);
-
-      return { acknowledged: true, matchedCount: 1, modifiedCount: 0, upsertedCount: 1, upsertedId: _id };
-    },
-  );
-
-  const findOne = jest.fn(
-    async (givenFilters: Filter<SomeModel>, options?: FindOptions): Promise<WithId<SomeModel> | null> => {
-      expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
-      expect(options).toBeUndefined();
-
-      return { _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model };
-    },
-  );
-
-  const collection = jest.fn((): Collection => ({ replaceOne, findOne } as unknown as Collection));
-
-  const db = jest.fn(() => ({ collection } as unknown as Db));
-
-  const mongoClient: MongoClient = { db } as unknown as MongoClient;
   const collectionName = 'collectionName';
+
+  const [collection, collectionMocks] = useObjectMock<Collection>([
+    {
+      name: 'replaceOne',
+      parameters: [
+        {
+          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        },
+        model,
+        { upsert: true },
+      ],
+      return: Promise.resolve({
+        acknowledged: true,
+        matchedCount: 1,
+        modifiedCount: 0,
+        upsertedCount: 1,
+        upsertedId: _id,
+      }),
+    },
+    {
+      name: 'findOne',
+      parameters: [
+        {
+          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        },
+      ],
+      return: Promise.resolve({ _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
+    },
+  ]);
+
+  const [db, dbMocks] = useObjectMock<Db>([
+    {
+      name: 'collection',
+      parameters: [collectionName],
+      return: collection,
+    },
+  ]);
+
+  const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+    {
+      name: 'db',
+      parameters: [],
+      return: db,
+    },
+  ]);
 
   const persist = createPersist(mongoClient, collectionName);
 
@@ -241,10 +292,9 @@ test('createPersist', async () => {
     }
   `);
 
-  expect(collection).toHaveBeenCalledTimes(1);
-  expect(db).toHaveBeenCalledTimes(1);
-  expect(replaceOne).toHaveBeenCalledTimes(1);
-  expect(findOne).toHaveBeenCalledTimes(1);
+  expect(collectionMocks.length).toBe(0);
+  expect(dbMocks.length).toBe(0);
+  expect(mongoClientMocks.length).toBe(0);
 });
 
 test('createRemove', async () => {
@@ -256,24 +306,41 @@ test('createRemove', async () => {
     name: 'name1',
   };
 
-  const deleteOne = jest.fn(async (givenFilters: Filter<SomeModel>): Promise<DeleteResult> => {
-    expect(givenFilters).toEqual({ id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9' });
-
-    return { acknowledged: true, deletedCount: 1 };
-  }) as Collection['deleteOne'];
-
-  const collection = jest.fn((): Collection => ({ deleteOne } as unknown as Collection));
-
-  const db = jest.fn(() => ({ collection } as unknown as Db));
-
-  const mongoClient: MongoClient = { db } as unknown as MongoClient;
   const collectionName = 'collectionName';
+
+  const [collection, collectionMocks] = useObjectMock<Collection>([
+    {
+      name: 'deleteOne',
+      parameters: [
+        {
+          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        },
+      ],
+      return: Promise.resolve({ acknowledged: true, deletedCount: 1 }),
+    },
+  ]);
+
+  const [db, dbMocks] = useObjectMock<Db>([
+    {
+      name: 'collection',
+      parameters: [collectionName],
+      return: collection,
+    },
+  ]);
+
+  const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+    {
+      name: 'db',
+      parameters: [],
+      return: db,
+    },
+  ]);
 
   const remove = createRemove(mongoClient, collectionName);
 
   await remove(model);
 
-  expect(collection).toHaveBeenCalledTimes(1);
-  expect(db).toHaveBeenCalledTimes(1);
-  expect(deleteOne).toHaveBeenCalledTimes(1);
+  expect(collectionMocks.length).toBe(0);
+  expect(dbMocks.length).toBe(0);
+  expect(mongoClientMocks.length).toBe(0);
 });

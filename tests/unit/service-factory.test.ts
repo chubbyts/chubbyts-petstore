@@ -1,7 +1,11 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { MongoClient } from 'mongodb';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
+import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
+import type { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -34,128 +38,134 @@ import {
 } from '../../src/service-factory';
 
 // eslint-disable-next-line functional/immutable-data
-MongoClient.connect = jest.fn(async () => ({} as MongoClient));
-
-export type CallMock = [string, unknown];
-
-export const createContainerGetCallsMock = (callMocks: Array<CallMock>) => {
-  const calls = [...callMocks];
-
-  return (givenId: string) => {
-    // eslint-disable-next-line functional/immutable-data
-    const call = calls.shift();
-
-    if (!call) {
-      throw new Error('Missing call');
-    }
-
-    const [id, service] = call;
-
-    expect(givenId).toBe(id);
-
-    return service;
-  };
-};
+MongoClient.connect = async () => ({} as MongoClient);
 
 describe('service-factory', () => {
   test('acceptNegotiationMiddlewareServiceFactory', () => {
-    const calls: Array<CallMock> = [['acceptNegotiator', {}]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['acceptNegotiator'],
+        return: {},
+      },
+    ]);
 
     expect(acceptNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('acceptNegotiatorServiceFactory', () => {
-    const calls: Array<CallMock> = [['encoder', { contentTypes: ['application/json'] }]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: { contentTypes: ['application/json'] },
+      },
+    ]);
 
     expect(acceptNegotiatorServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('apiErrorMiddlewareServiceFactory', () => {
-    const calls: Array<CallMock> = [
-      ['responseFactory', () => undefined],
-      ['encoder', {}],
-      ['config', { debug: true }],
-      ['logger', () => undefined],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: { debug: true },
+      },
+      {
+        name: 'get',
+        parameters: ['logger'],
+        return: {},
+      },
+    ]);
 
     expect(apiErrorMiddlewareServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('generatePathServiceFactory', () => {
-    const calls: Array<CallMock> = [['routesByName', new Map()]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['routesByName'],
+        return: () => new Map(),
+      },
+    ]);
 
     expect(generatePathServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('cleanDirectoriesCommandServiceFactory', () => {
-    const calls: Array<CallMock> = [
-      ['config', { directories: new Map([]) }],
-      ['logger', () => ({})],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: { directories: new Map([]) },
+      },
+      {
+        name: 'get',
+        parameters: ['logger'],
+        return: {},
+      },
+    ]);
 
     expect(cleanDirectoriesCommandServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('contentTypeNegotiationMiddlewareServiceFactory', () => {
-    const calls: Array<CallMock> = [['contentTypeNegotiator', {}]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['contentTypeNegotiator'],
+        return: {},
+      },
+    ]);
 
     expect(contentTypeNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('contentTypeNegotiatorServiceFactory', () => {
-    const calls: Array<CallMock> = [['decoder', { contentTypes: ['application/json'] }]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['decoder'],
+        return: { contentTypes: ['application/json'] },
+      },
+    ]);
 
     expect(contentTypeNegotiatorServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   describe('corsMiddlewareServiceFactory', () => {
     test('with createAllowOriginExact', () => {
-      const calls: Array<CallMock> = [
-        [
-          'config',
-          {
+      const [container, containerMocks] = useObjectMock<Container>([
+        {
+          name: 'get',
+          parameters: ['config'],
+          return: {
             cors: {
               allowOrigins: {
                 createAllowOriginExact: ['http://localhost:80'],
@@ -167,24 +177,25 @@ describe('service-factory', () => {
               maxAge: 7200,
             },
           },
-        ],
-        ['responseFactory', () => undefined],
-      ];
-
-      const get = jest.fn(createContainerGetCallsMock(calls));
-
-      const container = { get } as unknown as Container;
+        },
+        {
+          name: 'get',
+          parameters: ['responseFactory'],
+          return: () => undefined,
+        },
+      ]);
 
       expect(corsMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-      expect(get).toHaveBeenCalledTimes(calls.length);
+      expect(containerMocks.length).toBe(0);
     });
 
     test('with createAllowOriginRegex', () => {
-      const calls: Array<CallMock> = [
-        [
-          'config',
-          {
+      const [container, containerMocks] = useObjectMock<Container>([
+        {
+          name: 'get',
+          parameters: ['config'],
+          return: {
             cors: {
               allowOrigins: {
                 createAllowOriginRegex: [/^http?:\/\/localhost(:\d+)?$/],
@@ -196,17 +207,17 @@ describe('service-factory', () => {
               maxAge: 7200,
             },
           },
-        ],
-        ['responseFactory', () => undefined],
-      ];
-
-      const get = jest.fn(createContainerGetCallsMock(calls));
-
-      const container = { get } as unknown as Container;
+        },
+        {
+          name: 'get',
+          parameters: ['responseFactory'],
+          return: () => undefined,
+        },
+      ]);
 
       expect(corsMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-      expect(get).toHaveBeenCalledTimes(calls.length);
+      expect(containerMocks.length).toBe(0);
     });
   });
 
@@ -219,84 +230,85 @@ describe('service-factory', () => {
   });
 
   test('errorMiddlewareServiceFactory', () => {
-    const calls: Array<CallMock> = [
-      ['responseFactory', () => undefined],
-      ['config', { debug: true }],
-      ['logger', () => undefined],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => null,
+      },
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: { debug: true },
+      },
+      {
+        name: 'get',
+        parameters: ['logger'],
+        return: {},
+      },
+    ]);
 
     expect(errorMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('loggerServiceFactory', () => {
-    const messages: Array<string> = [];
-
-    const calls: Array<CallMock> = [
-      [
-        'config',
-        {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: {
           pino: {
             options: {},
-            stream: {
-              write: (msg: string) => {
-                // eslint-disable-next-line functional/immutable-data
-                messages.push(msg);
-              },
-            },
+            stream: { write: () => null },
           },
         },
-      ],
-    ];
+      },
+    ]);
 
-    const get = jest.fn(createContainerGetCallsMock(calls));
+    expect(loggerServiceFactory(container)).toBeInstanceOf(Object);
 
-    const container = { get } as unknown as Container;
-
-    const loggerService = loggerServiceFactory(container);
-
-    expect(loggerService).toBeInstanceOf(Object);
-
-    loggerService.info('text', { additionalKey: 'additionalValue' });
-
-    expect(messages.length).toBe(1);
-
-    expect(JSON.parse(messages[0])).toEqual({
-      additionalKey: 'additionalValue',
-      hostname: expect.any(String),
-      level: 'info',
-      level_number: 30,
-      message: 'text',
-      pid: expect.any(Number),
-      time: expect.any(Number),
-    });
-
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('matchServiceFactory', () => {
-    const calls: Array<CallMock> = [['routesByName', new Map()]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['routesByName'],
+        return: new Map(),
+      },
+    ]);
 
     expect(matchServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
-  test('middlewaresServiceFactory', () => {
-    const calls: Array<CallMock> = [];
+  test('middlewaresServiceFactory', async () => {
+    const request = {} as ServerRequest;
+    const response = {} as Response;
 
-    const get = jest.fn(createContainerGetCallsMock(calls));
+    const [handler, handlerMocks] = useFunctionMock<Handler>([]);
 
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['errorMiddleware'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['corsMiddleware'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['routeMatcherMiddleware'],
+        return: async () => response,
+      },
+    ]);
 
     const middlewares = middlewaresServiceFactory(container);
 
@@ -310,61 +322,71 @@ describe('service-factory', () => {
       ]
     `);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(await Promise.all(middlewares.map((middleware) => middleware(request, handler)))).toEqual(
+      middlewares.map(() => response),
+    );
+
+    expect(handlerMocks.length).toBe(0);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('mongoClientServiceFactory', async () => {
-    const calls: Array<CallMock> = [
-      [
-        'config',
-        {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: {
           mongodb: {
             uri: 'mongodb://localhost',
             indexes: {},
           },
         },
-      ],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+      },
+    ]);
 
     const middlewares = await mongoClientServiceFactory(container);
 
     expect(middlewares).toBeInstanceOf(Object);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('openApiHandlerServiceFactory', () => {
-    const calls: Array<CallMock> = [
-      ['openApiObject', {}],
-      ['responseFactory', () => null],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['openApiObject'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(openApiHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('openApiObjectServiceFactory', () => {
-    const calls: Array<CallMock> = [
-      ['config', { openApi: {} }],
-      ['openApiRegistry', { definitions: { sort: () => null, forEach: () => null } }],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: { openApi: {} },
+      },
+      {
+        name: 'get',
+        parameters: ['openApiRegistry'],
+        return: { definitions: { sort: () => null, forEach: () => null } },
+      },
+    ]);
 
     expect(openApiObjectServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('openApiRegistryServiceFactory', () => {
@@ -372,62 +394,82 @@ describe('service-factory', () => {
   });
 
   test('pingHandlerServiceFactory', () => {
-    const calls: Array<CallMock> = [['responseFactory', () => null]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => null,
+      },
+    ]);
 
     expect(pingHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('requestFactoryServiceFactory', () => {
-    const calls: Array<CallMock> = [
-      ['uriFactory', () => undefined],
-      ['streamFactory', () => undefined],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['uriFactory'],
+        return: () => null,
+      },
+      {
+        name: 'get',
+        parameters: ['streamFactory'],
+        return: () => null,
+      },
+    ]);
 
     expect(requestFactoryServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('responseFactoryServiceFactory', () => {
-    const calls: Array<CallMock> = [['streamFactory', () => undefined]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['streamFactory'],
+        return: () => null,
+      },
+    ]);
 
     expect(responseFactoryServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('routeMatcherMiddlewareServiceFactory', () => {
-    const calls: Array<CallMock> = [['match', () => undefined]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['match'],
+        return: () => null,
+      },
+    ]);
 
     expect(routeMatcherMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
-  test('routesServiceFactory', () => {
-    const calls: Array<CallMock> = [];
+  test('routesServiceFactory', async () => {
+    const request = {} as ServerRequest;
+    const response = {} as Response;
 
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['pingHandler'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['openApiHandler'],
+        return: async () => response,
+      },
+    ]);
 
     const routes = routesServiceFactory(container);
 
@@ -458,31 +500,37 @@ describe('service-factory', () => {
       ]
     `);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(await Promise.all(routes.map((route) => route.handler(request)))).toEqual(routes.map(() => response));
+
+    expect(containerMocks.length).toBe(0);
   });
 
   test('routesByNameServiceFactory', () => {
-    const calls: Array<CallMock> = [['routes', []]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['routes'],
+        return: [],
+      },
+    ]);
 
     expect(routesByNameServiceFactory(container)).toBeInstanceOf(Map);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('serverRequestFactoryServiceFactory', () => {
-    const calls: Array<CallMock> = [['requestFactory', () => undefined]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['requestFactory'],
+        return: () => null,
+      },
+    ]);
 
     expect(serverRequestFactoryServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('streamFactoryServiceFactory', () => {

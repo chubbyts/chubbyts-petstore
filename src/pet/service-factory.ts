@@ -76,7 +76,7 @@ export const petEnrichListServiceFactory = (container: Container): EnrichList<Pe
 };
 
 export const petFindByIdServiceFactory = async (container: Container): Promise<FindById<Pet>> => {
-  return createFindById(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+  return createFindById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -91,7 +91,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petPersistServiceFactory = async (container: Container): Promise<Persist<Pet>> => {
-  return createPersist(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+  return createPersist(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -105,11 +105,11 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petRemoveServiceFactory = async (container: Container): Promise<Remove<Pet>> => {
-  return createRemove(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+  return createRemove(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petResolveListServiceFactory = async (container: Container): Promise<ResolveList<Pet>> => {
-  return createResolveList(await container.get<Promise<MongoClient>>('mongoClient'), 'pet');
+  return createResolveList(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petOpenApiRegistryServiceDelegator = (_container: Container, _name: string, factory: () => unknown) => {

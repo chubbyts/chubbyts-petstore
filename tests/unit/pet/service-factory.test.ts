@@ -1,7 +1,9 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { describe, expect, jest, test } from '@jest/globals';
-import type { Db, MongoClient } from 'mongodb';
+import { describe, expect, test } from '@jest/globals';
+import type { Collection, Db, MongoClient } from 'mongodb';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -17,188 +19,294 @@ import {
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
-import type { CallMock } from '../service-factory.test';
-import { createContainerGetCallsMock } from '../service-factory.test';
 
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
-    const calls: Array<CallMock> = [
-      ['decoder', {}],
-      ['petPersist', () => undefined],
-      ['responseFactory', () => undefined],
-      ['encoder', {}],
-      ['petEnrichModel', {}],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['decoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petPersist'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petEnrichModel'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(await petCreateHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petDeleteHandlerServiceFactory', async () => {
-    const calls: Array<CallMock> = [
-      ['petFindById', () => undefined],
-      ['petRemove', () => undefined],
-      ['responseFactory', () => undefined],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['petFindById'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['petRemove'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(await petDeleteHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petEnrichModelServiceFactory', async () => {
-    const calls: Array<CallMock> = [['generatePath', () => undefined]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['generatePath'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(petEnrichModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petEnrichListServiceFactory', async () => {
-    const calls: Array<CallMock> = [['generatePath', () => undefined]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['generatePath'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(petEnrichListServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petFindByIdServiceFactory', async () => {
-    const collection = jest.fn(() => ({}));
+    const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
-    const db = jest.fn(() => ({ collection } as unknown as Db));
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: ['pets'],
+        return: collection,
+      },
+    ]);
 
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
-    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['mongoClient'],
+        return: Promise.resolve(mongoClient),
+      },
+    ]);
 
     expect(await petFindByIdServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(collection).toHaveBeenCalledTimes(1);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petListHandlerServiceFactory', async () => {
-    const calls: Array<CallMock> = [
-      ['petResolveList', () => undefined],
-      ['responseFactory', () => undefined],
-      ['encoder', {}],
-      ['petEnrichList', {}],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['petResolveList'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petEnrichList'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(await petListHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petPersistServiceFactory', async () => {
-    const collection = jest.fn(() => ({}));
+    const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
-    const db = jest.fn(() => ({ collection } as unknown as Db));
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: ['pets'],
+        return: collection,
+      },
+    ]);
 
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
-    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['mongoClient'],
+        return: Promise.resolve(mongoClient),
+      },
+    ]);
 
     expect(await petPersistServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(collection).toHaveBeenCalledTimes(1);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petReadHandlerServiceFactory', async () => {
-    const calls: Array<CallMock> = [
-      ['petFindById', () => undefined],
-      ['responseFactory', () => undefined],
-      ['encoder', {}],
-      ['petEnrichModel', {}],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['petFindById'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petEnrichModel'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(await petReadHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petRemoveServiceFactory', async () => {
-    const collection = jest.fn(() => ({}));
+    const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
-    const db = jest.fn(() => ({ collection } as unknown as Db));
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: ['pets'],
+        return: collection,
+      },
+    ]);
 
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
-    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['mongoClient'],
+        return: Promise.resolve(mongoClient),
+      },
+    ]);
 
     expect(await petRemoveServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(collection).toHaveBeenCalledTimes(1);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petResolveListServiceFactory', async () => {
-    const collection = jest.fn(() => ({}));
+    const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
-    const db = jest.fn(() => ({ collection } as unknown as Db));
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: ['pets'],
+        return: collection,
+      },
+    ]);
 
-    const mongoClient: MongoClient = { db } as unknown as MongoClient;
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
-    const calls: Array<CallMock> = [['mongoClient', mongoClient]];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['mongoClient'],
+        return: Promise.resolve(mongoClient),
+      },
+    ]);
 
     expect(await petResolveListServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
-    expect(db).toHaveBeenCalledTimes(1);
-    expect(collection).toHaveBeenCalledTimes(1);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petOpenApiRegistryServiceDelegator', async () => {
-    const calls: Array<CallMock> = [];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([]);
 
     const factory = () => new OpenAPIRegistry();
 
@@ -214,15 +322,40 @@ describe('service-factory', () => {
       ],
     });
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 
-  test('petRoutesServiceDelegator', () => {
-    const calls: Array<CallMock> = [];
+  test('petRoutesServiceDelegator', async () => {
+    const request = {} as ServerRequest;
+    const response = {} as Response;
 
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['petListHandler'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['petCreateHandler'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['petReadHandler'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['petUpdateHandler'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
+        parameters: ['petDeleteHandler'],
+        return: async () => response,
+      },
+    ]);
 
     const routes = petRoutesServiceDelegator(container, 'name', () => []);
 
@@ -300,25 +433,47 @@ describe('service-factory', () => {
       ]
     `);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(await Promise.all(routes.map((route) => route.handler(request)))).toEqual(routes.map(() => response));
+
+    expect(containerMocks.length).toBe(0);
   });
 
   test('petUpdateHandlerServiceFactory', async () => {
-    const calls: Array<CallMock> = [
-      ['petFindById', () => undefined],
-      ['decoder', {}],
-      ['petPersist', () => undefined],
-      ['responseFactory', () => undefined],
-      ['encoder', {}],
-      ['petEnrichModel', {}],
-    ];
-
-    const get = jest.fn(createContainerGetCallsMock(calls));
-
-    const container = { get } as unknown as Container;
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['petFindById'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['decoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petPersist'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petEnrichModel'],
+        return: () => undefined,
+      },
+    ]);
 
     expect(await petUpdateHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(get).toHaveBeenCalledTimes(calls.length);
+    expect(containerMocks.length).toBe(0);
   });
 });

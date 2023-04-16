@@ -1,4 +1,4 @@
-import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { OpenAPIGenerator, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
 import type { Collection, Db, MongoClient } from 'mongodb';
@@ -19,6 +19,9 @@ import {
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
+import type { Pet, PetList } from '../../../src/pet/model';
+import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../../utils/route';
+import { validPet, validPetList } from './model.test';
 
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
@@ -80,29 +83,132 @@ describe('service-factory', () => {
   });
 
   test('petEnrichModelServiceFactory', async () => {
+    const request = {} as ServerRequest;
+
+    const pet: Pet = validPet;
+
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
         parameters: ['generatePath'],
-        return: () => undefined,
+        return: () => '__generated_link',
       },
     ]);
 
-    expect(petEnrichModelServiceFactory(container)).toBeInstanceOf(Function);
+    const petEnrichModel = petEnrichModelServiceFactory(container);
+
+    expect(petEnrichModel).toBeInstanceOf(Function);
+
+    expect(await petEnrichModel(pet, { request })).toMatchInlineSnapshot(`
+      {
+        "_links": {
+          "delete": {
+            "attributes": {
+              "method": "DELETE",
+            },
+            "href": "__generated_link",
+          },
+          "read": {
+            "attributes": {
+              "method": "GET",
+            },
+            "href": "__generated_link",
+          },
+          "update": {
+            "attributes": {
+              "method": "PUT",
+            },
+            "href": "__generated_link",
+          },
+        },
+        "createdAt": 2023-04-12T09:12:12.763Z,
+        "id": "test",
+        "name": "name",
+        "tag": "tag",
+        "updatedAt": 2023-04-16T15:05:49.154Z,
+        "vaccinations": [
+          {
+            "name": "name",
+          },
+        ],
+      }
+    `);
 
     expect(containerMocks.length).toBe(0);
   });
 
   test('petEnrichListServiceFactory', async () => {
+    const request = {} as ServerRequest;
+
+    const petList: PetList = validPetList;
+
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
         parameters: ['generatePath'],
-        return: () => undefined,
+        return: () => '__generated_link',
       },
     ]);
 
-    expect(petEnrichListServiceFactory(container)).toBeInstanceOf(Function);
+    const petEnrichList = petEnrichListServiceFactory(container);
+
+    expect(petEnrichList).toBeInstanceOf(Function);
+
+    expect(await petEnrichList(petList, { request })).toMatchInlineSnapshot(`
+      {
+        "_links": {
+          "create": {
+            "attributes": {
+              "method": "POST",
+            },
+            "href": "__generated_link",
+          },
+        },
+        "count": 2,
+        "filters": {
+          "name": "name",
+        },
+        "items": [
+          {
+            "_links": {
+              "delete": {
+                "attributes": {
+                  "method": "DELETE",
+                },
+                "href": "__generated_link",
+              },
+              "read": {
+                "attributes": {
+                  "method": "GET",
+                },
+                "href": "__generated_link",
+              },
+              "update": {
+                "attributes": {
+                  "method": "PUT",
+                },
+                "href": "__generated_link",
+              },
+            },
+            "createdAt": 2023-04-12T09:12:12.763Z,
+            "id": "test",
+            "name": "name",
+            "tag": "tag",
+            "updatedAt": 2023-04-16T15:05:49.154Z,
+            "vaccinations": [
+              {
+                "name": "name",
+              },
+            ],
+          },
+        ],
+        "limit": 20,
+        "offset": 0,
+        "sort": {
+          "name": "asc",
+        },
+      }
+    `);
 
     expect(containerMocks.length).toBe(0);
   });
@@ -312,15 +418,823 @@ describe('service-factory', () => {
 
     const openApiRegistry = petOpenApiRegistryServiceDelegator(container, 'petOpenApiRegistry', factory);
 
-    expect(openApiRegistry).toMatchObject({
-      definitions: [
-        { route: { method: 'get', path: '/api/pets' } },
-        { route: { method: 'post', path: '/api/pets' } },
-        { route: { method: 'get', path: '/api/pets/{id}' } },
-        { route: { method: 'put', path: '/api/pets/{id}' } },
-        { route: { method: 'delete', path: '/api/pets/{id}' } },
-      ],
-    });
+    expect(openApiRegistry).toBeInstanceOf(OpenAPIRegistry);
+
+    expect(
+      new OpenAPIGenerator(openApiRegistry.definitions, '3.0.0').generateDocument({
+        info: {
+          version: '1.0.0',
+          title: 'Petstore',
+          license: {
+            name: 'MIT',
+          },
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      {
+        "components": {
+          "parameters": {},
+          "schemas": {},
+        },
+        "info": {
+          "license": {
+            "name": "MIT",
+          },
+          "title": "Petstore",
+          "version": "1.0.0",
+        },
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/pets": {
+            "get": {
+              "operationId": "listPets",
+              "parameters": [
+                {
+                  "in": "query",
+                  "name": "offset",
+                  "required": true,
+                  "schema": {
+                    "default": 0,
+                    "type": "number",
+                  },
+                },
+                {
+                  "in": "query",
+                  "name": "limit",
+                  "required": true,
+                  "schema": {
+                    "default": 20,
+                    "type": "number",
+                  },
+                },
+                {
+                  "in": "query",
+                  "name": "filters[name]",
+                  "required": false,
+                  "schema": {
+                    "type": "string",
+                  },
+                },
+                {
+                  "in": "query",
+                  "name": "sort[name]",
+                  "required": false,
+                  "schema": {
+                    "enum": [
+                      "asc",
+                      "desc",
+                    ],
+                    "type": "string",
+                  },
+                },
+              ],
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "additionalProperties": false,
+                        "description": "Pets",
+                        "properties": {
+                          "_links": {
+                            "properties": {
+                              "create": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                            },
+                            "type": "object",
+                          },
+                          "count": {
+                            "type": "number",
+                          },
+                          "filters": {
+                            "additionalProperties": false,
+                            "default": {},
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                              },
+                            },
+                            "type": "object",
+                          },
+                          "items": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "_links": {
+                                  "properties": {
+                                    "delete": {
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "attributes": {
+                                          "properties": {
+                                            "method": {
+                                              "type": "string",
+                                            },
+                                          },
+                                          "required": [
+                                            "method",
+                                          ],
+                                          "type": "object",
+                                        },
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                      },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
+                                    },
+                                    "read": {
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "attributes": {
+                                          "properties": {
+                                            "method": {
+                                              "type": "string",
+                                            },
+                                          },
+                                          "required": [
+                                            "method",
+                                          ],
+                                          "type": "object",
+                                        },
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                      },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
+                                    },
+                                    "update": {
+                                      "additionalProperties": false,
+                                      "properties": {
+                                        "attributes": {
+                                          "properties": {
+                                            "method": {
+                                              "type": "string",
+                                            },
+                                          },
+                                          "required": [
+                                            "method",
+                                          ],
+                                          "type": "object",
+                                        },
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                      },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
+                                    },
+                                  },
+                                  "type": "object",
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                },
+                                "id": {
+                                  "type": "string",
+                                },
+                                "name": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
+                                "tag": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
+                                "updatedAt": {
+                                  "type": "string",
+                                },
+                                "vaccinations": {
+                                  "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "name": {
+                                        "minLength": 1,
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "name",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "type": "array",
+                                },
+                              },
+                              "required": [
+                                "id",
+                                "createdAt",
+                                "name",
+                              ],
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                          "limit": {
+                            "type": "number",
+                          },
+                          "offset": {
+                            "type": "number",
+                          },
+                          "sort": {
+                            "additionalProperties": false,
+                            "default": {},
+                            "properties": {
+                              "name": {
+                                "enum": [
+                                  "asc",
+                                  "desc",
+                                ],
+                                "type": "string",
+                              },
+                            },
+                            "type": "object",
+                          },
+                        },
+                        "required": [
+                          "offset",
+                          "limit",
+                          "filters",
+                          "sort",
+                          "items",
+                          "count",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
+                  "description": "Pets",
+                },
+              },
+              "summary": "List all pets",
+              "tags": [
+                "Pets",
+              ],
+            },
+            "post": {
+              "operationId": "createPet",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "properties": {
+                        "name": {
+                          "minLength": 1,
+                          "type": "string",
+                        },
+                        "tag": {
+                          "minLength": 1,
+                          "type": "string",
+                        },
+                        "vaccinations": {
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "name": {
+                                "minLength": 1,
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "name",
+                            ],
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                },
+                "description": "Pet data",
+                "required": true,
+              },
+              "responses": {
+                "201": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "additionalProperties": false,
+                        "description": "Pet",
+                        "properties": {
+                          "_links": {
+                            "properties": {
+                              "delete": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                              "read": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                              "update": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                            },
+                            "type": "object",
+                          },
+                          "createdAt": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "string",
+                          },
+                          "name": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "tag": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                          },
+                          "vaccinations": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "name": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
+                              },
+                              "required": [
+                                "name",
+                              ],
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "required": [
+                          "id",
+                          "createdAt",
+                          "name",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
+                  "description": "Pet",
+                },
+              },
+              "summary": "Create a pet",
+              "tags": [
+                "Pets",
+              ],
+            },
+          },
+          "/api/pets/{id}": {
+            "delete": {
+              "operationId": "deletePet",
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "schema": {
+                    "example": "7d6722b2-a6b7-4c1f-af62-c1e96697de40",
+                    "type": "string",
+                  },
+                },
+              ],
+              "responses": {
+                "204": {
+                  "description": "Empty response",
+                },
+              },
+              "summary": "Delete a pet",
+              "tags": [
+                "Pets",
+              ],
+            },
+            "get": {
+              "operationId": "readPet",
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "schema": {
+                    "example": "7d6722b2-a6b7-4c1f-af62-c1e96697de40",
+                    "type": "string",
+                  },
+                },
+              ],
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "additionalProperties": false,
+                        "description": "Pet",
+                        "properties": {
+                          "_links": {
+                            "properties": {
+                              "delete": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                              "read": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                              "update": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                            },
+                            "type": "object",
+                          },
+                          "createdAt": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "string",
+                          },
+                          "name": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "tag": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                          },
+                          "vaccinations": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "name": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
+                              },
+                              "required": [
+                                "name",
+                              ],
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "required": [
+                          "id",
+                          "createdAt",
+                          "name",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
+                  "description": "Pet",
+                },
+              },
+              "summary": "Read a pet",
+              "tags": [
+                "Pets",
+              ],
+            },
+            "put": {
+              "operationId": "updatePet",
+              "parameters": [
+                {
+                  "in": "path",
+                  "name": "id",
+                  "required": true,
+                  "schema": {
+                    "example": "7d6722b2-a6b7-4c1f-af62-c1e96697de40",
+                    "type": "string",
+                  },
+                },
+              ],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "properties": {
+                        "name": {
+                          "minLength": 1,
+                          "type": "string",
+                        },
+                        "tag": {
+                          "minLength": 1,
+                          "type": "string",
+                        },
+                        "vaccinations": {
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "name": {
+                                "minLength": 1,
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "name",
+                            ],
+                            "type": "object",
+                          },
+                          "type": "array",
+                        },
+                      },
+                      "required": [
+                        "name",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                },
+                "description": "Pet data",
+                "required": true,
+              },
+              "responses": {
+                "200": {
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "additionalProperties": false,
+                        "description": "Pet",
+                        "properties": {
+                          "_links": {
+                            "properties": {
+                              "delete": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                              "read": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                              "update": {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "attributes": {
+                                    "properties": {
+                                      "method": {
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "method",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "href",
+                                ],
+                                "type": "object",
+                              },
+                            },
+                            "type": "object",
+                          },
+                          "createdAt": {
+                            "type": "string",
+                          },
+                          "id": {
+                            "type": "string",
+                          },
+                          "name": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "tag": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                          },
+                          "vaccinations": {
+                            "items": {
+                              "additionalProperties": false,
+                              "properties": {
+                                "name": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
+                              },
+                              "required": [
+                                "name",
+                              ],
+                              "type": "object",
+                            },
+                            "type": "array",
+                          },
+                        },
+                        "required": [
+                          "id",
+                          "createdAt",
+                          "name",
+                        ],
+                        "type": "object",
+                      },
+                    },
+                  },
+                  "description": "Pet",
+                },
+              },
+              "summary": "Update a pet",
+              "tags": [
+                "Pets",
+              ],
+            },
+          },
+        },
+      }
+    `);
 
     expect(containerMocks.length).toBe(0);
   });
@@ -329,31 +1243,94 @@ describe('service-factory', () => {
     const request = {} as ServerRequest;
     const response = {} as Response;
 
+    const dummyHandler = async () => response;
+    const dummyMiddleware = async () => response;
+
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
+        parameters: ['acceptNegotiationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['petListHandler'],
-        return: async () => response,
+        return: dummyHandler,
+      },
+      {
+        name: 'get',
+        parameters: ['acceptNegotiationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['contentTypeNegotiationMiddleware'],
+        return: dummyMiddleware,
       },
       {
         name: 'get',
         parameters: ['petCreateHandler'],
-        return: async () => response,
+        return: dummyHandler,
+      },
+      {
+        name: 'get',
+        parameters: ['acceptNegotiationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
       },
       {
         name: 'get',
         parameters: ['petReadHandler'],
-        return: async () => response,
+        return: dummyHandler,
+      },
+      {
+        name: 'get',
+        parameters: ['acceptNegotiationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['contentTypeNegotiationMiddleware'],
+        return: dummyMiddleware,
       },
       {
         name: 'get',
         parameters: ['petUpdateHandler'],
-        return: async () => response,
+        return: dummyHandler,
+      },
+      {
+        name: 'get',
+        parameters: ['acceptNegotiationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
       },
       {
         name: 'get',
         parameters: ['petDeleteHandler'],
-        return: async () => response,
+        return: dummyHandler,
       },
     ]);
 
@@ -433,7 +1410,7 @@ describe('service-factory', () => {
       ]
     `);
 
-    expect(await Promise.all(routes.map((route) => route.handler(request)))).toEqual(routes.map(() => response));
+    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, request, response);
 
     expect(containerMocks.length).toBe(0);
   });

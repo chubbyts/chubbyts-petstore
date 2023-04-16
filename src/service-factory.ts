@@ -201,7 +201,10 @@ export const openApiHandlerServiceFactory = (container: Container) => {
 
 export const openApiObjectServiceFactory = (container: Container): OpenAPIComponentObject => {
   const openApi = container.get<Config>('config').openApi;
-  const generator = new OpenAPIGenerator(container.get<OpenAPIRegistry>('openApiRegistry').definitions, '3.0.0');
+  const generator = new OpenAPIGenerator(
+    container.get<OpenAPIRegistry>('openApiRegistry').definitions,
+    openApi.openapi,
+  );
 
   return generator.generateDocument(openApi);
 };

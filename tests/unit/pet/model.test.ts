@@ -50,10 +50,10 @@ describe('petRequestSchema', () => {
   });
 });
 
-const validPet: Pet = {
+export const validPet: Pet = {
   id: 'test',
-  createdAt: new Date(),
-  updatedAt: new Date(),
+  createdAt: new Date('2023-04-12T09:12:12.763Z'),
+  updatedAt: new Date('2023-04-16T15:05:49.154Z'),
   ...validPetRequest,
 };
 
@@ -83,10 +83,10 @@ describe('petSchema', () => {
   });
 });
 
-const validPetResponseSchema: PetResponse = {
+const validPetResponse: PetResponse = {
   id: 'test',
-  createdAt: new Date().toJSON(),
-  updatedAt: new Date().toJSON(),
+  createdAt: new Date('2023-04-12T09:12:12.763Z').toJSON(),
+  updatedAt: new Date('2023-04-16T15:05:49.154Z').toJSON(),
   ...validPetRequest,
   _links: {
     read: { href: '/api/pet/1' },
@@ -97,12 +97,12 @@ const validPetResponseSchema: PetResponse = {
 
 describe('petResponseSchema', () => {
   test('valid', () => {
-    expect(petResponseSchema.parse(validPetResponseSchema)).toEqual(validPetResponseSchema);
+    expect(petResponseSchema.parse(validPetResponse)).toEqual(validPetResponse);
   });
 
   test('invalid', () => {
     try {
-      petResponseSchema.parse({ ...validPetResponseSchema, unknown: 'unknown' });
+      petResponseSchema.parse({ ...validPetResponse, unknown: 'unknown' });
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -121,7 +121,7 @@ describe('petResponseSchema', () => {
   });
 });
 
-const validPetRequestListSchema: PetRequestList = {
+const validPetRequestList: PetRequestList = {
   offset: 0,
   limit: 20,
   filters: { name: 'name' },
@@ -130,12 +130,19 @@ const validPetRequestListSchema: PetRequestList = {
 
 describe('petRequestListSchema', () => {
   test('valid', () => {
-    expect(petRequestListSchema.parse(validPetRequestListSchema)).toEqual(validPetRequestListSchema);
+    expect(petRequestListSchema.parse(validPetRequestList)).toEqual(validPetRequestList);
+  });
+
+  test('valid with inverse sorting', () => {
+    expect(petRequestListSchema.parse({ ...validPetRequestList, sort: { name: 'desc' } })).toEqual({
+      ...validPetRequestList,
+      sort: { name: 'desc' },
+    });
   });
 
   test('invalid', () => {
     try {
-      petRequestListSchema.parse({ ...validPetRequestListSchema, filters: { unknown: 'unknown' } });
+      petRequestListSchema.parse({ ...validPetRequestList, filters: { unknown: 'unknown' } });
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -156,29 +163,20 @@ describe('petRequestListSchema', () => {
   });
 });
 
-const validPetListSchema: PetList = {
-  ...validPetRequestListSchema,
-  items: [
-    {
-      id: 'test',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      name: 'name',
-      tag: 'tag',
-      vaccinations: [{ name: 'name' }],
-    },
-  ],
+export const validPetList: PetList = {
+  ...validPetRequestList,
+  items: [validPet],
   count: 2,
 };
 
 describe('petListSchema', () => {
   test('valid', () => {
-    expect(petListSchema.parse(validPetListSchema)).toEqual(validPetListSchema);
+    expect(petListSchema.parse(validPetList)).toEqual(validPetList);
   });
 
   test('invalid', () => {
     try {
-      petListSchema.parse({ ...validPetListSchema, filters: { unknown: 'unknown' } });
+      petListSchema.parse({ ...validPetList, filters: { unknown: 'unknown' } });
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -200,22 +198,8 @@ describe('petListSchema', () => {
 });
 
 const validPetListResponseSchema: PetListResponse = {
-  ...validPetRequestListSchema,
-  items: [
-    {
-      id: 'test',
-      createdAt: new Date().toJSON(),
-      updatedAt: new Date().toJSON(),
-      name: 'name',
-      tag: 'tag',
-      vaccinations: [{ name: 'name' }],
-      _links: {
-        read: { href: '/api/pet/1' },
-        update: { href: '/api/pet/1' },
-        delete: { href: '/api/pet/1' },
-      },
-    },
-  ],
+  ...validPetRequestList,
+  items: [validPetResponse],
   count: 2,
   _links: {
     create: { href: '/api/pet' },
@@ -262,6 +246,13 @@ describe('petRequestListOpenApiSchema', () => {
     expect(petRequestListOpenApiSchema.parse(validPetRequestListOpenApiSchema)).toEqual(
       validPetRequestListOpenApiSchema,
     );
+  });
+
+  test('valid inverse sorting', () => {
+    expect(petRequestListOpenApiSchema.parse({ ...validPetRequestListOpenApiSchema, 'sort[name]': 'desc' })).toEqual({
+      ...validPetRequestListOpenApiSchema,
+      'sort[name]': 'desc',
+    });
   });
 
   test('invalid', () => {

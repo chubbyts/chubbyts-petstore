@@ -5,8 +5,8 @@ import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { createFindById, createPersist, createRemove, createResolveList } from '../../src/repository';
 
-describe('createResolveList', () => {
-  test('with all arguments', async () => {
+describe('repository', () => {
+  test('createResolveList', async () => {
     type SomeModel = Model<{ name: string }>;
 
     const _id = new ObjectId();
@@ -123,52 +123,51 @@ describe('createResolveList', () => {
     expect(dbMocks.length).toBe(0);
     expect(mongoClientMocks.length).toBe(0);
   });
-});
 
-describe('createFindById', () => {
-  test('with found model', async () => {
-    type SomeModel = Model<{ name: string }>;
+  describe('createFindById', () => {
+    test('with found model', async () => {
+      type SomeModel = Model<{ name: string }>;
 
-    const model: SomeModel = {
-      id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-      createdAt: new Date('2022-06-12T20:08:24.793Z'),
-      updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-      name: 'name1',
-    };
+      const model: SomeModel = {
+        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        createdAt: new Date('2022-06-12T20:08:24.793Z'),
+        updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+        name: 'name1',
+      };
 
-    const collectionName = 'collectionName';
+      const collectionName = 'collectionName';
 
-    const [collection, collectionMocks] = useObjectMock<Collection>([
-      {
-        name: 'findOne',
-        parameters: [
-          {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-          },
-        ],
-        return: Promise.resolve({ _id: new ObjectId(), ...model }),
-      },
-    ]);
+      const [collection, collectionMocks] = useObjectMock<Collection>([
+        {
+          name: 'findOne',
+          parameters: [
+            {
+              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            },
+          ],
+          return: Promise.resolve({ _id: new ObjectId(), ...model }),
+        },
+      ]);
 
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: [collectionName],
-        return: collection,
-      },
-    ]);
+      const [db, dbMocks] = useObjectMock<Db>([
+        {
+          name: 'collection',
+          parameters: [collectionName],
+          return: collection,
+        },
+      ]);
 
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
+      const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+        {
+          name: 'db',
+          parameters: [],
+          return: db,
+        },
+      ]);
 
-    const findById = createFindById(mongoClient, collectionName);
+      const findById = createFindById(mongoClient, collectionName);
 
-    expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
+      expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
       {
         "createdAt": 2022-06-12T20:08:24.793Z,
         "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
@@ -177,15 +176,83 @@ describe('createFindById', () => {
       }
     `);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
+      expect(collectionMocks.length).toBe(0);
+      expect(dbMocks.length).toBe(0);
+      expect(mongoClientMocks.length).toBe(0);
+    });
+
+    test('without found model', async () => {
+      const collectionName = 'collectionName';
+
+      const [collection, collectionMocks] = useObjectMock<Collection>([
+        {
+          name: 'findOne',
+          parameters: [
+            {
+              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            },
+          ],
+          return: Promise.resolve(null),
+        },
+      ]);
+
+      const [db, dbMocks] = useObjectMock<Db>([
+        {
+          name: 'collection',
+          parameters: [collectionName],
+          return: collection,
+        },
+      ]);
+
+      const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+        {
+          name: 'db',
+          parameters: [],
+          return: db,
+        },
+      ]);
+
+      const findById = createFindById(mongoClient, collectionName);
+
+      expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
+
+      expect(collectionMocks.length).toBe(0);
+      expect(dbMocks.length).toBe(0);
+      expect(mongoClientMocks.length).toBe(0);
+    });
   });
 
-  test('without found model', async () => {
+  test('createPersist', async () => {
+    type SomeModel = Model<{ name: string }>;
+
+    const model: SomeModel = {
+      id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+      createdAt: new Date('2022-06-12T20:08:24.793Z'),
+      name: 'name1',
+    };
+
+    const _id = new ObjectId();
+
     const collectionName = 'collectionName';
 
     const [collection, collectionMocks] = useObjectMock<Collection>([
+      {
+        name: 'replaceOne',
+        parameters: [
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+          model,
+          { upsert: true },
+        ],
+        return: Promise.resolve({
+          acknowledged: true,
+          matchedCount: 1,
+          modifiedCount: 0,
+          upsertedCount: 1,
+          upsertedId: _id,
+        }),
+      },
       {
         name: 'findOne',
         parameters: [
@@ -193,7 +260,7 @@ describe('createFindById', () => {
             id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
           },
         ],
-        return: Promise.resolve(null),
+        return: Promise.resolve({ _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
       },
     ]);
 
@@ -213,77 +280,9 @@ describe('createFindById', () => {
       },
     ]);
 
-    const findById = createFindById(mongoClient, collectionName);
+    const persist = createPersist(mongoClient, collectionName);
 
-    expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
-
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
-  });
-});
-
-test('createPersist', async () => {
-  type SomeModel = Model<{ name: string }>;
-
-  const model: SomeModel = {
-    id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-    createdAt: new Date('2022-06-12T20:08:24.793Z'),
-    name: 'name1',
-  };
-
-  const _id = new ObjectId();
-
-  const collectionName = 'collectionName';
-
-  const [collection, collectionMocks] = useObjectMock<Collection>([
-    {
-      name: 'replaceOne',
-      parameters: [
-        {
-          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-        },
-        model,
-        { upsert: true },
-      ],
-      return: Promise.resolve({
-        acknowledged: true,
-        matchedCount: 1,
-        modifiedCount: 0,
-        upsertedCount: 1,
-        upsertedId: _id,
-      }),
-    },
-    {
-      name: 'findOne',
-      parameters: [
-        {
-          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-        },
-      ],
-      return: Promise.resolve({ _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
-    },
-  ]);
-
-  const [db, dbMocks] = useObjectMock<Db>([
-    {
-      name: 'collection',
-      parameters: [collectionName],
-      return: collection,
-    },
-  ]);
-
-  const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-    {
-      name: 'db',
-      parameters: [],
-      return: db,
-    },
-  ]);
-
-  const persist = createPersist(mongoClient, collectionName);
-
-  expect(await persist(model)).toMatchInlineSnapshot(`
+    expect(await persist(model)).toMatchInlineSnapshot(`
     {
       "createdAt": 2022-06-12T20:08:24.793Z,
       "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
@@ -292,55 +291,56 @@ test('createPersist', async () => {
     }
   `);
 
-  expect(collectionMocks.length).toBe(0);
-  expect(dbMocks.length).toBe(0);
-  expect(mongoClientMocks.length).toBe(0);
-});
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
+  });
 
-test('createRemove', async () => {
-  type SomeModel = Model<{ name: string }>;
+  test('createRemove', async () => {
+    type SomeModel = Model<{ name: string }>;
 
-  const model: SomeModel = {
-    id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-    createdAt: new Date('2022-06-12T20:08:24.793Z'),
-    name: 'name1',
-  };
+    const model: SomeModel = {
+      id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+      createdAt: new Date('2022-06-12T20:08:24.793Z'),
+      name: 'name1',
+    };
 
-  const collectionName = 'collectionName';
+    const collectionName = 'collectionName';
 
-  const [collection, collectionMocks] = useObjectMock<Collection>([
-    {
-      name: 'deleteOne',
-      parameters: [
-        {
-          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-        },
-      ],
-      return: Promise.resolve({ acknowledged: true, deletedCount: 1 }),
-    },
-  ]);
+    const [collection, collectionMocks] = useObjectMock<Collection>([
+      {
+        name: 'deleteOne',
+        parameters: [
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: Promise.resolve({ acknowledged: true, deletedCount: 1 }),
+      },
+    ]);
 
-  const [db, dbMocks] = useObjectMock<Db>([
-    {
-      name: 'collection',
-      parameters: [collectionName],
-      return: collection,
-    },
-  ]);
+    const [db, dbMocks] = useObjectMock<Db>([
+      {
+        name: 'collection',
+        parameters: [collectionName],
+        return: collection,
+      },
+    ]);
 
-  const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-    {
-      name: 'db',
-      parameters: [],
-      return: db,
-    },
-  ]);
+    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+      {
+        name: 'db',
+        parameters: [],
+        return: db,
+      },
+    ]);
 
-  const remove = createRemove(mongoClient, collectionName);
+    const remove = createRemove(mongoClient, collectionName);
 
-  await remove(model);
+    await remove(model);
 
-  expect(collectionMocks.length).toBe(0);
-  expect(dbMocks.length).toBe(0);
-  expect(mongoClientMocks.length).toBe(0);
+    expect(collectionMocks.length).toBe(0);
+    expect(dbMocks.length).toBe(0);
+    expect(mongoClientMocks.length).toBe(0);
+  });
 });

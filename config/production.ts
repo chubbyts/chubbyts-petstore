@@ -4,6 +4,7 @@ import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-conf
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { InfoObject } from 'openapi3-ts/dist/mjs/oas30';
+import type { OpenApiVersion } from '@asteasolutions/zod-to-openapi/dist/openapi-generator';
 import {
   petCreateHandlerServiceFactory,
   petFindByIdServiceFactory,
@@ -73,7 +74,7 @@ export type Config = {
     indexes: IndexesByCollection;
   };
   openApi: {
-    openapi: string;
+    openapi: OpenApiVersion;
     info: InfoObject;
   };
   pino: {

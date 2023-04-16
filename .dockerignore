@@ -1,5 +1,6 @@
 /.git
 /.github
+/.stryker-tmp
 /coverage
 /dist
 /globalConfig.json

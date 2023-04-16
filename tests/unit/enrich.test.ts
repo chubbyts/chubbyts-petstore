@@ -1,13 +1,14 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import type { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import { createEnrichList, createEnrichModel } from '../../src/enrich';
 
 describe('createEnrichModel', () => {
   test('without links', async () => {
     const request = {} as ServerRequest;
 
-    const generatePath: GeneratePath = jest.fn((givenName: string) => givenName);
+    const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([]);
 
     const enrichModel = createEnrichModel(generatePath, {});
 
@@ -29,13 +30,41 @@ describe('createEnrichModel', () => {
       }
     `);
 
-    expect(generatePath).toHaveBeenCalledTimes(0);
+    expect(generatePathMocks.length).toBe(0);
   });
 
   test('with all links', async () => {
     const request = {} as ServerRequest;
 
-    const generatePath: GeneratePath = jest.fn((givenName: string) => givenName);
+    const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([
+      {
+        parameters: [
+          'model_read',
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: 'model_read',
+      },
+      {
+        parameters: [
+          'model_update',
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: 'model_update',
+      },
+      {
+        parameters: [
+          'model_delete',
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: 'model_delete',
+      },
+    ]);
 
     const enrichModel = createEnrichModel(generatePath, {
       read: 'model_read',
@@ -81,7 +110,7 @@ describe('createEnrichModel', () => {
       }
     `);
 
-    expect(generatePath).toHaveBeenCalledTimes(3);
+    expect(generatePathMocks.length).toBe(0);
   });
 });
 
@@ -89,7 +118,7 @@ describe('createEnrichList', () => {
   test('without links', async () => {
     const request = {} as ServerRequest;
 
-    const generatePath: GeneratePath = jest.fn((givenName: string) => givenName);
+    const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([]);
 
     const enrichList = createEnrichList(generatePath, {});
 
@@ -131,13 +160,45 @@ describe('createEnrichList', () => {
       }
     `);
 
-    expect(generatePath).toHaveBeenCalledTimes(0);
+    expect(generatePathMocks.length).toBe(0);
   });
 
   test('with all links', async () => {
     const request = {} as ServerRequest;
 
-    const generatePath: GeneratePath = jest.fn((givenName: string) => givenName);
+    const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([
+      {
+        parameters: [
+          'model_read',
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: 'model_read',
+      },
+      {
+        parameters: [
+          'model_update',
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: 'model_update',
+      },
+      {
+        parameters: [
+          'model_delete',
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+          },
+        ],
+        return: 'model_delete',
+      },
+      {
+        parameters: ['model_create'],
+        return: 'model_create',
+      },
+    ]);
 
     const enrichList = createEnrichList(generatePath, {
       create: 'model_create',
@@ -210,6 +271,6 @@ describe('createEnrichList', () => {
       }
     `);
 
-    expect(generatePath).toHaveBeenCalledTimes(4);
+    expect(generatePathMocks.length).toBe(0);
   });
 });

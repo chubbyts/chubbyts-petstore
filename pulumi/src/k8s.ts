@@ -403,7 +403,7 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
     'helm-metrics-server',
     {
       chart: 'metrics-server',
-      version: '3.9.0',
+      version: '3.10.0',
       repositoryOpts: {
         repo: 'https://kubernetes-sigs.github.io/metrics-server',
       },
@@ -492,7 +492,7 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.11.0',
+      version: '1.11.1',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },

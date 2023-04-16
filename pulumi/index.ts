@@ -1,5 +1,6 @@
+import { realpathSync } from 'fs';
 import * as pulumi from '@pulumi/pulumi';
-import * as k8s from '@pulumi/kubernetes';
+import type * as k8s from '@pulumi/kubernetes';
 import * as digitalocean from '@pulumi/digitalocean';
 import {
   createAndPushImage,
@@ -28,7 +29,6 @@ import {
   createK8sTokenKubeconfig,
   installK8sHelmMetricsServer,
 } from './src/k8s';
-import { realpathSync } from 'fs';
 
 type NodeFactoryProps = {
   k8sProvider: k8s.Provider;
@@ -175,7 +175,10 @@ swaggerUiFactory({ k8sProvider });
 installK8sHelmMetricsServer({ k8sProvider });
 
 // install ingress controller (make sure the entry exists)
-const helmIngressNginxController = installK8sHelmIngressNginxController({ k8sProvider, doLoadbalancerHostname: 'kube.chubbyts-petstore.dev' });
+const helmIngressNginxController = installK8sHelmIngressNginxController({
+  k8sProvider,
+  doLoadbalancerHostname: 'kube.chubbyts-petstore.dev',
+});
 
 const ingress = createK8sIngressNginx({
   k8sProvider,

@@ -1,32 +1,37 @@
 import { describe, expect, test } from '@jest/globals';
+import type {
+  PetRequestListOpenApi,
+  PetListResponse,
+  PetRequestList,
+  PetResponse,
+  PetRequest,
+  Pet,
+  PetList,
+} from '../../../src/pet/model';
 import {
+  petListSchema,
+  petSchema,
   petRequestSchema,
   petResponseSchema,
   petRequestListSchema,
   petListResponseSchema,
+  petRequestListOpenApiSchema,
 } from '../../../src/pet/model';
+
+const validPetRequest: PetRequest = {
+  name: 'name',
+  tag: 'tag',
+  vaccinations: [{ name: 'name' }],
+};
 
 describe('petRequestSchema', () => {
   test('valid', () => {
-    const input = {
-      name: 'name',
-      tag: 'tag',
-      vaccinations: [{ name: 'name' }],
-    };
-
-    expect(petRequestSchema.parse(input)).toEqual(input);
+    expect(petRequestSchema.parse(validPetRequest)).toEqual(validPetRequest);
   });
 
   test('invalid', () => {
-    const input = {
-      name: 'name',
-      tag: 'tag',
-      vaccinations: [{ name: 'name' }],
-      unknown: 'unknown',
-    };
-
     try {
-      petRequestSchema.parse(input);
+      petRequestSchema.parse({ ...validPetRequest, unknown: 'unknown' });
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -45,9 +50,159 @@ describe('petRequestSchema', () => {
   });
 });
 
+const validPet: Pet = {
+  id: 'test',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...validPetRequest,
+};
+
+describe('petSchema', () => {
+  test('valid', () => {
+    expect(petSchema.parse(validPet)).toEqual(validPet);
+  });
+
+  test('invalid', () => {
+    try {
+      petSchema.parse({ ...validPet, unknown: 'unknown' });
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+          [ZodError: [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "unknown"
+              ],
+              "path": [],
+              "message": "Unrecognized key(s) in object: 'unknown'"
+            }
+          ]]
+        `);
+    }
+  });
+});
+
+const validPetResponseSchema: PetResponse = {
+  id: 'test',
+  createdAt: new Date().toJSON(),
+  updatedAt: new Date().toJSON(),
+  ...validPetRequest,
+  _links: {
+    read: { href: '/api/pet/1' },
+    update: { href: '/api/pet/1' },
+    delete: { href: '/api/pet/1' },
+  },
+};
+
 describe('petResponseSchema', () => {
   test('valid', () => {
-    const input = {
+    expect(petResponseSchema.parse(validPetResponseSchema)).toEqual(validPetResponseSchema);
+  });
+
+  test('invalid', () => {
+    try {
+      petResponseSchema.parse({ ...validPetResponseSchema, unknown: 'unknown' });
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+          [ZodError: [
+            {
+              "code": "unrecognized_keys",
+              "keys": [
+                "unknown"
+              ],
+              "path": [],
+              "message": "Unrecognized key(s) in object: 'unknown'"
+            }
+          ]]
+        `);
+    }
+  });
+});
+
+const validPetRequestListSchema: PetRequestList = {
+  offset: 0,
+  limit: 20,
+  filters: { name: 'name' },
+  sort: { name: 'asc' },
+};
+
+describe('petRequestListSchema', () => {
+  test('valid', () => {
+    expect(petRequestListSchema.parse(validPetRequestListSchema)).toEqual(validPetRequestListSchema);
+  });
+
+  test('invalid', () => {
+    try {
+      petRequestListSchema.parse({ ...validPetRequestListSchema, filters: { unknown: 'unknown' } });
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "unknown"
+            ],
+            "path": [
+              "filters"
+            ],
+            "message": "Unrecognized key(s) in object: 'unknown'"
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+const validPetListSchema: PetList = {
+  ...validPetRequestListSchema,
+  items: [
+    {
+      id: 'test',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      name: 'name',
+      tag: 'tag',
+      vaccinations: [{ name: 'name' }],
+    },
+  ],
+  count: 2,
+};
+
+describe('petListSchema', () => {
+  test('valid', () => {
+    expect(petListSchema.parse(validPetListSchema)).toEqual(validPetListSchema);
+  });
+
+  test('invalid', () => {
+    try {
+      petListSchema.parse({ ...validPetListSchema, filters: { unknown: 'unknown' } });
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "unknown"
+            ],
+            "path": [
+              "filters"
+            ],
+            "message": "Unrecognized key(s) in object: 'unknown'"
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+const validPetListResponseSchema: PetListResponse = {
+  ...validPetRequestListSchema,
+  items: [
+    {
       id: 'test',
       createdAt: new Date().toJSON(),
       updatedAt: new Date().toJSON(),
@@ -59,142 +214,73 @@ describe('petResponseSchema', () => {
         update: { href: '/api/pet/1' },
         delete: { href: '/api/pet/1' },
       },
-    };
-
-    expect(petResponseSchema.parse(input)).toEqual(input);
-  });
-
-  test('invalid', () => {
-    const input = {
-      id: 'test',
-      createdAt: new Date().toJSON(),
-      updatedAt: new Date().toJSON(),
-      name: 'name',
-      tag: 'tag',
-      vaccinations: [{ name: 'name' }],
-      unknown: 'unknown',
-    };
-
-    try {
-      petResponseSchema.parse(input);
-      fail('Expect fail');
-    } catch (e) {
-      expect(e).toMatchInlineSnapshot(`
-          [ZodError: [
-            {
-              "code": "unrecognized_keys",
-              "keys": [
-                "unknown"
-              ],
-              "path": [],
-              "message": "Unrecognized key(s) in object: 'unknown'"
-            }
-          ]]
-        `);
-    }
-  });
-});
-
-describe('petRequestListSchema', () => {
-  test('valid', () => {
-    const input = { offset: 0, limit: '20', filters: { name: 'name' }, sort: { name: 'asc' } };
-
-    expect(petRequestListSchema.parse(input)).toEqual({ ...input, limit: 20 });
-  });
-
-  test('invalid', () => {
-    const input = { offset: 0, limit: '20', filters: { value: 'name' }, sort: { name: 'asc' } };
-
-    try {
-      petRequestListSchema.parse(input);
-      fail('Expect fail');
-    } catch (e) {
-      expect(e).toMatchInlineSnapshot(`
-          [ZodError: [
-            {
-              "code": "unrecognized_keys",
-              "keys": [
-                "value"
-              ],
-              "path": [
-                "filters"
-              ],
-              "message": "Unrecognized key(s) in object: 'value'"
-            }
-          ]]
-        `);
-    }
-  });
-});
+    },
+  ],
+  count: 2,
+  _links: {
+    create: { href: '/api/pet' },
+  },
+};
 
 describe('petListResponseSchema', () => {
   test('valid', () => {
-    const input = {
-      offset: 0,
-      limit: 20,
-      filters: { name: 'name' },
-      sort: { name: 'asc' },
-      items: [
-        {
-          id: 'test',
-          createdAt: new Date().toJSON(),
-          updatedAt: new Date().toJSON(),
-          name: 'name',
-          tag: 'tag',
-          vaccinations: [{ name: 'name' }],
-          _links: {
-            read: { href: '/api/pet/1' },
-            update: { href: '/api/pet/1' },
-            delete: { href: '/api/pet/1' },
-          },
-        },
-      ],
-      count: 2,
-      _links: {
-        create: { href: '/api/pet' },
-      },
-    };
-
-    expect(petListResponseSchema.parse(input)).toEqual({ ...input, limit: 20 });
+    expect(petListResponseSchema.parse(validPetListResponseSchema)).toEqual(validPetListResponseSchema);
   });
 
   test('invalid', () => {
-    const input = {
-      offset: 0,
-      limit: 20,
-      filters: { name: 'name' },
-      sort: { name: 'asc' },
-      items: [
-        {
-          id: 'test',
-          createdAt: new Date().toJSON(),
-          updatedAt: new Date().toJSON(),
-          name: 'name',
-          tag: 'tag',
-          vaccinations: [{ name: 'name' }],
-          unknown: 'unknown',
-        },
-      ],
-      count: 2,
-    };
-
     try {
-      petRequestListSchema.parse(input);
+      petListResponseSchema.parse({ ...validPetListResponseSchema, filters: { unknown: 'unknown' } });
       fail('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
-          [ZodError: [
-            {
-              "code": "unrecognized_keys",
-              "keys": [
-                "items",
-                "count"
-              ],
-              "path": [],
-              "message": "Unrecognized key(s) in object: 'items', 'count'"
-            }
-          ]]
-        `);
+        [ZodError: [
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "unknown"
+            ],
+            "path": [
+              "filters"
+            ],
+            "message": "Unrecognized key(s) in object: 'unknown'"
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+const validPetRequestListOpenApiSchema: PetRequestListOpenApi = {
+  offset: 0,
+  limit: 20,
+  'filters[name]': 'name',
+  'sort[name]': 'asc',
+};
+
+describe('petRequestListOpenApiSchema', () => {
+  test('valid', () => {
+    expect(petRequestListOpenApiSchema.parse(validPetRequestListOpenApiSchema)).toEqual(
+      validPetRequestListOpenApiSchema,
+    );
+  });
+
+  test('invalid', () => {
+    try {
+      petRequestListOpenApiSchema.parse({ ...validPetRequestListOpenApiSchema, 'filters[unknown]': 'unknown' });
+      fail('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "filters[unknown]"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'filters[unknown]'"
+          }
+        ]]
+      `);
     }
   });
 });

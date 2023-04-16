@@ -15,6 +15,8 @@ export const petRequestSchema = z
   })
   .strict();
 
+export type PetRequest = z.infer<typeof petRequestSchema>;
+
 export const petSchema = z
   .object({
     ...modelSchema.shape,
@@ -38,6 +40,8 @@ export const petResponseSchema = z
   })
   .strict();
 
+export type PetResponse = z.infer<typeof petResponseSchema>;
+
 export const petRequestListSchema = z
   .object({
     ...listRequestSchema.shape,
@@ -49,13 +53,17 @@ export const petRequestListSchema = z
   })
   .strict();
 
-const petListSchema = z
+export type PetRequestList = z.infer<typeof petRequestListSchema>;
+
+export const petListSchema = z
   .object({
     ...petRequestListSchema.shape,
-    items: z.array(modelSchema),
+    items: z.array(petSchema),
     count: z.number(),
   })
   .strict();
+
+export type PetList = z.infer<typeof petListSchema>;
 
 export const petListResponseSchema = z
   .object({
@@ -71,6 +79,8 @@ export const petListResponseSchema = z
   })
   .strict();
 
+export type PetListResponse = z.infer<typeof petListResponseSchema>;
+
 export const petRequestListOpenApiSchema = z
   .object({
     offset: z.number().default(0),
@@ -79,3 +89,5 @@ export const petRequestListOpenApiSchema = z
     'sort[name]': z.enum(['asc', 'desc']).optional(),
   })
   .strict();
+
+export type PetRequestListOpenApi = z.infer<typeof petRequestListOpenApiSchema>;

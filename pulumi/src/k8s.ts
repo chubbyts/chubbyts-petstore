@@ -23,6 +23,7 @@ export const createK8sCluster = ({
     },
     region,
     version: '1.26.3-do.0',
+    autoUpgrade: true,
     vpcUuid: vpc.id,
   });
 };

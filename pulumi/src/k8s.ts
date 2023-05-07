@@ -315,7 +315,11 @@ export const createK8sCronjob = ({
                     image,
                     env,
                     imagePullPolicy: 'IfNotPresent',
-                    command: ['/bin/bash', '-c', command],
+                    command: [
+                      '/bin/bash',
+                      '-c',
+                      `${command}; while ! nc -z localhost 24444; do sleep 0.1; done; sleep 5; curl http://localhost:24444/api/processes.flushBuffersAndKillWorkers`,
+                    ],
                     volumeMounts: [
                       {
                         name: 'var-log',
@@ -329,15 +333,19 @@ export const createK8sCronjob = ({
                           name: `${labels.appClass}-cronjob-${cronjobName}-fluentd`,
                           image: fluentdImage,
                           env: fluentdEnv,
+                        readinessProbe: {
+                          httpGet: {
+                            path: '/',
+                            port: 24444,
+                            scheme: 'HTTP',
+                          },
+                        },
                           livenessProbe: {
                             httpGet: {
                               path: '/',
-                              port: 9999,
+                              port: 24444,
                               scheme: 'HTTP',
                             },
-                            initialDelaySeconds: 1,
-                            periodSeconds: 1,
-                            terminationGracePeriodSeconds: 5,
                           },
                           volumeMounts: [
                             {

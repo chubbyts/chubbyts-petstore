@@ -1,4 +1,3 @@
-import { createServer } from 'http';
 import { Command } from 'commander';
 import { containerFactory } from '../bootstrap/container';
 import type { CleanDirectoriesCommand } from '../src/command';
@@ -20,19 +19,10 @@ const runAction = async (action: Action, args: Array<string>): Promise<number> =
 
 const run = (action: Action) => {
   return async (...args: Array<string>): Promise<void> => {
-    const server = createServer((_, res) => {
-      res.writeHead(200);
-      res.end();
-    });
-
-    server.listen(9999);
-
+    console.log(`command start: ${new Date().toJSON()}`);
     const exitCode = await runAction(action, args);
-
-    setTimeout(() => {
-      server.close();
-      process.exit(exitCode);
-    }, 1000);
+    console.log(`command end: ${new Date().toJSON()}, exitCode: ${exitCode}`);
+    process.exit(exitCode);
   };
 };
 

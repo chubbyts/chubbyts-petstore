@@ -334,13 +334,13 @@ export const createK8sCronjob = ({
                           name: `${labels.appClass}-cronjob-${cronjobName}-fluentd`,
                           image: fluentdImage,
                           env: fluentdEnv,
-                        readinessProbe: {
-                          httpGet: {
-                            path: '/',
-                            port: 24444,
-                            scheme: 'HTTP',
+                          readinessProbe: {
+                            httpGet: {
+                              path: '/',
+                              port: 24444,
+                              scheme: 'HTTP',
+                            },
                           },
-                        },
                           livenessProbe: {
                             httpGet: {
                               path: '/',

@@ -9,7 +9,7 @@ on:
 jobs:
   docker-compose:
     name: docker-compose (production container)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -25,7 +25,7 @@ jobs:
         run: docker-compose -f docker-compose.ci.yml stop
   docker:
     name: docker (development container)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -47,7 +47,7 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && npm run build'
   node16:
     name: Node 16
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
       - run: npm run test
   node18:
     name: Node 18
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v3

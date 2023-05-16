@@ -319,7 +319,7 @@ export const createK8sCronjob = ({
                     command: [
                       '/bin/bash',
                       '-c',
-                      `${command}; while ! nc -z localhost 24444; do sleep 0.1; done; sleep 5; curl http://localhost:24444/api/processes.flushBuffersAndKillWorkers`,
+                      `${command}; exitCode=$?; while ! nc -z localhost 24444; do sleep 0.1; done; sleep 5; curl http://localhost:24444/api/processes.flushBuffersAndKillWorkers; exit $exitCode`,
                     ],
                     volumeMounts: [
                       {

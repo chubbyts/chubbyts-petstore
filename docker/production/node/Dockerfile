@@ -1,5 +1,5 @@
 # base
-FROM rockylinux:9.1 AS base
+FROM rockylinux/rockylinux:9.2 AS base
 
 SHELL ["/bin/bash", "-c"]
 

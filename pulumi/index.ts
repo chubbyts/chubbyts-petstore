@@ -250,7 +250,7 @@ const helmCertManager = installK8sHelmCertManager({ k8sProvider });
 createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('certManagerEmail') });
 
 export const containerRegistryId = containerRegistry.id;
-export const dns = pulumi.interpolate`Make sure to add A-Records for ${ingress.status.loadBalancer.ingress[0].hostname
-  }, ${ingress.spec.tls.apply((tls) =>
-    tls.flatMap(({ hosts }) => hosts).join(', '),
-  )} pointing to the IP provided by the related load balancer: https://cloud.digitalocean.com/networking/load_balancers`;
+export const dns = pulumi.interpolate`Make sure to add A-Record for ${ingress.status.loadBalancer.ingress[0].hostname
+  } pointing to the IP provided by the related load balancer: https://cloud.digitalocean.com/networking/load_balancers. Make sure to add CNAME's for ${ingress.spec.tls.apply(
+    (tls) => tls.flatMap(({ hosts }) => hosts).join(', '),
+  )} pointing to ${ingress.status.loadBalancer.ingress[0].hostname}`;

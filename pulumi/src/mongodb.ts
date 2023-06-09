@@ -9,7 +9,7 @@ type CreateMongoDbClusterProps = {
 export const createMongoDbCluster = ({ region, vpc }: CreateMongoDbClusterProps): digitalocean.DatabaseCluster => {
   return new digitalocean.DatabaseCluster('mongo-cluster', {
     engine: 'mongodb',
-    version: '5',
+    version: '6',
     region,
     size: digitalocean.DatabaseSlug.DB_1VPCU1GB,
     nodeCount: 1, // or 3

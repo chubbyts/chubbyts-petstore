@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const os = require('os');
 
-const version = '5.0.8';
+const version = '6.0.6';
 
 if (os.platform() === 'linux') {
   // eslint-disable-next-line no-console
-  console.log('WARNING: Monkey patching mongoms download URL for ubuntu 20.04 in our docker builds!');
-  process.env.MONGOMS_DOWNLOAD_URL = `https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2004-${version}.tgz`;
+  console.log('WARNING: Monkey patching mongoms download URL for rhel9 in our docker builds!');
+  process.env.MONGOMS_DOWNLOAD_URL = `https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel90-${version}.tgz`;
 }
 
 module.exports = {

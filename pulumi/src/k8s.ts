@@ -22,7 +22,7 @@ export const createK8sCluster = ({
       nodeCount,
     },
     region,
-    version: '1.26.5-do.0',
+    version: '1.27.2-do.0',
     autoUpgrade: true,
     vpcUuid: vpc.id,
   });
@@ -445,7 +445,7 @@ export const installK8sHelmIngressNginxController = ({
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.6.0',
+      version: '4.7.0',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -501,7 +501,7 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.11.1',
+      version: '1.12.1',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },

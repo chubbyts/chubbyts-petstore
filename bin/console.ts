@@ -32,9 +32,11 @@ const run = (action: Action) => {
     .argument('[directoryNames]')
     .description('Delete everything within a given directory.')
     .action(
-      run((directoryNamesAsString: string): number => {
+      run((directoryNamesAsString?: string): number => {
         const command = container.get<CleanDirectoriesCommand>('cleanDirectoriesCommand');
-        return command(directoryNamesAsString.split(',').map((directoryName) => directoryName.trim()));
+        return command(
+          directoryNamesAsString ? directoryNamesAsString.split(',').map((directoryName) => directoryName.trim()) : [],
+        );
       }),
     );
 

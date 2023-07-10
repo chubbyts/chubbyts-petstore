@@ -24,10 +24,20 @@ describe('console', () => {
     `);
   });
 
-  test('clean-directories', () => {
-    const output = execSync(consoleCommand + ' clean-directories log', options);
+  describe('clean-directories', () => {
+    test('without directory', () => {
+      const output = execSync(consoleCommand + ' clean-directories', options);
 
-    expect(output).toMatch(/Start clean directory/);
-    expect(output).toMatch(/var\/log/);
+      expect(output).not.toMatch(/Start clean directory/);
+      expect(output).not.toMatch(/var\/log/);
+    });
+
+    test('with cache,log directory', () => {
+      const output = execSync(consoleCommand + ' clean-directories cache,log', options);
+
+      expect(output).toMatch(/Start clean directory/);
+      expect(output).toMatch(/var\/cache/);
+      expect(output).toMatch(/var\/log/);
+    });
   });
 });

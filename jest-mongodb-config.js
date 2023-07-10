@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const os = require('os');
 
-const version = '6.0.6';
+const version = '6.0.7';
 
 if (os.platform() === 'linux') {
   // eslint-disable-next-line no-console

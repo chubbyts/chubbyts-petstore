@@ -40,8 +40,8 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-negotiation][15]: ^3.1.0
  * [@chubbyts/chubbyts-node-http-bridge][16]: ^1.1.0
  * [@chubbyts/chubbyts-pino-adapter][17]: ^1.2.0
- * [commander][18]: ^10.0.1
- * [mongodb][19]: ^5.5.0
+ * [commander][18]: ^11.0.0
+ * [mongodb][19]: ^5.7.0
  * [openapi3-ts][20]: ^4.1.2
  * [pino][21]: ^8.14.1
  * [uuid][22]: ^9.0.0

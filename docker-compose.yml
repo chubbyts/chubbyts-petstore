@@ -45,7 +45,7 @@ services:
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
-    image: mongo:6.0.6
+    image: mongo:6.0.7
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
       MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
@@ -56,14 +56,14 @@ services:
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui
     hostname: chubbyts-petstore-swagger-ui
-    image: swaggerapi/swagger-ui:v4.18.3
+    image: swaggerapi/swagger-ui:v5.1.0
     environment:
       BASE_URL: /swagger
       URLS: '[ { url: "/openapi" } ]'
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
-    image: nginx:1.23.4
+    image: nginx:1.21.6
     environment:
       SERVER_PORT: '443'
       NODE_SERVER_HOST: 'node'
@@ -80,7 +80,7 @@ services:
   elasticsearch:
     container_name: chubbyts-petstore-elasticsearch
     hostname: chubbyts-petstore-elasticsearch
-    image: elasticsearch:8.7.1
+    image: elasticsearch:8.8.1
     environment:
       ES_JAVA_OPTS: '-Xms512m -Xmx512m'
       bootstrap.memory_lock: 'true'
@@ -96,7 +96,7 @@ services:
   kibana:
     container_name: chubbyts-petstore-kibana
     hostname: chubbyts-petstore-kibana
-    image: kibana:8.7.1
+    image: kibana:8.8.1
     environment:
       XPACK_APM_SERVICEMAPENABLED: 'true'
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 0557aa47-1706-48df-8f2b-b7a5eddcbdf2

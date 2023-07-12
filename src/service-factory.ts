@@ -64,7 +64,7 @@ import {
 } from '@chubbyts/chubbyts-cors/dist/negotiation';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
-import { extendZodWithOpenApi, OpenAPIGenerator } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { Config } from '../config/production';
 import { createCleanDirectoriesCommand } from './command';
@@ -201,10 +201,7 @@ export const openApiHandlerServiceFactory = (container: Container) => {
 
 export const openApiObjectServiceFactory = (container: Container): OpenAPIComponentObject => {
   const openApi = container.get<Config>('config').openApi;
-  const generator = new OpenAPIGenerator(
-    container.get<OpenAPIRegistry>('openApiRegistry').definitions,
-    openApi.openapi,
-  );
+  const generator = new OpenApiGeneratorV3(container.get<OpenAPIRegistry>('openApiRegistry').definitions);
 
   return generator.generateDocument(openApi);
 };

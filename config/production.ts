@@ -3,8 +3,7 @@ import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
-import type { InfoObject } from 'openapi3-ts/dist/mjs/oas30';
-import type { OpenApiVersion } from '@asteasolutions/zod-to-openapi/dist/openapi-generator';
+import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator';
 import {
   petCreateHandlerServiceFactory,
   petFindByIdServiceFactory,
@@ -73,10 +72,7 @@ export type Config = {
     uri: string;
     indexes: IndexesByCollection;
   };
-  openApi: {
-    openapi: OpenApiVersion;
-    info: InfoObject;
-  };
+  openApi: OpenAPIObjectConfig;
   pino: {
     options: LoggerOptions;
     stream: DestinationStream;

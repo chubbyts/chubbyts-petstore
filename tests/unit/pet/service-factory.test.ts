@@ -1,4 +1,4 @@
-import { OpenAPIGenerator, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
 import type { Collection, Db, MongoClient } from 'mongodb';
@@ -421,7 +421,8 @@ describe('service-factory', () => {
     expect(openApiRegistry).toBeInstanceOf(OpenAPIRegistry);
 
     expect(
-      new OpenAPIGenerator(openApiRegistry.definitions, '3.0.0').generateDocument({
+      new OpenApiGeneratorV3(openApiRegistry.definitions).generateDocument({
+        openapi: '3.0.0',
         info: {
           version: '1.0.0',
           title: 'Petstore',

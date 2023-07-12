@@ -1,21 +1,17 @@
-FROM rockylinux/rockylinux:9.2
+FROM fedora:38
 
 SHELL ["/bin/bash", "-c"]
 
 RUN dnf upgrade -y --refresh
 
-RUN dnf install -y 'dnf-command(config-manager)' \
-    && dnf config-manager --set-enabled crb \
-    && dnf install -y epel-release
-
 RUN dnf install -y \
-    compat-openssl11 \
     git \
     glibc-langpack-de \
-    langpacks-de \
     jemalloc \
     jemalloc-devel \
+    langpacks-de \
     nmap-ncat \
+    openssl1.1 \
     procps-ng \
     sudo \
     unzip \

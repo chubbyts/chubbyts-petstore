@@ -26,8 +26,8 @@
     "start": "npm install && npm run lint-fix && npm run cs-fix && npm run develop",
     "test:integration": "jest --config jest.integration.config.js",
     "test": "jest",
-    "watch-server-debug": "nodemon --watch \"dist/**/*\" --inspect=0.0.0.0:1235 dist/bootstrap/index.js",
-    "watch-server": "nodemon --watch \"dist/**/*\" dist/bootstrap/index.js"
+    "watch-server-debug": "nodemon --inspect=0.0.0.0:1235",
+    "watch-server": "nodemon"
   },
   "jest": {
     "transform": {

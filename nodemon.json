@@ -1,0 +1,4 @@
+{
+    "watch": "dist",
+    "exec": "node dist/bootstrap/index.js"
+}

@@ -1,5 +1,6 @@
 {
   "name": "@chubbyts/petstore",
+  "type": "module",
   "version": "1.0.0",
   "description": "An api skeleton using mongodb for chubbyts-framework.",
   "keywords": [

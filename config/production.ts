@@ -18,7 +18,7 @@ import {
   petEnrichModelServiceFactory,
   petEnrichListServiceFactory,
   petOpenApiRegistryServiceDelegator,
-} from '../src/pet/service-factory';
+} from '../src/pet/service-factory.js';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -48,7 +48,7 @@ import {
   streamFactoryServiceFactory,
   streamFromResourceFactoryServiceFactory,
   uriFactoryServiceFactory,
-} from '../src/service-factory';
+} from '../src/service-factory.js';
 
 export type Config = {
   cors: {

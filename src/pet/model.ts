@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { linkSchema, modelResponseSchema, modelSchema, listRequestSchema } from '../model';
+import { linkSchema, modelResponseSchema, modelSchema, listRequestSchema } from '../model.js';
 
 const vaccinationSchema = z
   .object({

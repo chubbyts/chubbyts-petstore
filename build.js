@@ -1,8 +1,8 @@
-const { spawn } = require('child_process');
-const { cwd } = require('process');
-const { rmSync, existsSync, mkdirSync, cpSync } = require('fs');
+import { spawn } from 'child_process';
+import { cwd } from 'process';
+import { rmSync, existsSync, mkdirSync } from 'fs';
 
-const build = async (watch = false) => {
+export const build = async (watch = false) => {
   const rootDir = cwd();
 
   if (!existsSync(`${rootDir}/dist`)) {
@@ -24,6 +24,10 @@ const build = async (watch = false) => {
           ...(watch ? ['-w'] : []),
         ]);
 
+        subProcess.stderr.on('data', (data) => {
+          console.log(data.toString('utf-8'));
+        });
+
         subProcess.on('close', (code) => {
           if (code !== 0) {
             reject();
@@ -40,5 +44,3 @@ const build = async (watch = false) => {
     }),
   );
 };
-
-module.exports = build;

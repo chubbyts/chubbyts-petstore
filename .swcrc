@@ -3,9 +3,9 @@
         "parser": {
             "syntax": "typescript"
         },
-        "target": "es2019"
+        "target": "es2021"
     },
     "module": {
-        "type": "commonjs"
+        "type": "nodenext"
     }
 }

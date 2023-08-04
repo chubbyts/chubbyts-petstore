@@ -5,8 +5,8 @@ const { rmSync, existsSync, mkdirSync, cpSync } = require('fs');
 const build = async (watch = false) => {
   const rootDir = cwd();
 
-  if (!existsSync(`${rootDir}/dist`)) {
-    mkdirSync(`${rootDir}/dist`, { recursive: true });
+  if (!existsSync(`${rootDir}/dist/var/log`)) {
+    mkdirSync(`${rootDir}/dist/var/log`, { recursive: true });
   }
 
   return Promise.all(

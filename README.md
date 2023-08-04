@@ -173,6 +173,15 @@ kubectl get pod <podname> -o yaml
 kubectl exec -it <podname> -- /bin/bash
 ```
 
+### Debug production build
+
+Make sure the development version is running to reuse its mongodb instance.
+
+```sh
+docker build --platform=linux/amd64 -f ./docker/production/node/Dockerfile -t chubbyts-petstore-node .
+docker run -it -e NODE_ENV=production -e MONGO_URI="<see docker-compose.yml, replace @mongo with @host.docker.internal>" -e SERVER_HOST=0.0.0.0 -e SERVER_PORT=3000 -p 3000:3000 chubbyts-petstore-node
+```
+
 ## Copyright
 
 2023 Dominik Zogg

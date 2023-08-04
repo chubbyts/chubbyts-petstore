@@ -54,13 +54,12 @@ USER node
 
 WORKDIR /app-build
 
-RUN source ~/.bashrc \
-    && npm install \
-    && npm run cs \
-    && npm run lint \
-    && npm run test --no-cache \
-    && npm run test:integration --no-cache \
-    && npm run build
+RUN source ~/.bashrc && npm install
+RUN source ~/.bashrc && npm run cs
+RUN source ~/.bashrc && npm run lint
+RUN source ~/.bashrc && npm run test -- --coverage --no-cache
+RUN source ~/.bashrc && npm run test:integration -- --no-cache
+RUN source ~/.bashrc && npm run build
 
 # prod
 FROM base

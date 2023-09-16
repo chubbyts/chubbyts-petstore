@@ -94,7 +94,7 @@ const nodeFactory = ({
         memory: '100Mi',
       },
       limits: {
-        memory: '200Mi',
+        memory: '150Mi',
       },
     },
   });
@@ -122,6 +122,14 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
     port: 8080,
     path: '/swagger',
     replicas: 1,
+    resources: {
+      requests: {
+        memory: '50Mi',
+      },
+      limits: {
+        memory: '50Mi',
+      },
+    },
   });
 
   createK8sInternalHttpService({ k8sProvider, labels, port: 8080 });
@@ -250,7 +258,8 @@ const helmCertManager = installK8sHelmCertManager({ k8sProvider });
 createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('certManagerEmail') });
 
 export const containerRegistryId = containerRegistry.id;
-export const dns = pulumi.interpolate`Make sure to add A-Record for ${ingress.status.loadBalancer.ingress[0].hostname
-  } pointing to the IP provided by the related load balancer: https://cloud.digitalocean.com/networking/load_balancers. Make sure to add CNAME's for ${ingress.spec.tls.apply(
-    (tls) => tls.flatMap(({ hosts }) => hosts).join(', '),
-  )} pointing to ${ingress.status.loadBalancer.ingress[0].hostname}`;
+export const dns = pulumi.interpolate`Make sure to add A-Record for ${
+  ingress.status.loadBalancer.ingress[0].hostname
+} pointing to the IP provided by the related load balancer: https://cloud.digitalocean.com/networking/load_balancers. Make sure to add CNAME's for ${ingress.spec.tls.apply(
+  (tls) => tls.flatMap(({ hosts }) => hosts).join(', '),
+)} pointing to ${ingress.status.loadBalancer.ingress[0].hostname}`;

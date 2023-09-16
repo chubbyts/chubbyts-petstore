@@ -11,13 +11,13 @@
   },
   "dependencies": {
     "@pulumi/digitalocean": "^4.21.0",
-    "@pulumi/docker": "^4.3.2",
-    "@pulumi/kubernetes": "^4.1.1",
-    "@pulumi/pulumi": "^3.79.0"
+    "@pulumi/docker": "^4.4.1",
+    "@pulumi/kubernetes": "^4.2.0",
+    "@pulumi/pulumi": "^3.83.0"
   },
   "devDependencies": {
-    "@types/node": "^20.5.7",
-    "prettier": "^3.0.2",
+    "@types/node": "^20.6.2",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }
 }

@@ -36,12 +36,12 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-http-error][11]: ^2.3.1
  * [@chubbyts/chubbyts-http-types][12]: ^1.2.3
  * [@chubbyts/chubbyts-log-types][13]: ^1.3.2
- * [@chubbyts/chubbyts-mongodb][14]: ^1.3.1
+ * [@chubbyts/chubbyts-mongodb][14]: ^1.4.0
  * [@chubbyts/chubbyts-negotiation][15]: ^3.2.2
  * [@chubbyts/chubbyts-node-http-bridge][16]: ^1.2.0
  * [@chubbyts/chubbyts-pino-adapter][17]: ^1.3.1
  * [commander][18]: ^11.0.0
- * [mongodb][19]: ^5.8.1
+ * [mongodb][19]: ^6.1.0
  * [openapi3-ts][20]: ^4.1.2
  * [pino][21]: ^8.15.0
  * [uuid][22]: ^9.0.0

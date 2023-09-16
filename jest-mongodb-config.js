@@ -7,6 +7,7 @@ if (os.platform() === 'linux') {
   // eslint-disable-next-line no-console
   console.log('WARNING: Monkey patching mongoms download URL for rhel9 in our docker builds!');
   process.env.MONGOMS_DOWNLOAD_URL = `https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel90-${version}.tgz`;
+  process.env.MONGOMS_VERSION = version;
 }
 
 module.exports = {
@@ -17,7 +18,5 @@ module.exports = {
     binary: {
       version,
     },
-    autoStart: false,
   },
-  mongoURLEnvName: 'MONGO_URI',
 };

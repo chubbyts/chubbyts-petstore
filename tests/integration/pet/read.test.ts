@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 
 describe('read', () => {
   test('missing accept', async () => {
-    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
       method: 'GET',
       headers: {
         accept: '',
@@ -19,7 +19,7 @@ describe('read', () => {
   });
 
   test('not found', async () => {
-    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
       method: 'GET',
       headers: {
         accept: 'application/json',
@@ -44,7 +44,7 @@ describe('read', () => {
   });
 
   test('successful', async () => {
-    const createResponse = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
+    const createResponse = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -57,7 +57,7 @@ describe('read', () => {
 
     const createResponseData = await createResponse.json();
 
-    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets/${createResponseData.id}`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets/${createResponseData.id}`, {
       method: 'GET',
       headers: {
         accept: 'application/json',

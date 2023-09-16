@@ -1,8 +1,7 @@
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const { spawn } = require('child_process');
-const fetch = require('cross-fetch');
-
-const mongoDbSetup = require('@shelf/jest-mongodb/lib/setup');
 const build = require('./build');
+const fetch = require('cross-fetch');
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -49,16 +48,20 @@ const startServer = async () => {
 };
 
 module.exports = async (config) => {
-  if (!process.env.INTEGRATION_ENDPOINT) {
-    await mongoDbSetup(config);
-    process.env.INTEGRATION_ENDPOINT = `http://${testServerHost}:${testServerPort}`;
+  if (!global.__MONGO_SERVER__) {
+    global.__MONGO_SERVER__ = await MongoMemoryServer.create(config.mongodbMemoryServerOptions);
+    process.env.MONGO_URI = global.__MONGO_SERVER__.getUri();
+  }
+
+  if (!global.__HTTP_SERVER__) {
     global.__HTTP_SERVER__ = await startServer();
+    process.env.HTTP_URI = `http://${testServerHost}:${testServerPort}`;
   }
 
   console.log(
     JSON.stringify(
       {
-        INTEGRATION_ENDPOINT: process.env.INTEGRATION_ENDPOINT,
+        HTTP_URI: process.env.HTTP_URI,
         MONGO_URI: process.env.MONGO_URI,
       },
       null,

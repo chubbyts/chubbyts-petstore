@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 
 describe('list', () => {
   test('missing accept', async () => {
-    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'GET',
       headers: {
         accept: '',
@@ -19,7 +19,7 @@ describe('list', () => {
   });
 
   test('validation error', async () => {
-    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets?filters[name1]=list.test`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets?filters[name1]=list.test`, {
       method: 'GET',
       headers: {
         accept: 'application/json',
@@ -55,7 +55,7 @@ describe('list', () => {
   });
 
   test('successful', async () => {
-    const createResponse1 = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
+    const createResponse1 = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -66,7 +66,7 @@ describe('list', () => {
 
     expect(createResponse1.status).toBe(201);
 
-    const createResponse2 = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets`, {
+    const createResponse2 = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -77,7 +77,7 @@ describe('list', () => {
 
     expect(createResponse2.status).toBe(201);
 
-    const response = await fetch(`${process.env.INTEGRATION_ENDPOINT}/api/pets?filters[name]=list.test&limit=1`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets?filters[name]=list.test&limit=1`, {
       method: 'GET',
       headers: {
         accept: 'application/json',

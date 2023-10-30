@@ -419,7 +419,7 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
       namespace: 'metrics-server',
       createNamespace: true,
       values: {
-        replicas: 2,
+        replicas: 1,
         apiService: {
           create: true,
         },
@@ -453,7 +453,7 @@ export const installK8sHelmIngressNginxController = ({
       createNamespace: true,
       values: {
         controller: {
-          replicaCount: 2,
+          replicaCount: 1,
           service: {
             type: 'LoadBalancer',
             annotations: {

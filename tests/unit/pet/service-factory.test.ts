@@ -453,7 +453,7 @@ describe('service-factory', () => {
                 {
                   "in": "query",
                   "name": "offset",
-                  "required": true,
+                  "required": false,
                   "schema": {
                     "default": 0,
                     "type": "number",
@@ -462,7 +462,7 @@ describe('service-factory', () => {
                 {
                   "in": "query",
                   "name": "limit",
-                  "required": true,
+                  "required": false,
                   "schema": {
                     "default": 20,
                     "type": "number",
@@ -683,8 +683,6 @@ describe('service-factory', () => {
                         "required": [
                           "offset",
                           "limit",
-                          "filters",
-                          "sort",
                           "items",
                           "count",
                         ],

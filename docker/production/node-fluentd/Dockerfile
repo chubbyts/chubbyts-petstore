@@ -1,4 +1,3 @@
-
-FROM bitnami/fluentd:1.16.1
+FROM fluent/fluentd:v1.16
 
 COPY docker/production/node-fluentd/files /

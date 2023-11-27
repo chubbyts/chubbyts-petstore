@@ -36,9 +36,9 @@ WORKDIR /home/node
 
 RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/.fnm" --skip-shell \
     && source ~/.bashrc \
-    && fnm install 18 \
-    && fnm default 18 \
-    && fnm use 18 \
+    && fnm install 20 \
+    && fnm default 20 \
+    && fnm use 20 \
     && npm install -g npm@latest
 
 # build

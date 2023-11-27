@@ -42,7 +42,7 @@ import {
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route';
 
 // eslint-disable-next-line functional/immutable-data
-MongoClient.connect = async () => ({} as MongoClient);
+MongoClient.connect = async () => ({}) as MongoClient;
 
 describe('service-factory', () => {
   test('acceptNegotiationMiddlewareServiceFactory', () => {

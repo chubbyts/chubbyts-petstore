@@ -47,9 +47,16 @@ const startServer = async () => {
   throw new Error(`Timeout in starting the server`);
 };
 
-module.exports = async (config) => {
+module.exports = async () => {
   if (!global.__MONGO_SERVER__) {
-    global.__MONGO_SERVER__ = await MongoMemoryServer.create(config.mongodbMemoryServerOptions);
+    global.__MONGO_SERVER__ = await MongoMemoryServer.create({
+      instance: {
+        dbName: 'jest',
+      },
+      binary: {
+        version: '6.0.11',
+      },
+    });
     process.env.MONGO_URI = global.__MONGO_SERVER__.getUri();
   }
 

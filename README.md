@@ -184,7 +184,7 @@ docker run -it -e NODE_ENV=production -e MONGO_URI="<see docker-compose.yml, rep
 
 ## Copyright
 
-2023 Dominik Zogg
+2024 Dominik Zogg
 
 [1]: https://www.npmjs.com/package/@asteasolutions/zod-to-openapi
 [2]: https://www.npmjs.com/package/@chubbyts/chubbyts-api

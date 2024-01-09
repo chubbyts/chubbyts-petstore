@@ -9,7 +9,7 @@ import {
   petDeleteHandlerServiceFactory,
   petEnrichListServiceFactory,
   petEnrichModelServiceFactory,
-  petFindByIdServiceFactory,
+  petFindOneByIdServiceFactory,
   petListHandlerServiceFactory,
   petOpenApiRegistryServiceDelegator,
   petPersistServiceFactory,
@@ -62,7 +62,7 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
-        parameters: ['petFindById'],
+        parameters: ['petFindOneById'],
         return: () => undefined,
       },
       {
@@ -213,7 +213,7 @@ describe('service-factory', () => {
     expect(containerMocks.length).toBe(0);
   });
 
-  test('petFindByIdServiceFactory', async () => {
+  test('petFindOneByIdServiceFactory', async () => {
     const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
     const [db, dbMocks] = useObjectMock<Db>([
@@ -240,7 +240,7 @@ describe('service-factory', () => {
       },
     ]);
 
-    expect(await petFindByIdServiceFactory(container)).toBeInstanceOf(Function);
+    expect(await petFindOneByIdServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);
@@ -316,7 +316,7 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
-        parameters: ['petFindById'],
+        parameters: ['petFindOneById'],
         return: () => undefined,
       },
       {
@@ -1418,7 +1418,7 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
-        parameters: ['petFindById'],
+        parameters: ['petFindOneById'],
         return: () => undefined,
       },
       {

@@ -6,7 +6,7 @@ import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator';
 import {
   petCreateHandlerServiceFactory,
-  petFindByIdServiceFactory,
+  petFindOneByIdServiceFactory,
   petResolveListServiceFactory,
   petListHandlerServiceFactory,
   petPersistServiceFactory,
@@ -127,7 +127,7 @@ export const configFactory = (env: string): Config => {
         ['petDeleteHandler', petDeleteHandlerServiceFactory],
         ['petEnrichList', petEnrichListServiceFactory],
         ['petEnrichModel', petEnrichModelServiceFactory],
-        ['petFindById', petFindByIdServiceFactory],
+        ['petFindOneById', petFindOneByIdServiceFactory],
         ['petListHandler', petListHandlerServiceFactory],
         ['petPersist', petPersistServiceFactory],
         ['petReadHandler', petReadHandlerServiceFactory],

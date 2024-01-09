@@ -3,7 +3,7 @@ import { describe, expect, test } from '@jest/globals';
 import type { Collection, Db, FindCursor, MongoClient, WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import { createFindById, createPersist, createRemove, createResolveList } from '../../src/repository';
+import { createFindOneById, createPersist, createRemove, createResolveList } from '../../src/repository';
 
 describe('repository', () => {
   test('createResolveList', async () => {
@@ -124,7 +124,7 @@ describe('repository', () => {
     expect(mongoClientMocks.length).toBe(0);
   });
 
-  describe('createFindById', () => {
+  describe('createFindOneById', () => {
     test('with found model', async () => {
       type SomeModel = Model<{ name: string }>;
 
@@ -165,9 +165,9 @@ describe('repository', () => {
         },
       ]);
 
-      const findById = createFindById(mongoClient, collectionName);
+      const FindOneById = createFindOneById(mongoClient, collectionName);
 
-      expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
+      expect(await FindOneById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
       {
         "createdAt": 2022-06-12T20:08:24.793Z,
         "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
@@ -212,9 +212,9 @@ describe('repository', () => {
         },
       ]);
 
-      const findById = createFindById(mongoClient, collectionName);
+      const FindOneById = createFindOneById(mongoClient, collectionName);
 
-      expect(await findById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
+      expect(await FindOneById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
 
       expect(collectionMocks.length).toBe(0);
       expect(dbMocks.length).toBe(0);

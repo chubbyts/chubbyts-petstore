@@ -19,14 +19,14 @@ import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
 import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
 import { createDeleteHandler } from '@chubbyts/chubbyts-api/dist/handler/delete';
 import { createListHandler } from '@chubbyts/chubbyts-api/dist/handler/list';
-import type { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
+import type { FindOneById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import type { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import { createEnrichList, createEnrichModel } from '../enrich';
-import { createResolveList, createFindById, createPersist, createRemove } from '../repository';
+import { createResolveList, createFindOneById, createPersist, createRemove } from '../repository';
 import type { Pet } from './model';
 import {
   petRequestSchema,
@@ -52,7 +52,7 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
 
 export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createDeleteHandler<Pet>(
-    await container.get<Promise<FindById<Pet>>>('petFindById'),
+    await container.get<Promise<FindOneById<Pet>>>('petFindOneById'),
     await container.get<Promise<Remove<Pet>>>('petRemove'),
     container.get<ResponseFactory>('responseFactory'),
   );
@@ -75,8 +75,8 @@ export const petEnrichListServiceFactory = (container: Container): EnrichList<Pe
   });
 };
 
-export const petFindByIdServiceFactory = async (container: Container): Promise<FindById<Pet>> => {
-  return createFindById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+export const petFindOneByIdServiceFactory = async (container: Container): Promise<FindOneById<Pet>> => {
+  return createFindOneById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -96,7 +96,7 @@ export const petPersistServiceFactory = async (container: Container): Promise<Pe
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createReadHandler(
-    await container.get<Promise<FindById<Pet>>>('petFindById'),
+    await container.get<Promise<FindOneById<Pet>>>('petFindOneById'),
     container.get<ResponseFactory>('responseFactory'),
     petResponseSchema,
     container.get<Encoder>('encoder'),
@@ -299,7 +299,7 @@ export const petRoutesServiceDelegator = (
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createUpdateHandler(
-    await container.get<Promise<FindById<Pet>>>('petFindById'),
+    await container.get<Promise<FindOneById<Pet>>>('petFindOneById'),
     container.get<Decoder>('decoder'),
     petRequestSchema,
     await container.get<Promise<Persist<Pet>>>('petPersist'),

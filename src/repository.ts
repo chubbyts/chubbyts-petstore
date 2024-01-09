@@ -1,5 +1,5 @@
 import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
-import type { FindById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
+import type { FindOneById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
 import type { Filter, MongoClient, WithId } from 'mongodb';
 
 const withoutMongoId = <C>(model: WithId<Model<C>>): Model<C> => {
@@ -28,7 +28,7 @@ export const createResolveList = <C>(mongoClient: MongoClient, collectionName: s
   };
 };
 
-export const createFindById = <C>(mongoClient: MongoClient, collectionName: string): FindById<Model<C>> => {
+export const createFindOneById = <C>(mongoClient: MongoClient, collectionName: string): FindOneById<Model<C>> => {
   const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
   return async (id: string): Promise<Model<C> | undefined> => {

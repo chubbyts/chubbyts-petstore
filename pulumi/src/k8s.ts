@@ -12,8 +12,8 @@ type CreateK8sClusterProps = {
 export const createK8sCluster = ({
   region,
   vpc,
-  size = digitalocean.DropletSlug.DropletS2VCPU4GB,
   nodeCount,
+  size = digitalocean.DropletSlug.DropletS2VCPU4GB,
 }: CreateK8sClusterProps): digitalocean.KubernetesCluster => {
   return new digitalocean.KubernetesCluster('k8s-cluster', {
     nodePool: {
@@ -22,8 +22,8 @@ export const createK8sCluster = ({
       nodeCount,
     },
     region,
-    version: '1.27.4-do.0',
-    autoUpgrade: true,
+    version: '1.28.2-do.0',
+    autoUpgrade: false,
     vpcUuid: vpc.id,
   });
 };
@@ -445,7 +445,7 @@ export const installK8sHelmIngressNginxController = ({
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.7.2',
+      version: '4.9.0',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -453,6 +453,7 @@ export const installK8sHelmIngressNginxController = ({
       createNamespace: true,
       values: {
         controller: {
+          allowSnippetAnnotations: 'true',
           replicaCount: 1,
           service: {
             type: 'LoadBalancer',
@@ -501,7 +502,7 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.13.0',
+      version: '1.13.3',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },

@@ -4,15 +4,20 @@ import * as pulumi from '@pulumi/pulumi';
 type CreateMongoDbClusterProps = {
   region: digitalocean.Region;
   vpc: digitalocean.Vpc;
+  nodeCount?: number;
 };
 
-export const createMongoDbCluster = ({ region, vpc }: CreateMongoDbClusterProps): digitalocean.DatabaseCluster => {
+export const createMongoDbCluster = ({
+  region,
+  vpc,
+  nodeCount = 1,
+}: CreateMongoDbClusterProps): digitalocean.DatabaseCluster => {
   return new digitalocean.DatabaseCluster('mongo-cluster', {
     engine: 'mongodb',
     version: '6',
     region,
     size: digitalocean.DatabaseSlug.DB_1VPCU1GB,
-    nodeCount: 1, // or 3
+    nodeCount,
     privateNetworkUuid: vpc.id,
   });
 };
@@ -20,12 +25,20 @@ export const createMongoDbCluster = ({ region, vpc }: CreateMongoDbClusterProps)
 type CreateMongoDbFirewallProps = {
   mongoDbCluster: digitalocean.DatabaseCluster;
   k8sCluster: digitalocean.KubernetesCluster;
+  whitelistIpAdresses?: Array<string>;
 };
 
-export const createMongoDbFirewall = ({ mongoDbCluster, k8sCluster }: CreateMongoDbFirewallProps) => {
+export const createMongoDbFirewall = ({
+  mongoDbCluster,
+  k8sCluster,
+  whitelistIpAdresses = [],
+}: CreateMongoDbFirewallProps) => {
   return new digitalocean.DatabaseFirewall('mongo-firewall', {
     clusterId: mongoDbCluster.id,
-    rules: [{ type: 'k8s', value: k8sCluster.id }],
+    rules: [
+      { type: 'k8s', value: k8sCluster.id },
+      ...whitelistIpAdresses.map((ipAddress) => ({ type: 'ip_addr', value: ipAddress })),
+    ],
   });
 };
 

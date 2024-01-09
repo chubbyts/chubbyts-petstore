@@ -1,4 +1,4 @@
-import type { Duplex } from 'stream';
+import { PassThrough } from 'stream';
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from '@jest/globals';
@@ -164,27 +164,21 @@ describe('service-factory', () => {
   });
 
   describe('corsMiddlewareServiceFactory', () => {
-    test('with createAllowOriginExact', async () => {
-      const requestHeaders = { origin: ['http://localhost:80'] };
+    test('with allowOrigins: createAllowOriginExact', async () => {
+      const requestBody = new PassThrough();
 
-      const [request, requestMocks] = useObjectMock<ServerRequest>([
-        { name: 'method', value: Method.OPTIONS },
-        { name: 'headers', value: requestHeaders },
-        { name: 'headers', value: requestHeaders },
-        { name: 'headers', value: requestHeaders },
-        { name: 'headers', value: requestHeaders },
-      ]);
+      const request = {
+        method: Method.OPTIONS,
+        headers: { origin: ['http://localhost:80'] },
+        body: requestBody,
+      } as unknown as ServerRequest;
 
-      const [responseBody, responseBodyMocks] = useObjectMock<Duplex>([
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        { name: 'end', parameters: [], returnSelf: true },
-      ]);
+      const responseBody = new PassThrough();
 
-      const [response, responseMocks] = useObjectMock<Response>([
-        { name: 'body', value: responseBody },
-        { name: 'headers', value: {} },
-      ]);
+      const response = {
+        headers: {},
+        body: responseBody,
+      } as unknown as Response;
 
       const [handler, handlerMocks] = useFunctionMock<Handler>([]);
 
@@ -222,8 +216,9 @@ describe('service-factory', () => {
 
       const middlewareResponse = await corsMiddleware(request, handler);
 
-      expect(middlewareResponse).toMatchInlineSnapshot(`
+      expect({ ...middlewareResponse, body: undefined }).toMatchInlineSnapshot(`
         {
+          "body": undefined,
           "headers": {
             "access-control-allow-credentials": [
               "false",
@@ -238,35 +233,26 @@ describe('service-factory', () => {
         }
       `);
 
-      expect(requestMocks.length).toBe(0);
-      expect(responseBodyMocks.length).toBe(0);
-      expect(responseMocks.length).toBe(0);
       expect(handlerMocks.length).toBe(0);
       expect(responseFactoryMocks.length).toBe(0);
       expect(containerMocks.length).toBe(0);
     });
 
-    test('with createAllowOriginRegex', async () => {
-      const requestHeaders = { origin: ['http://localhost:80'] };
+    test('with allowOrigins: createAllowOriginRegex', async () => {
+      const requestBody = new PassThrough();
 
-      const [request, requestMocks] = useObjectMock<ServerRequest>([
-        { name: 'method', value: Method.OPTIONS },
-        { name: 'headers', value: requestHeaders },
-        { name: 'headers', value: requestHeaders },
-        { name: 'headers', value: requestHeaders },
-        { name: 'headers', value: requestHeaders },
-      ]);
+      const request = {
+        method: Method.OPTIONS,
+        headers: { origin: ['http://localhost:80'] },
+        body: requestBody,
+      } as unknown as ServerRequest;
 
-      const [responseBody, responseBodyMocks] = useObjectMock<Duplex>([
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        { name: 'end', parameters: [], returnSelf: true },
-      ]);
+      const responseBody = new PassThrough();
 
-      const [response, responseMocks] = useObjectMock<Response>([
-        { name: 'body', value: responseBody },
-        { name: 'headers', value: {} },
-      ]);
+      const response = {
+        headers: {},
+        body: responseBody,
+      } as unknown as Response;
 
       const [handler, handlerMocks] = useFunctionMock<Handler>([]);
 
@@ -304,8 +290,9 @@ describe('service-factory', () => {
 
       const middlewareResponse = await corsMiddleware(request, handler);
 
-      expect(middlewareResponse).toMatchInlineSnapshot(`
+      expect({ ...middlewareResponse, body: undefined }).toMatchInlineSnapshot(`
         {
+          "body": undefined,
           "headers": {
             "access-control-allow-credentials": [
               "false",
@@ -320,9 +307,68 @@ describe('service-factory', () => {
         }
       `);
 
-      expect(requestMocks.length).toBe(0);
-      expect(responseBodyMocks.length).toBe(0);
-      expect(responseMocks.length).toBe(0);
+      expect(handlerMocks.length).toBe(0);
+      expect(responseFactoryMocks.length).toBe(0);
+      expect(containerMocks.length).toBe(0);
+    });
+
+    test('without allowOrigins', async () => {
+      const requestBody = new PassThrough();
+
+      const request = {
+        method: Method.OPTIONS,
+        headers: { origin: ['http://localhost:80'] },
+        body: requestBody,
+      } as unknown as ServerRequest;
+
+      const responseBody = new PassThrough();
+
+      const response = {
+        headers: {},
+        body: responseBody,
+      } as unknown as Response;
+
+      const [handler, handlerMocks] = useFunctionMock<Handler>([]);
+
+      const [responseFactory, responseFactoryMocks] = useFunctionMock<ResponseFactory>([
+        { parameters: [204], return: response },
+      ]);
+
+      const [container, containerMocks] = useObjectMock<Container>([
+        {
+          name: 'get',
+          parameters: ['config'],
+          return: {
+            cors: {
+              allowOrigins: {},
+              allowMethods: [],
+              allowHeaders: [],
+              exposeHeaders: [],
+              allowCredentials: false,
+              maxAge: 7200,
+            },
+          },
+        },
+        {
+          name: 'get',
+          parameters: ['responseFactory'],
+          return: responseFactory,
+        },
+      ]);
+
+      const corsMiddleware = corsMiddlewareServiceFactory(container);
+
+      expect(corsMiddleware).toBeInstanceOf(Function);
+
+      const middlewareResponse = await corsMiddleware(request, handler);
+
+      expect({ ...middlewareResponse, body: undefined }).toMatchInlineSnapshot(`
+        {
+          "body": undefined,
+          "headers": {},
+        }
+      `);
+
       expect(handlerMocks.length).toBe(0);
       expect(responseFactoryMocks.length).toBe(0);
       expect(containerMocks.length).toBe(0);

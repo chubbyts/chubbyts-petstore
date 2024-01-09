@@ -10,14 +10,14 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@pulumi/digitalocean": "^4.22.0",
-    "@pulumi/docker": "^4.4.4",
-    "@pulumi/kubernetes": "^4.5.2",
-    "@pulumi/pulumi": "^3.91.1"
+    "@pulumi/digitalocean": "^4.25.1",
+    "@pulumi/docker": "^4.5.0",
+    "@pulumi/kubernetes": "^4.5.6",
+    "@pulumi/pulumi": "^3.100.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.9",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.10.8",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
   }
 }

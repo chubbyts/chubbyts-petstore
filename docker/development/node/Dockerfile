@@ -1,4 +1,4 @@
-FROM rockylinux/rockylinux:9.2
+FROM rockylinux/rockylinux:9.3
 
 SHELL ["/bin/bash", "-c"]
 

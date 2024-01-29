@@ -1,4 +1,4 @@
-module.exports = async function (config) {
+const teardown = async () => {
   if (global.__HTTP_SERVER__) {
     await global.__HTTP_SERVER__.kill();
   }
@@ -6,3 +6,5 @@ module.exports = async function (config) {
     await global.__MONGO_SERVER__.stop();
   }
 };
+
+export default teardown;

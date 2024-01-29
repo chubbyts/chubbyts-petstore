@@ -1,17 +1,17 @@
-const { spawn } = require('child_process');
-const { cwd } = require('process');
-const { rmSync, existsSync, mkdirSync, cpSync } = require('fs');
+import { spawn } from 'child_process';
+import { cwd } from 'process';
+import { rmSync, existsSync, mkdirSync } from 'fs';
 
-const build = async (watch = false) => {
+export const build = async (watch = false) => {
   const rootDir = cwd();
 
-  if (!existsSync(`${rootDir}/dist/var/log`)) {
-    mkdirSync(`${rootDir}/dist/var/log`, { recursive: true });
+  if (!existsSync(`${rootDir}/dist`)) {
+    mkdirSync(`${rootDir}/dist`, { recursive: true });
   }
 
   return Promise.all(
     ['bin', 'bootstrap', 'config', 'src'].map((dir) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         if (existsSync(`${rootDir}/dist/${dir}`)) {
           rmSync(`${rootDir}/dist/${dir}`, { recursive: true });
         }
@@ -20,7 +20,7 @@ const build = async (watch = false) => {
           'node_modules/.bin/swc',
           dir,
           '--out-dir',
-          `${rootDir}/dist/${dir}`,
+          `${rootDir}/dist/`,
           ...(watch ? ['-w'] : []),
         ]);
 
@@ -40,5 +40,3 @@ const build = async (watch = false) => {
     }),
   );
 };
-
-module.exports = build;

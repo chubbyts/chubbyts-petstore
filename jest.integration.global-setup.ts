@@ -1,16 +1,16 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const { spawn } = require('child_process');
-const build = require('./build');
-const fetch = require('cross-fetch');
+import { spawn } from 'child_process';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import fetch from 'cross-fetch';
+import { build } from './build';
 
-const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomInt = (min: number, max: number) => {
+  const ceiledMin = Math.ceil(min);
+  const flooredMax = Math.floor(max);
+  return Math.floor(Math.random() * (flooredMax - ceiledMin + 1)) + ceiledMin;
 };
 
 const testServerHost = '127.0.0.1';
-const testServerPort = getRandomInt(49152, 65535);
+const testServerPort = getRandomInt(49152, 65535).toString();
 
 const timeout = 20000;
 const iterationTimeout = 500;
@@ -30,6 +30,7 @@ const startServer = async () => {
     throw e;
   });
 
+  // eslint-disable-next-line functional/no-let
   for (let i = timeout; i > 0; i -= iterationTimeout) {
     try {
       await fetch(`http://${testServerHost}:${testServerPort}`);
@@ -44,11 +45,12 @@ const startServer = async () => {
     }
   }
 
-  throw new Error(`Timeout in starting the server`);
+  throw new Error('Timeout in starting the server');
 };
 
-module.exports = async () => {
+const setup = async () => {
   if (!global.__MONGO_SERVER__) {
+    // eslint-disable-next-line functional/immutable-data
     global.__MONGO_SERVER__ = await MongoMemoryServer.create({
       instance: {
         dbName: 'jest',
@@ -57,11 +59,14 @@ module.exports = async () => {
         version: '6.0.11',
       },
     });
+    // eslint-disable-next-line functional/immutable-data
     process.env.MONGO_URI = global.__MONGO_SERVER__.getUri();
   }
 
   if (!global.__HTTP_SERVER__) {
+    // eslint-disable-next-line functional/immutable-data
     global.__HTTP_SERVER__ = await startServer();
+    // eslint-disable-next-line functional/immutable-data
     process.env.HTTP_URI = `http://${testServerHost}:${testServerPort}`;
   }
 
@@ -76,3 +81,5 @@ module.exports = async () => {
     ),
   );
 };
+
+export default setup;

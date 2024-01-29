@@ -1,4 +1,4 @@
 {
     "watch": "dist",
-    "exec": "node dist/bootstrap/index.js"
+    "exec": "node ${PETSTORE_NODE_OPTIONS} dist/bootstrap/index.js"
 }

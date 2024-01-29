@@ -1,4 +1,4 @@
 {
-    "watch": "dist",
-    "exec": "node ${PETSTORE_NODE_OPTIONS} dist/bootstrap/index.js"
+    "ext": "ts",
+    "exec": "node ${CHUBBYTS_NODE_OPTIONS} -r ts-node/register bootstrap/index.ts"
 }

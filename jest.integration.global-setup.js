@@ -1,24 +1,25 @@
-import { spawn } from 'child_process';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import fetch from 'cross-fetch';
-import { build } from './build';
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { spawn } = require('child_process');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const fetch = require('cross-fetch');
 
-const getRandomInt = (min: number, max: number) => {
+const getRandomInt = (min, max) => {
   const ceiledMin = Math.ceil(min);
   const flooredMax = Math.floor(max);
   return Math.floor(Math.random() * (flooredMax - ceiledMin + 1)) + ceiledMin;
 };
 
 const testServerHost = '127.0.0.1';
-const testServerPort = getRandomInt(49152, 65535).toString();
+const testServerPort = getRandomInt(49152, 65535);
 
 const timeout = 20000;
 const iterationTimeout = 500;
 
 const startServer = async () => {
-  await build();
+  console.log(process.argv[0]);
 
-  const child = spawn(process.argv[0], ['dist/bootstrap/index.js'], {
+  const child = spawn(process.argv[0], ['-r', 'ts-node/register', 'bootstrap/index.ts'], {
     env: {
       NODE_ENV: 'jest',
       MONGO_URI: process.env.MONGO_URI,
@@ -48,7 +49,8 @@ const startServer = async () => {
   throw new Error('Timeout in starting the server');
 };
 
-const setup = async () => {
+// eslint-disable-next-line functional/immutable-data
+module.exports = async () => {
   if (!global.__MONGO_SERVER__) {
     // eslint-disable-next-line functional/immutable-data
     global.__MONGO_SERVER__ = await MongoMemoryServer.create({
@@ -81,5 +83,3 @@ const setup = async () => {
     ),
   );
 };
-
-export default setup;

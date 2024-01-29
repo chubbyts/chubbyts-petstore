@@ -2,7 +2,7 @@ import type { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import { execSync } from 'child_process';
 import { describe, expect, test } from '@jest/globals';
 
-const consoleCommand = `NODE_ENV=jest ${process.argv[0]} dist/bin/console.js`;
+const consoleCommand = `NODE_ENV=jest ${process.argv[0]} -r ts-node/register bin/console.ts`;
 const options: ExecSyncOptionsWithStringEncoding = { encoding: 'utf-8' };
 
 describe('console', () => {

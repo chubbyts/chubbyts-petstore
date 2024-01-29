@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "jsx": "react",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "skipLibCheck": true,
+        "strict": true,
+        "target": "ES2021"
+    },
+    "ts-node": {
+        "swc": true
+    },
+    "include": [
+        "bin",
+        "bootstrap",
+        "config",
+        "src"
+    ]
+}

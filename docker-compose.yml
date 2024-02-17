@@ -39,7 +39,7 @@ services:
       STACK: 'local'
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
     volumes:
-      - ${PWD}/dist/var/log:/app/var/log
+      - ${PWD}/var/log:/app/var/log
     depends_on:
       - elasticsearch
   mongo:

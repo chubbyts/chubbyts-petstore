@@ -28,6 +28,7 @@ import {
   installK8sDockerRegistrySecret,
   createK8sTokenKubeconfig,
   installK8sHelmMetricsServer,
+  installK8sHelmKubernetesDashboard,
 } from './src/k8s';
 
 type NodeFactoryProps = {
@@ -256,6 +257,9 @@ const ingress = createK8sIngressNginx({
 const helmCertManager = installK8sHelmCertManager({ k8sProvider });
 
 createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('certManagerEmail') });
+
+// install kubernetes dashboard
+const kubernetesDashboard = installK8sHelmKubernetesDashboard({ k8sProvider });
 
 export const containerRegistryId = containerRegistry.id;
 export const dns = pulumi.interpolate`Make sure to add A-Record for ${

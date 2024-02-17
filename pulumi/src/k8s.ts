@@ -22,7 +22,7 @@ export const createK8sCluster = ({
       nodeCount,
     },
     region,
-    version: '1.28.2-do.0',
+    version: '1.29.1-do.0',
     autoUpgrade: false,
     vpcUuid: vpc.id,
   });
@@ -103,6 +103,8 @@ type CreateK8sHttpStatefulSetProps = {
   path: string;
   volumes: Array<{ name: string; mountPath: string; storage: string }>;
   replicas: number;
+  fluentdImage?: pulumi.Input<string>;
+  fluentdEnv?: pulumi.Input<Array<{ name: string; value: string | pulumi.Output<string> }>>;
   resources?: Resources;
 };
 
@@ -115,6 +117,8 @@ export const createK8sHttpStatefulSet = ({
   path,
   volumes,
   replicas,
+  fluentdImage = undefined,
+  fluentdEnv = [],
   resources = undefined,
 }: CreateK8sHttpStatefulSetProps): k8s.apps.v1.StatefulSet => {
   return new k8s.apps.v1.StatefulSet(
@@ -150,9 +154,30 @@ export const createK8sHttpStatefulSet = ({
                     scheme: 'HTTP',
                   },
                 },
-                volumeMounts: volumes.map((volume) => ({ name: volume.name, mountPath: volume.mountPath })),
+                volumeMounts: [
+                  // {
+                  //   name: 'var-log',
+                  //   mountPath: '/app/var/log',
+                  // },
+                  ...volumes.map((volume) => ({ name: volume.name, mountPath: volume.mountPath })),
+                ],
                 resources,
               },
+              // ...(fluentdImage
+              //   ? [
+              //       {
+              //         name: `${labels.appClass}-fluentd`,
+              //         image: fluentdImage,
+              //         env: fluentdEnv,
+              //         volumeMounts: [
+              //           {
+              //             name: 'var-log',
+              //             mountPath: '/app/var/log',
+              //           },
+              //         ],
+              //       },
+              //     ]
+              //   : []),
             ],
             initContainers: volumes.map((volume) => ({
               name: `${volume.name}-permission-fix`,
@@ -161,6 +186,12 @@ export const createK8sHttpStatefulSet = ({
               volumeMounts: [{ name: volume.name, mountPath: volume.mountPath }],
             })),
             imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
+            volumes: [
+              {
+                name: 'var-log',
+                emptyDir: {},
+              },
+            ],
           },
         },
         volumeClaimTemplates: volumes.map((volume) => ({
@@ -238,28 +269,28 @@ export const createK8sHttpDeployment = ({
                   },
                 },
                 volumeMounts: [
-                  {
-                    name: 'var-log',
-                    mountPath: '/app/var/log',
-                  },
+                  // {
+                  //   name: 'var-log',
+                  //   mountPath: '/app/var/log',
+                  // },
                 ],
                 resources,
               },
-              ...(fluentdImage
-                ? [
-                    {
-                      name: `${labels.appClass}-fluentd`,
-                      image: fluentdImage,
-                      env: fluentdEnv,
-                      volumeMounts: [
-                        {
-                          name: 'var-log',
-                          mountPath: '/app/var/log',
-                        },
-                      ],
-                    },
-                  ]
-                : []),
+              // ...(fluentdImage
+              //   ? [
+              //       {
+              //         name: `${labels.appClass}-fluentd`,
+              //         image: fluentdImage,
+              //         env: fluentdEnv,
+              //         volumeMounts: [
+              //           {
+              //             name: 'var-log',
+              //             mountPath: '/app/var/log',
+              //           },
+              //         ],
+              //       },
+              //     ]
+              //   : []),
             ],
             imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
             volumes: [
@@ -412,7 +443,7 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
     'helm-metrics-server',
     {
       chart: 'metrics-server',
-      version: '3.11.0',
+      version: '3.12.0',
       repositoryOpts: {
         repo: 'https://kubernetes-sigs.github.io/metrics-server',
       },
@@ -445,7 +476,7 @@ export const installK8sHelmIngressNginxController = ({
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.9.0',
+      version: '4.9.1',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -502,7 +533,7 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.13.3',
+      version: '1.14.2',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },
@@ -512,6 +543,47 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
         installCRDs: true,
         prometheus: {
           enabled: false,
+        },
+      },
+    },
+    { provider: k8sProvider },
+  );
+};
+
+type InstallK8sHelmKubernetesDashboardProps = {
+  k8sProvider: k8s.Provider;
+};
+
+export const installK8sHelmKubernetesDashboard = ({ k8sProvider }: InstallK8sHelmKubernetesDashboardProps): k8s.helm.v3.Release => {
+  // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/kubernetes-dashboard
+  // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/kubernetes-dashboard/values.yml
+  return new k8s.helm.v3.Release(
+    'helm-kubernetes-dashboard',
+    {
+      chart: 'kubernetes-dashboard',
+      version: '6.0.8', // do not upgrade to 7!!
+      repositoryOpts: {
+        repo: 'https://kubernetes.github.io/dashboard',
+      },
+      namespace: 'kubernetes-dashboard',
+      createNamespace: true,
+      values: {
+        app: {
+          ingress: {
+            enabled: false
+          }
+        },
+        metricsScraper: {
+          enabled: false
+        },
+        nginx: {
+          enabled: false
+        },
+        'cert-manager': { // other chart
+          enabled: false
+        },
+        'metrics-server': { // other chart
+          enabled: false
         },
       },
     },

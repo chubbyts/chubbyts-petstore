@@ -1,7 +1,8 @@
 {
-  "name": "chubbyts-petstore",
+  "name": "pulumi",
   "scripts": {
-    "cs-fix": "prettier --write index.ts src"
+    "cs-fix": "prettier --write index.ts src",
+    "lint-fix": "eslint index.ts src --fix"
   },
   "prettier": {
     "printWidth": 120,
@@ -11,13 +12,15 @@
   },
   "dependencies": {
     "@pulumi/digitalocean": "^4.25.1",
-    "@pulumi/docker": "^4.5.0",
-    "@pulumi/kubernetes": "^4.5.6",
-    "@pulumi/pulumi": "^3.100.0"
+    "@pulumi/docker": "^4.5.1",
+    "@pulumi/kubernetes": "4.7.1",
+    "@pulumi/pulumi": "^3.105.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.8",
-    "prettier": "^3.1.1",
+    "@chubbyts/chubbyts-eslint": "^2.0.3",
+    "@types/node": "^20.11.17",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   }
 }

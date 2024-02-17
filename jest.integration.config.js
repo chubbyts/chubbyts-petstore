@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable functional/immutable-data */
 module.exports = {
   globalSetup: '<rootDir>/jest.integration.global-setup.js',
   globalTeardown: '<rootDir>/jest.integration.global-teardown.js',

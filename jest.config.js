@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable functional/immutable-data */
 module.exports = {
   transform: {
     '\\.(ts|tsx)$': '@swc/jest',

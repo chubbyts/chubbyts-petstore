@@ -1,5 +1,7 @@
-/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-let */
+/* eslint-disable no-undef */
 const { spawn } = require('child_process');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const fetch = require('cross-fetch');
@@ -31,7 +33,6 @@ const startServer = async () => {
     throw e;
   });
 
-  // eslint-disable-next-line functional/no-let
   for (let i = timeout; i > 0; i -= iterationTimeout) {
     try {
       await fetch(`http://${testServerHost}:${testServerPort}`);
@@ -49,10 +50,8 @@ const startServer = async () => {
   throw new Error('Timeout in starting the server');
 };
 
-// eslint-disable-next-line functional/immutable-data
 module.exports = async () => {
   if (!global.__MONGO_SERVER__) {
-    // eslint-disable-next-line functional/immutable-data
     global.__MONGO_SERVER__ = await MongoMemoryServer.create({
       instance: {
         dbName: 'jest',
@@ -61,14 +60,11 @@ module.exports = async () => {
         version: '6.0.11',
       },
     });
-    // eslint-disable-next-line functional/immutable-data
     process.env.MONGO_URI = global.__MONGO_SERVER__.getUri();
   }
 
   if (!global.__HTTP_SERVER__) {
-    // eslint-disable-next-line functional/immutable-data
     global.__HTTP_SERVER__ = await startServer();
-    // eslint-disable-next-line functional/immutable-data
     process.env.HTTP_URI = `http://${testServerHost}:${testServerPort}`;
   }
 

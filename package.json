@@ -22,8 +22,8 @@
     "infection": "stryker run",
     "lint-fix": "eslint bin bootstrap config src tests --fix",
     "lint": "eslint bin bootstrap config src tests",
-    "start:debug": "npm install && npm run lint-fix && npm run cs-fix && npm run develop:debug",
-    "start": "npm install && npm run lint-fix && npm run cs-fix && npm run develop",
+    "start:debug": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm run develop:debug",
+    "start": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm run develop",
     "test:integration": "jest --config jest.integration.config.js",
     "test": "jest"
   },
@@ -67,8 +67,10 @@
   "devDependencies": {
     "@chubbyts/chubbyts-eslint": "^2.0.3",
     "@chubbyts/chubbyts-function-mock": "^1.4.1",
+    "@jest/globals": "^29.7.0",
     "@stryker-mutator/core": "^8.1.0",
-    "@stryker-mutator/jest-runner": "^8.1.0",
+    "@stryker-mutator/jest-runner": "^8.2.3",
+    "@stryker-mutator/typescript-checker": "^8.2.3",
     "@swc/cli": "^0.3.5",
     "@swc/core": "^1.3.107",
     "@swc/jest": "^0.2.31",

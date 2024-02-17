@@ -1,7 +1,7 @@
+.pnpm-store
 .stryker-tmp
 coverage
 dist
 globalConfig.json
 node_modules
-package-lock.json
 var

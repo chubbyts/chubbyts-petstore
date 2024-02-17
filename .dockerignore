@@ -1,5 +1,6 @@
 /.git
 /.github
+/.pnpm-store
 /.stryker-tmp
 /coverage
 /dist

@@ -66,7 +66,7 @@ docker-compose exec node bash
 ## Start
 
 ```sh
-npm start
+pnpm start
 ```
 
 ## Urls
@@ -130,7 +130,7 @@ Service factories are the glue code of the dependeny injection container.
 
 ```sh
 cd pulumi
-npm install
+pnpm install
 pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:certManagerEmail XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:ipRange 10.10.11.0/24

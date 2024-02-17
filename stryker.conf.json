@@ -1,7 +1,12 @@
 {
     "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+    "packageManager": "pnpm",
     "testRunner": "jest",
     "coverageAnalysis": "off",
+    "plugins": [
+        "@stryker-mutator/jest-runner",
+        "@stryker-mutator/typescript-checker"
+    ],
     "reporters": [
         "clear-text",
         "progress",

@@ -39,7 +39,7 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/
     && fnm install 20 \
     && fnm default 20 \
     && fnm use 20 \
-    && npm install -g npm@latest
+    && npm install -g pnpm@latest
 
 # build
 FROM base as build
@@ -54,12 +54,12 @@ USER node
 
 WORKDIR /app-build
 
-RUN source ~/.bashrc && npm install
-RUN source ~/.bashrc && npm run cs
-RUN source ~/.bashrc && npm run lint
-RUN source ~/.bashrc && npm run test -- --coverage --no-cache
-RUN source ~/.bashrc && npm run test:integration -- --no-cache
-RUN source ~/.bashrc && npm run build
+RUN source ~/.bashrc && pnpm install
+RUN source ~/.bashrc && pnpm run cs
+RUN source ~/.bashrc && pnpm run lint
+RUN source ~/.bashrc && pnpm run test --coverage --no-cache
+RUN source ~/.bashrc && pnpm run test:integration --no-cache
+RUN source ~/.bashrc && pnpm run build
 
 # prod
 FROM base
@@ -68,7 +68,7 @@ USER root
 
 COPY --from=build /app-build/dist /app
 COPY --from=build /app-build/package.json /app
-COPY --from=build /app-build/package-lock.json /app
+COPY --from=build /app-build/pnpm-lock.yaml /app
 
 RUN chown -Rf node: /app
 
@@ -77,7 +77,7 @@ USER node
 WORKDIR /app
 
 RUN source ~/.bashrc \
-    && npm install --omit=dev
+    && pnpm install --prod
 
 CMD source ~/.bashrc \
     && export LD_PRELOAD=`jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision` \

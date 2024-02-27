@@ -1,3 +1,13 @@
+# fnm
+export PATH=$HOME/.fnm:$PATH
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
 export HISTSIZE=5000
 export SAVEHIST=100000
 

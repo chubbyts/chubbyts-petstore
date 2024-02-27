@@ -54,14 +54,14 @@ import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/en
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
 import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
-import { createCorsMiddleware } from '@chubbyts/chubbyts-cors/dist/middleware';
+import { createCorsMiddleware } from '@chubbyts/chubbyts-http-cors/dist/middleware';
 import {
   createAllowOriginExact,
   createAllowOriginRegex,
   createHeadersNegotiator,
   createMethodNegotiator,
   createOriginNegotiator,
-} from '@chubbyts/chubbyts-cors/dist/negotiation';
+} from '@chubbyts/chubbyts-http-cors/dist/negotiation';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
 import { extendZodWithOpenApi, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';

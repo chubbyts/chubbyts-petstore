@@ -4,7 +4,7 @@ import { createApplication } from '@chubbyts/chubbyts-framework/dist/application
 import {
   createNodeToServerRequestFactory,
   createResponseToNodeEmitter,
-} from '@chubbyts/chubbyts-node-http-bridge/dist/node-http';
+} from '@chubbyts/chubbyts-http-node-bridge/dist/node-http';
 import type { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
 import type {
   ServerRequestFactory,

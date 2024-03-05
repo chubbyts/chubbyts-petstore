@@ -23,7 +23,7 @@ export const createResolveList = <C>(mongoClient: MongoClient, collectionName: s
     return {
       ...list,
       items: (await cursor.toArray()).map(withoutMongoId),
-      count: await collection.countDocuments(list.filters),
+      count: await collection.countDocuments(list.filters as Filter<Model<C>>),
     };
   };
 };

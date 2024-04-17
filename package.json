@@ -37,7 +37,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^6.4.0",

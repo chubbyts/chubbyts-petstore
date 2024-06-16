@@ -1,9 +1,10 @@
 import { createWriteStream, realpathSync } from 'fs';
+import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
-import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator';
+import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.ts';
 import {
   petCreateHandlerServiceFactory,
   petFindOneByIdServiceFactory,
@@ -18,7 +19,7 @@ import {
   petEnrichModelServiceFactory,
   petEnrichListServiceFactory,
   petOpenApiRegistryServiceDelegator,
-} from '../src/pet/service-factory';
+} from '../src/pet/service-factory.js';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -48,7 +49,7 @@ import {
   streamFactoryServiceFactory,
   streamFromResourceFactoryServiceFactory,
   uriFactoryServiceFactory,
-} from '../src/service-factory';
+} from '../src/service-factory.js';
 
 export type Config = {
   cors: {
@@ -83,7 +84,7 @@ export type Config = {
   };
 };
 
-const rootDir = realpathSync(__dirname + '/..');
+const rootDir = realpathSync(new URL('..', import.meta.url));
 
 export const configFactory = (env: string): Config => {
   console.log(`Loading "${env}" config`);

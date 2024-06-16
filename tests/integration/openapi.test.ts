@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch';
+import { expect, test } from 'vitest';
 
 test('openapi', async () => {
   const response = await fetch(`${process.env.HTTP_URI}/openapi`);

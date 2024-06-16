@@ -37,10 +37,10 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run cs'
       - name: pnpm run lint
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run lint'
-      - name: pnpm run test -- --coverage --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --coverage --no-cache'
-      - name: pnpm run test:integration --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --no-cache'
+      - name: pnpm run test --run --coverage --no-cache
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --run --coverage --no-cache'
+      - name: pnpm run test:integration --run --no-cache
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run infection
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run infection'
       - name: pnpm run build
@@ -57,7 +57,7 @@ jobs:
           node-version: '18'
       - run: npm install -g pnpm@latest
       - run: pnpm install
-      - run: pnpm run test
+      - run: pnpm run test --run
   node20:
     name: Node 20
     runs-on: ubuntu-22.04
@@ -72,8 +72,8 @@ jobs:
       - run: pnpm install
       - run: pnpm run cs
       - run: pnpm run lint
-      - run: pnpm run test --coverage --no-cache
-      - run: pnpm run test:integration --no-cache
+      - run: pnpm run test --run --coverage --no-cache
+      - run: pnpm run test:integration --run --no-cache
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

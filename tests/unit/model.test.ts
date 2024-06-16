@@ -1,5 +1,5 @@
-import { describe, expect, test } from '@jest/globals';
-import { numberSchema, modelSchema, listRequestSchema, linkSchema, modelResponseSchema } from '../../src/model';
+import { describe, expect, test } from 'vitest';
+import { numberSchema, modelSchema, listRequestSchema, linkSchema, modelResponseSchema } from '../../src/model.js';
 
 describe('numberSchema', () => {
   test('valid', () => {

@@ -1,7 +1,7 @@
 import { PassThrough } from 'stream';
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
@@ -38,8 +38,8 @@ import {
   streamFactoryServiceFactory,
   streamFromResourceFactoryServiceFactory,
   uriFactoryServiceFactory,
-} from '../../src/service-factory';
-import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route';
+} from '../../src/service-factory.js';
+import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route.js';
 
 // prettier-ignore
 // eslint-disable-next-line functional/immutable-data

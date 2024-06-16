@@ -1,6 +1,6 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import type { Collection, Db, MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
@@ -19,9 +19,9 @@ import {
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
-import type { Pet, PetList } from '../../../src/pet/model';
-import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../../utils/route';
-import { validPet, validPetList } from './model.test';
+import type { Pet, PetList } from '../../../src/pet/model.js';
+import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../../utils/route.js';
+import { validPet, validPetList } from './model.test.js';
 
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {

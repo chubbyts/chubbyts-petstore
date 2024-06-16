@@ -1,10 +1,8 @@
 import { Command } from 'commander';
-import { containerFactory } from '../bootstrap/container';
-import type { CleanDirectoriesCommand } from '../src/command';
+import { containerFactory } from '../bootstrap/container.js';
+import type { CleanDirectoriesCommand } from '../src/command.js';
 
 const program = new Command();
-
-const container = containerFactory(process.env.NODE_ENV as string);
 
 type Action = (...args: Array<string>) => Promise<number> | number;
 
@@ -27,6 +25,8 @@ const run = (action: Action) => {
 };
 
 (async () => {
+  const container = await containerFactory(process.env.NODE_ENV as string);
+
   program
     .command('clean-directories')
     .argument('[directoryNames]')

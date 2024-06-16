@@ -1,4 +1,4 @@
 {
-    "ext": "json,ts,tsx",
-    "exec": "node ${CHUBBYTS_NODE_OPTIONS} -r ts-node/register bootstrap/index.ts"
+  "ext": "json,ts,tsx",
+  "exec": "node ${CHUBBYTS_NODE_OPTIONS} --loader ts-node/esm bootstrap/index.ts"
 }

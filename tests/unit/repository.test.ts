@@ -1,9 +1,9 @@
 import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import type { Collection, Db, FindCursor, MongoClient, WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import { createFindOneById, createPersist, createRemove, createResolveList } from '../../src/repository';
+import { createFindOneById, createPersist, createRemove, createResolveList } from '../../src/repository.js';
 
 describe('repository', () => {
   test('createResolveList', async () => {

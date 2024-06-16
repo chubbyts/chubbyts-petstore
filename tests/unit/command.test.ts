@@ -1,10 +1,10 @@
 import { randomBytes } from 'crypto';
 import { mkdirSync, readdirSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import { createCleanDirectoriesCommand } from '../../src/command';
+import { createCleanDirectoriesCommand } from '../../src/command.js';
 
 describe('command', () => {
   describe('createCleanDirectoriesCommand', () => {
@@ -13,11 +13,7 @@ describe('command', () => {
         {
           name: 'error',
           parameters: [
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             'Unsupported directory names',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             {
               unsupportedDirectoryNames: ['log'],
             },
@@ -41,14 +37,7 @@ describe('command', () => {
       const [logger, loggerMocks] = useObjectMock<Logger>([
         {
           name: 'info',
-          parameters: [
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            'Start clean directory',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            { directory: logDir, directoryName: 'log' },
-          ],
+          parameters: ['Start clean directory', { directory: logDir, directoryName: 'log' }],
         },
       ]);
 

@@ -25,16 +25,16 @@ import type { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model'
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-import { createEnrichList, createEnrichModel } from '../enrich';
-import { createResolveList, createFindOneById, createPersist, createRemove } from '../repository';
-import type { Pet } from './model';
+import { createEnrichList, createEnrichModel } from '../enrich.js';
+import { createResolveList, createFindOneById, createPersist, createRemove } from '../repository.js';
+import type { Pet } from './model.js';
 import {
   petRequestSchema,
   petRequestListSchema,
   petResponseSchema,
   petListResponseSchema,
   petRequestListOpenApiSchema,
-} from './model';
+} from './model.js';
 
 extendZodWithOpenApi(z);
 

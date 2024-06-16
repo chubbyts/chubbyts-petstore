@@ -62,14 +62,13 @@ import {
   createMethodNegotiator,
   createOriginNegotiator,
 } from '@chubbyts/chubbyts-http-cors/dist/negotiation';
-import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
-import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
-import { extendZodWithOpenApi, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-import type { Config } from '../config/production';
-import { createCleanDirectoriesCommand } from './command';
-import type { CleanDirectoriesCommand } from './command';
-import { createOpenApiHandler, createPingHandler } from './handler';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import type { Config } from '../config/production.js';
+import { createCleanDirectoriesCommand } from './command.js';
+import type { CleanDirectoriesCommand } from './command.js';
+import { createOpenApiHandler, createPingHandler } from './handler.js';
 
 extendZodWithOpenApi(z);
 

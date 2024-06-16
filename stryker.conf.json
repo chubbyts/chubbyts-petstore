@@ -1,15 +1,18 @@
 {
     "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
     "packageManager": "pnpm",
-    "testRunner": "jest",
+    "testRunner": "vitest",
+    "vitest": {
+      "configFile": "vitest.config.ts"
+    },
     "coverageAnalysis": "off",
     "plugins": [
-        "@stryker-mutator/jest-runner",
-        "@stryker-mutator/typescript-checker"
+      "@stryker-mutator/vitest-runner",
+      "@stryker-mutator/typescript-checker"
     ],
     "reporters": [
-        "clear-text",
-        "progress",
-        "dashboard"
+      "clear-text",
+      "progress",
+      "dashboard"
     ]
 }

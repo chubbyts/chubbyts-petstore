@@ -12,11 +12,11 @@ import type {
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import type { MongoClient } from 'mongodb';
-import type { Config } from '../config/production';
-import { containerFactory } from '../bootstrap/container';
+import type { Config } from '../config/production.js';
+import { containerFactory } from '../bootstrap/container.js';
 
 (async () => {
-  const container = containerFactory(process.env.NODE_ENV as string);
+  const container = await containerFactory(process.env.NODE_ENV as string);
 
   // connect mongodb
   await container.get<Promise<MongoClient>>('mongoClient');

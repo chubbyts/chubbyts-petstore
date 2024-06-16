@@ -1,11 +1,11 @@
 import type { Stream } from 'stream';
 import { PassThrough } from 'stream';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import type { ServerRequest, Response } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import { createOpenApiHandler, createPingHandler } from '../../src/handler';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import { createOpenApiHandler, createPingHandler } from '../../src/handler.js';
 
 export const getStream = async (stream: Stream): Promise<string> => {
   return new Promise((resolve, reject) => {

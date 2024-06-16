@@ -1,8 +1,8 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import type { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import { createEnrichList, createEnrichModel } from '../../src/enrich';
+import { createEnrichList, createEnrichModel } from '../../src/enrich.js';
 
 describe('createEnrichModel', () => {
   test('without links', async () => {

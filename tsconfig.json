@@ -2,15 +2,15 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "jsx": "react",
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "outDir": "./dist",
         "skipLibCheck": true,
         "strict": true,
-        "target": "ES2021"
+        "target": "esnext"
     },
     "ts-node": {
-        "swc": true
+        "swc": true,
     },
     "include": [
         "bin",

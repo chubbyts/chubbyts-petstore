@@ -1,8 +1,8 @@
 import type { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import { execSync } from 'child_process';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 
-const consoleCommand = `NODE_ENV=jest ${process.argv[0]} -r ts-node/register bin/console.ts`;
+const consoleCommand = `NODE_ENV=test ${process.argv[0]} --loader ts-node/esm bin/console.ts`;
 const options: ExecSyncOptionsWithStringEncoding = { encoding: 'utf-8' };
 
 describe('console', () => {
@@ -10,7 +10,7 @@ describe('console', () => {
     const output = execSync(consoleCommand + ' -h', options);
 
     expect(output).toMatchInlineSnapshot(`
-      "Loading "jest" config
+      "Loading "test" config
       Usage: console [options] [command]
 
       Options:

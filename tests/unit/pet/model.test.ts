@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import type {
   PetRequestListOpenApi,
   PetListResponse,
@@ -7,7 +7,7 @@ import type {
   PetRequest,
   Pet,
   PetList,
-} from '../../../src/pet/model';
+} from '../../../src/pet/model.js';
 import {
   petListSchema,
   petSchema,
@@ -16,7 +16,7 @@ import {
   petRequestListSchema,
   petListResponseSchema,
   petRequestListOpenApiSchema,
-} from '../../../src/pet/model';
+} from '../../../src/pet/model.js';
 
 const validPetRequest: PetRequest = {
   name: 'name',

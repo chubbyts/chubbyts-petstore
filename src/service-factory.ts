@@ -8,7 +8,6 @@ import type {
   ResponseFactory,
   ServerRequestFactory,
   StreamFactory,
-  StreamFromResourceFactory,
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
@@ -109,10 +108,10 @@ export const corsMiddlewareServiceFactory = (container: Container) => {
     container.get<ResponseFactory>('responseFactory'),
     createOriginNegotiator([
       ...(cors.allowOrigins.createAllowOriginExact
-        ? cors.allowOrigins.createAllowOriginExact.map((value) => createAllowOriginExact(value))
+        ? cors.allowOrigins.createAllowOriginExact.map(createAllowOriginExact)
         : []),
       ...(cors.allowOrigins.createAllowOriginRegex
-        ? cors.allowOrigins.createAllowOriginRegex.map((value) => createAllowOriginRegex(value))
+        ? cors.allowOrigins.createAllowOriginRegex.map(createAllowOriginRegex)
         : []),
     ]),
     createMethodNegotiator(cors.allowMethods),
@@ -271,14 +270,8 @@ export const serverRequestFactoryServiceFactory = (container: Container): Server
   return createServerRequestFactory(container.get<RequestFactory>('requestFactory'));
 };
 
-export const streamFactoryServiceFactory = (): StreamFactory => {
-  return createStreamFactory();
-};
+export const streamFactoryServiceFactory = createStreamFactory;
 
-export const streamFromResourceFactoryServiceFactory = (): StreamFromResourceFactory => {
-  return createStreamFromResourceFactory();
-};
+export const streamFromResourceFactoryServiceFactory = createStreamFromResourceFactory;
 
-export const uriFactoryServiceFactory = (): UriFactory => {
-  return createUriFactory();
-};
+export const uriFactoryServiceFactory = createUriFactory;

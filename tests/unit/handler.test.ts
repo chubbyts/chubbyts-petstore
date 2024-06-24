@@ -1,22 +1,11 @@
-import type { Stream } from 'stream';
 import { PassThrough } from 'stream';
 import { describe, expect, test } from 'vitest';
 import type { ServerRequest, Response } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import { streamToString } from '@chubbyts/chubbyts-api/dist/stream';
 import { createOpenApiHandler, createPingHandler } from '../../src/handler.js';
-
-export const getStream = async (stream: Stream): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    // eslint-disable-next-line functional/no-let
-    let data = '';
-
-    stream.on('data', (chunk) => (data += chunk));
-    stream.on('end', () => resolve(data));
-    stream.on('error', (error) => reject(error));
-  });
-};
 
 describe('handler', () => {
   test('createPingHandler', async () => {
@@ -45,7 +34,7 @@ describe('handler', () => {
       },
     });
 
-    expect(JSON.parse(await getStream(response.body))).toEqual({ datetime: expect.any(String) });
+    expect(JSON.parse(await streamToString(response.body))).toEqual({ datetime: expect.any(String) });
 
     expect(responseFactoryMocks.length).toBe(0);
   });
@@ -97,7 +86,7 @@ describe('handler', () => {
       },
     });
 
-    expect(JSON.parse(await getStream(response.body))).toEqual({
+    expect(JSON.parse(await streamToString(response.body))).toEqual({
       openapi: '3.0.0',
       info: { version: '1.0.0', title: 'Petstore', license: { name: 'MIT' } },
       servers: [{ url: 'https://localhost' }],

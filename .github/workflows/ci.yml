@@ -55,7 +55,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - run: npm install -g pnpm@latest
+      - run: corepack enable pnpm
       - run: pnpm install
       - run: pnpm run test --run
   node20:
@@ -68,7 +68,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install -g pnpm@latest
+      - run: corepack enable pnpm
       - run: pnpm install
       - run: pnpm run cs
       - run: pnpm run lint

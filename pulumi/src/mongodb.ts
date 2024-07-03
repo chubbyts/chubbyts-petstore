@@ -14,7 +14,7 @@ export const createMongoDbCluster = ({
 }: CreateMongoDbClusterProps): digitalocean.DatabaseCluster => {
   return new digitalocean.DatabaseCluster('mongo-cluster', {
     engine: 'mongodb',
-    version: '6',
+    version: '7',
     region,
     size: digitalocean.DatabaseSlug.DB_1VPCU1GB,
     nodeCount,

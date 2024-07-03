@@ -33,18 +33,19 @@ services:
       context: ./
     user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
     environment:
-      FLUENTD_DAEMON_USER: ${USER_ID:-1000}
-      FLUENTD_DAEMON_GROUP: ${GROUP_ID:-1000}
       STACK: 'local'
-      ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
+      OPENSEARCH_HOSTS: 'opensearch:9200'
+      OPENSEARCH_USER: 'admin'
+      OPENSEARCH_PASSWORD: 't9V02zfj!NMj?LugFsOi'
+      OPENSEARCH_SSL_VERIFY: 'false'
     volumes:
       - ${PWD}/var/log:/app/var/log
     depends_on:
-      - elasticsearch
+      - opensearch
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
-    image: mongo:6.0.11
+    image: mongo:7.0.7
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
       MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
@@ -52,17 +53,10 @@ services:
       - '27017:27017'
     volumes:
       - mongo:/data/db
-  swagger-ui:
-    container_name: chubbyts-petstore-swagger-ui
-    hostname: chubbyts-petstore-swagger-ui
-    image: swaggerapi/swagger-ui:v5.10.3
-    environment:
-      BASE_URL: /swagger
-      URLS: '[ { url: "/openapi" } ]'
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
-    image: nginx:1.21.6
+    image: nginx:1.25.3
     environment:
       SERVER_PORT: '443'
       NODE_SERVER_HOST: 'node'
@@ -76,31 +70,44 @@ services:
     depends_on:
       - node
       - swagger-ui
-  elasticsearch:
-    container_name: chubbyts-petstore-elasticsearch
-    hostname: chubbyts-petstore-elasticsearch
-    image: elasticsearch:8.11.1
+  opensearch:
+    container_name: chubbyts-petstore-opensearch
+    hostname: chubbyts-petstore-opensearch
+    image: opensearchproject/opensearch:2.15.0
     environment:
       ES_JAVA_OPTS: '-Xms512m -Xmx512m'
-      bootstrap.memory_lock: 'true'
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: 't9V02zfj!NMj?LugFsOi'
       discovery.type: 'single-node'
-      xpack.security.enabled: 'false'
-      xpack.security.enrollment.enabled: 'false'
     ports:
       - 9200:9200
     ulimits:
       memlock:
         soft: -1
         hard: -1
-  kibana:
-    container_name: chubbyts-petstore-kibana
-    hostname: chubbyts-petstore-kibana
-    image: kibana:8.11.1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sk https://localhost:9200 | grep -q 'Unauthorized'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+  opensearch-dashboard:
+    container_name: chubbyts-petstore-opensearch-dashboard
+    hostname: chubbyts-petstore-opensearch-dashboard
+    image: opensearchproject/opensearch-dashboards:2.15.0
     environment:
-      XPACK_APM_SERVICEMAPENABLED: 'true'
-      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: 0557aa47-1706-48df-8f2b-b7a5eddcbdf2
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
     ports:
       - 5601:5601
+  swagger-ui:
+    container_name: chubbyts-petstore-swagger-ui
+    hostname: chubbyts-petstore-swagger-ui
+    image: swaggerapi/swagger-ui:v5.17.4
+    environment:
+      BASE_URL: /swagger
+      URLS: '[ { url: "/openapi" } ]'
 
 volumes:
   mongo:

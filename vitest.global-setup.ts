@@ -62,7 +62,7 @@ export const setup = async () => {
       dbName: 'test',
     },
     binary: {
-      version: '6.0.11',
+      version: '7.0.7',
     },
   });
 

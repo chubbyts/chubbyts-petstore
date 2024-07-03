@@ -23,14 +23,14 @@ An api skeleton using mongodb for [chubbyts-framework][8].
 ## Requirements
 
  * node: 16
- * [@asteasolutions/zod-to-openapi][1]: ^6.4.0
- * [@chubbyts/chubbyts-api][2]: ^4.0.0
+ * [@asteasolutions/zod-to-openapi][1]: ^7.1.1
+ * [@chubbyts/chubbyts-api][2]: ^4.1.1
  * [@chubbyts/chubbyts-decode-encode][3]: ^1.3.3
  * [@chubbyts/chubbyts-dic][4]: ^1.2.0
  * [@chubbyts/chubbyts-dic-config][5]: ^1.2.0
  * [@chubbyts/chubbyts-dic-types][6]: ^1.2.1
- * [@chubbyts/chubbyts-framework][7]: ^1.9.0
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.4.0
+ * [@chubbyts/chubbyts-framework][7]: ^1.9.4
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.4.1
  * [@chubbyts/chubbyts-http][9]: ^1.2.1
  * [@chubbyts/chubbyts-http-cors][10]: ^1.2.1
  * [@chubbyts/chubbyts-http-error][11]: ^2.3.1
@@ -40,12 +40,12 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-mongodb][15]: ^1.4.0
  * [@chubbyts/chubbyts-negotiation][16]: ^3.2.2
  * [@chubbyts/chubbyts-pino-adapter][17]: ^1.3.1
- * [commander][18]: ^12.0.0
- * [mongodb][19]: ^6.5.0
- * [openapi3-ts][20]: ^4.2.2
- * [pino][21]: ^8.19.0
- * [uuid][22]: ^9.0.1
- * [zod][23]: ^3.22.4
+ * [commander][18]: ^12.1.0
+ * [mongodb][19]: ^6.8.0
+ * [openapi3-ts][20]: ^4.3.3
+ * [pino][21]: ^9.2.0
+ * [uuid][22]: ^10.0.0
+ * [zod][23]: ^3.23.8
 
 ## Environment
 
@@ -104,7 +104,7 @@ Models, entities, documents what ever fits your purpose the best.
 
 ### Repository
 
-Repositories get data from storages like databases, elasticsearch, redis or whereever your models are stored or cached.
+Repositories get data from storages like databases, opensearch, redis or whereever your models are stored or cached.
 
  * [src/repository.ts][34]
 
@@ -132,9 +132,11 @@ Service factories are the glue code of the dependeny injection container.
 cd pulumi
 pnpm install
 pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
-pulumi config set chubbyts-petstore:certManagerEmail XXXXXXXXXXXXXX --secret
-pulumi config set chubbyts-petstore:ipRange 10.10.11.0/24
-pulumi config set chubbyts-petstore:nodeCount: "1"
+pulumi config set chubbyts-petstore:cert-manager-email XXXXXXXXXXXXXX --secret
+pulumi config set chubbyts-petstore:ip-range 10.10.11.0/24
+pulumi config set chubbyts-petstore:k8s-node-Count: "1"
+pulumi config set chubbyts-petstore:mongodb-node-Count: "1"
+pulumi config set chubbyts-petstore:opensearch-node-Count: "1"
 pulumi up
 ```
 

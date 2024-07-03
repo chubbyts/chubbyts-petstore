@@ -30,6 +30,7 @@ import {
   installK8sHelmMetricsServer,
   installK8sHelmKubernetesDashboard,
 } from './src/k8s';
+import { createOpensearchCluster, createOpensearchFirewall } from './src/opensearch';
 
 type NodeFactoryProps = {
   k8sProvider: k8s.Provider;
@@ -37,6 +38,7 @@ type NodeFactoryProps = {
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
   mongoDbCluster: digitalocean.DatabaseCluster;
+  opensearchCluster: digitalocean.DatabaseCluster;
   config: pulumi.Config;
   stack: string;
 };
@@ -47,6 +49,7 @@ const nodeFactory = ({
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,
+  opensearchCluster,
   stack,
 }: NodeFactoryProps): void => {
   const name = 'node';
@@ -61,13 +64,13 @@ const nodeFactory = ({
     containerRegistryDockerReadWriteCredentials,
   });
 
-  // const fluentdImage = createAndPushImage({
-  //   context,
-  //   name: `${name}-fluentd`,
-  //   stack,
-  //   containerRegistry,
-  //   containerRegistryDockerReadWriteCredentials,
-  // });
+  const fluentdImage = createAndPushImage({
+    context,
+    name: `${name}-fluentd`,
+    stack,
+    containerRegistry,
+    containerRegistryDockerReadWriteCredentials,
+  });
 
   const mongoDbDatabase = createMongoDbDatabase({ mongoDbCluster, name });
   const mongoDbDatabaseUser = createMongoDbDatabaseUser({ mongoDbCluster, name });
@@ -85,11 +88,17 @@ const nodeFactory = ({
     port: 1234,
     path: '/ping',
     replicas: 1,
-    // fluentdImage,
-    // fluentdEnv: [
-    //   { name: 'STACK', value: stack },
-    //   { name: 'ELASTICSEARCH_HOSTS', value: config.require('elasticsearchHosts') },
-    // ],
+    fluentdImage,
+    fluentdEnv: [
+      { name: 'STACK', value: stack },
+      {
+        name: 'OPENSEARCH_HOSTS',
+        value: pulumi.interpolate`${opensearchCluster.privateHost}:${opensearchCluster.port}`,
+      },
+      { name: 'OPENSEARCH_USER', value: opensearchCluster.user },
+      { name: 'OPENSEARCH_PASSWORD', value: opensearchCluster.password },
+      { name: 'OPENSEARCH_SSL_VERIFY', value: 'true' },
+    ],
     resources: {
       requests: {
         memory: '100Mi',
@@ -115,7 +124,7 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
   createK8sHttpDeployment({
     k8sProvider,
     labels,
-    image: 'swaggerapi/swagger-ui:v5.1.0',
+    image: 'swaggerapi/swagger-ui:v5.17.14',
     env: [
       { name: 'BASE_URL', value: '/swagger' },
       { name: 'URLS', value: "[ { url: '/openapi' } ]" },
@@ -152,10 +161,10 @@ const containerRegistryDockerReadWriteCredentials = createContainerRegistryDocke
 const containerRegistryDockerReadCredentials = createContainerRegistryDockerReadCredentials({ containerRegistry });
 
 // setup vpc
-const vpc = createVpc({ region, ipRange: config.require('ipRange') });
+const vpc = createVpc({ region, ipRange: config.require('ip-range') });
 
 // setup k8s cluster
-const k8sCluster = createK8sCluster({ region, vpc, nodeCount: parseInt(config.require('nodeCount')) });
+const k8sCluster = createK8sCluster({ region, vpc, nodeCount: parseInt(config.require('k8s-node-count')) });
 const k8sTokenKubeConfig = createK8sTokenKubeconfig({
   k8sCluster,
   user: 'admin',
@@ -165,8 +174,15 @@ const k8sProvider = createK8sProvider({ k8sTokenKubeConfig });
 installK8sDockerRegistrySecret({ k8sProvider, containerRegistryDockerReadCredentials });
 
 // setup databases
-const mongoDbCluster = createMongoDbCluster({ region, vpc });
+const mongoDbCluster = createMongoDbCluster({ region, vpc, nodeCount: parseInt(config.require('mongodb-node-count')) });
 createMongoDbFirewall({ mongoDbCluster, k8sCluster });
+
+const opensearchCluster = createOpensearchCluster({
+  region,
+  vpc,
+  nodeCount: parseInt(config.require('opensearch-node-count')),
+});
+createOpensearchFirewall({ opensearchCluster, k8sCluster });
 
 nodeFactory({
   k8sProvider,
@@ -174,6 +190,7 @@ nodeFactory({
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
   mongoDbCluster,
+  opensearchCluster,
   config,
   stack,
 });
@@ -256,7 +273,7 @@ const ingress = createK8sIngressNginx({
 // install cert manager
 const helmCertManager = installK8sHelmCertManager({ k8sProvider });
 
-createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('certManagerEmail') });
+createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('cert-manager-email') });
 
 // install kubernetes dashboard
 const kubernetesDashboard = installK8sHelmKubernetesDashboard({ k8sProvider });

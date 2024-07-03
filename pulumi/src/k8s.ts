@@ -22,7 +22,7 @@ export const createK8sCluster = ({
       nodeCount,
     },
     region,
-    version: '1.29.1-do.0',
+    version: '1.30.1-do.0',
     autoUpgrade: false,
     vpcUuid: vpc.id,
   });
@@ -155,29 +155,29 @@ export const createK8sHttpStatefulSet = ({
                   },
                 },
                 volumeMounts: [
-                  // {
-                  //   name: 'var-log',
-                  //   mountPath: '/app/var/log',
-                  // },
+                  {
+                    name: 'var-log',
+                    mountPath: '/app/var/log',
+                  },
                   ...volumes.map((volume) => ({ name: volume.name, mountPath: volume.mountPath })),
                 ],
                 resources,
               },
-              // ...(fluentdImage
-              //   ? [
-              //       {
-              //         name: `${labels.appClass}-fluentd`,
-              //         image: fluentdImage,
-              //         env: fluentdEnv,
-              //         volumeMounts: [
-              //           {
-              //             name: 'var-log',
-              //             mountPath: '/app/var/log',
-              //           },
-              //         ],
-              //       },
-              //     ]
-              //   : []),
+              ...(fluentdImage
+                ? [
+                    {
+                      name: `${labels.appClass}-fluentd`,
+                      image: fluentdImage,
+                      env: fluentdEnv,
+                      volumeMounts: [
+                        {
+                          name: 'var-log',
+                          mountPath: '/app/var/log',
+                        },
+                      ],
+                    },
+                  ]
+                : []),
             ],
             initContainers: volumes.map((volume) => ({
               name: `${volume.name}-permission-fix`,
@@ -269,28 +269,28 @@ export const createK8sHttpDeployment = ({
                   },
                 },
                 volumeMounts: [
-                  // {
-                  //   name: 'var-log',
-                  //   mountPath: '/app/var/log',
-                  // },
+                  {
+                    name: 'var-log',
+                    mountPath: '/app/var/log',
+                  },
                 ],
                 resources,
               },
-              // ...(fluentdImage
-              //   ? [
-              //       {
-              //         name: `${labels.appClass}-fluentd`,
-              //         image: fluentdImage,
-              //         env: fluentdEnv,
-              //         volumeMounts: [
-              //           {
-              //             name: 'var-log',
-              //             mountPath: '/app/var/log',
-              //           },
-              //         ],
-              //       },
-              //     ]
-              //   : []),
+              ...(fluentdImage
+                ? [
+                    {
+                      name: `${labels.appClass}-fluentd`,
+                      image: fluentdImage,
+                      env: fluentdEnv,
+                      volumeMounts: [
+                        {
+                          name: 'var-log',
+                          mountPath: '/app/var/log',
+                        },
+                      ],
+                    },
+                  ]
+                : []),
             ],
             imagePullSecrets: [{ name: 'do-docker-registry-secret' }],
             volumes: [
@@ -443,7 +443,7 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
     'helm-metrics-server',
     {
       chart: 'metrics-server',
-      version: '3.12.0',
+      version: '3.12.1',
       repositoryOpts: {
         repo: 'https://kubernetes-sigs.github.io/metrics-server',
       },
@@ -476,7 +476,7 @@ export const installK8sHelmIngressNginxController = ({
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.9.1',
+      version: '4.10.1',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -497,8 +497,10 @@ export const installK8sHelmIngressNginxController = ({
             enable: true,
           },
           config: {
-            'use-forward-headers': 'true',
             'compute-full-forward-for': 'true',
+            'limit-conn-status-code': '429',
+            'limit-req-status-code': '429',
+            'use-forward-headers': 'true',
             'use-proxy-protocol': 'true',
           },
           metrics: {
@@ -533,7 +535,7 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.14.2',
+      version: '1.15.1',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },
@@ -554,7 +556,9 @@ type InstallK8sHelmKubernetesDashboardProps = {
   k8sProvider: k8s.Provider;
 };
 
-export const installK8sHelmKubernetesDashboard = ({ k8sProvider }: InstallK8sHelmKubernetesDashboardProps): k8s.helm.v3.Release => {
+export const installK8sHelmKubernetesDashboard = ({
+  k8sProvider,
+}: InstallK8sHelmKubernetesDashboardProps): k8s.helm.v3.Release => {
   // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/kubernetes-dashboard
   // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/kubernetes-dashboard/values.yml
   return new k8s.helm.v3.Release(
@@ -570,20 +574,22 @@ export const installK8sHelmKubernetesDashboard = ({ k8sProvider }: InstallK8sHel
       values: {
         app: {
           ingress: {
-            enabled: false
-          }
+            enabled: false,
+          },
         },
         metricsScraper: {
-          enabled: false
+          enabled: false,
         },
         nginx: {
-          enabled: false
+          enabled: false,
         },
-        'cert-manager': { // other chart
-          enabled: false
+        'cert-manager': {
+          // other chart
+          enabled: false,
         },
-        'metrics-server': { // other chart
-          enabled: false
+        'metrics-server': {
+          // other chart
+          enabled: false,
         },
       },
     },
@@ -618,6 +624,7 @@ export const createK8sIngressNginx = ({
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
           'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
+          'nginx.ingress.kubernetes.io/limit-rpm': '300',
           ...annotations,
           helmId: helmIngressNginxController.id,
         },

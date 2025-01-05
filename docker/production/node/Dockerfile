@@ -1,5 +1,5 @@
 # base
-FROM rockylinux/rockylinux:9.3 AS base
+FROM rockylinux/rockylinux:9.5 AS base
 
 SHELL ["/bin/bash", "-c"]
 
@@ -36,9 +36,9 @@ WORKDIR /home/node
 
 RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/.fnm" --skip-shell \
     && source ~/.bashrc \
-    && fnm install 20 \
-    && fnm default 20 \
-    && fnm use 20 \
+    && fnm install 22 \
+    && fnm default 22 \
+    && fnm use 22 \
     && npm uninstall -g npm \
     && corepack enable pnpm
 

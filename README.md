@@ -22,30 +22,30 @@ An api skeleton using mongodb for [chubbyts-framework][8].
 
 ## Requirements
 
- * node: 16
- * [@asteasolutions/zod-to-openapi][1]: ^7.1.1
- * [@chubbyts/chubbyts-api][2]: ^4.1.1
- * [@chubbyts/chubbyts-decode-encode][3]: ^1.3.3
- * [@chubbyts/chubbyts-dic][4]: ^1.2.0
- * [@chubbyts/chubbyts-dic-config][5]: ^1.2.0
- * [@chubbyts/chubbyts-dic-types][6]: ^1.2.1
- * [@chubbyts/chubbyts-framework][7]: ^1.9.4
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.4.1
- * [@chubbyts/chubbyts-http][9]: ^1.2.1
- * [@chubbyts/chubbyts-http-cors][10]: ^1.2.1
- * [@chubbyts/chubbyts-http-error][11]: ^2.3.1
- * [@chubbyts/chubbyts-http-node-bridge][12]: ^1.2.0
- * [@chubbyts/chubbyts-http-types][13]: ^1.2.3
- * [@chubbyts/chubbyts-log-types][14]: ^1.3.2
- * [@chubbyts/chubbyts-mongodb][15]: ^1.4.0
- * [@chubbyts/chubbyts-negotiation][16]: ^3.2.2
- * [@chubbyts/chubbyts-pino-adapter][17]: ^1.3.1
- * [commander][18]: ^12.1.0
- * [mongodb][19]: ^6.8.0
- * [openapi3-ts][20]: ^4.3.3
- * [pino][21]: ^9.2.0
- * [uuid][22]: ^10.0.0
- * [zod][23]: ^3.23.8
+ * node: 18
+ * [@asteasolutions/zod-to-openapi][1]: ^7.3.0
+ * [@chubbyts/chubbyts-api][2]: ^4.2.1
+ * [@chubbyts/chubbyts-decode-encode][3]: ^1.4.1
+ * [@chubbyts/chubbyts-dic][4]: ^1.3.1
+ * [@chubbyts/chubbyts-dic-config][5]: ^1.3.1
+ * [@chubbyts/chubbyts-dic-types][6]: ^1.3.1
+ * [@chubbyts/chubbyts-framework][7]: ^1.10.1
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.5.1
+ * [@chubbyts/chubbyts-http][9]: ^1.3.1
+ * [@chubbyts/chubbyts-http-cors][10]: ^1.3.1
+ * [@chubbyts/chubbyts-http-error][11]: ^2.4.1
+ * [@chubbyts/chubbyts-http-node-bridge][12]: ^1.3.1
+ * [@chubbyts/chubbyts-http-types][13]: ^1.3.1
+ * [@chubbyts/chubbyts-log-types][14]: ^1.4.2
+ * [@chubbyts/chubbyts-mongodb][15]: ^1.5.1
+ * [@chubbyts/chubbyts-negotiation][16]: ^3.3.1
+ * [@chubbyts/chubbyts-pino-adapter][17]: ^1.4.1
+ * [commander][18]: ^13.0.0
+ * [mongodb][19]: ^6.12.0
+ * [openapi3-ts][20]: ^4.4.0
+ * [pino][21]: ^9.6.0
+ * [uuid][22]: ^11.0.4
+ * [zod][23]: ^3.24.1
 
 ## Environment
 
@@ -186,7 +186,7 @@ docker run -it -e NODE_ENV=production -e MONGO_URI="<see docker-compose.yml, rep
 
 ## Copyright
 
-2024 Dominik Zogg
+2025 Dominik Zogg
 
 [1]: https://www.npmjs.com/package/@asteasolutions/zod-to-openapi
 [2]: https://www.npmjs.com/package/@chubbyts/chubbyts-api

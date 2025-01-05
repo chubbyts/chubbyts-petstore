@@ -13,7 +13,7 @@ export default defineConfig({
       thresholds: {
         lines: 100,
       },
-      include: ['src/**/*.{ts,tsx}'],
+      include: ['src/**/*.ts'],
     },
   },
 });

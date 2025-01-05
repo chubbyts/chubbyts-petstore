@@ -17,7 +17,6 @@ export const createResolveList = <C>(mongoClient: MongoClient, collectionName: s
     cursor.skip(list.offset);
     cursor.limit(list.limit);
 
-    // eslint-disable-next-line functional/immutable-data
     cursor.sort(list.sort);
 
     return {

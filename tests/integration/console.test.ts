@@ -2,7 +2,7 @@ import type { ExecSyncOptionsWithStringEncoding } from 'child_process';
 import { execSync } from 'child_process';
 import { describe, expect, test } from 'vitest';
 
-const consoleCommand = `NODE_ENV=test ${process.argv[0]} --loader ts-node/esm bin/console.ts`;
+const consoleCommand = 'NODE_ENV=test ./node_modules/.bin/tsx bin/console.ts';
 const options: ExecSyncOptionsWithStringEncoding = { encoding: 'utf-8' };
 
 describe('console', () => {

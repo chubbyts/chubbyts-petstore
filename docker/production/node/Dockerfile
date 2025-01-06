@@ -43,7 +43,7 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/
     && corepack enable pnpm
 
 # build
-FROM base as build
+FROM base AS build
 
 USER root
 

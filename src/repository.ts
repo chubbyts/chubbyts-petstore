@@ -1,5 +1,10 @@
 import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
-import type { FindOneById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
+import type {
+  FindModelById,
+  PersistModel,
+  RemoveModel,
+  ResolveModelList,
+} from '@chubbyts/chubbyts-api/dist/repository';
 import type { Filter, MongoClient, WithId } from 'mongodb';
 
 const withoutMongoId = <C>(model: WithId<Model<C>>): Model<C> => {
@@ -8,7 +13,10 @@ const withoutMongoId = <C>(model: WithId<Model<C>>): Model<C> => {
   return rest as Model<C>;
 };
 
-export const createResolveList = <C>(mongoClient: MongoClient, collectionName: string): ResolveList<Model<C>> => {
+export const createResolveModelList = <C>(
+  mongoClient: MongoClient,
+  collectionName: string,
+): ResolveModelList<Model<C>> => {
   const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
   return async (list: List<Model<C>>): Promise<List<Model<C>>> => {
@@ -27,7 +35,7 @@ export const createResolveList = <C>(mongoClient: MongoClient, collectionName: s
   };
 };
 
-export const createFindOneById = <C>(mongoClient: MongoClient, collectionName: string): FindOneById<Model<C>> => {
+export const createFindModelById = <C>(mongoClient: MongoClient, collectionName: string): FindModelById<Model<C>> => {
   const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
   return async (id: string): Promise<Model<C> | undefined> => {
@@ -41,7 +49,7 @@ export const createFindOneById = <C>(mongoClient: MongoClient, collectionName: s
   };
 };
 
-export const createPersist = <C>(mongoClient: MongoClient, collectionName: string): Persist<Model<C>> => {
+export const createPersistModel = <C>(mongoClient: MongoClient, collectionName: string): PersistModel<Model<C>> => {
   const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
   return async (model: Model<C>): Promise<Model<C>> => {
@@ -55,7 +63,7 @@ export const createPersist = <C>(mongoClient: MongoClient, collectionName: strin
   };
 };
 
-export const createRemove = <C>(mongoClient: MongoClient, collectionName: string): Remove<Model<C>> => {
+export const createRemoveModel = <C>(mongoClient: MongoClient, collectionName: string): RemoveModel<Model<C>> => {
   const collection = mongoClient.db().collection<Model<C>>(collectionName);
 
   return async (model: Model<C>): Promise<void> => {

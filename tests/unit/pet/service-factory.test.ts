@@ -9,13 +9,13 @@ import {
   petDeleteHandlerServiceFactory,
   petEnrichListServiceFactory,
   petEnrichModelServiceFactory,
-  petFindOneByIdServiceFactory,
+  petFindModelByIdServiceFactory,
   petListHandlerServiceFactory,
   petOpenApiRegistryServiceDelegator,
-  petPersistServiceFactory,
+  petPersistModelServiceFactory,
   petReadHandlerServiceFactory,
-  petRemoveServiceFactory,
-  petResolveListServiceFactory,
+  petRemoveModelServiceFactory,
+  petResolveModelListServiceFactory,
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
@@ -33,7 +33,7 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
-        parameters: ['petPersist'],
+        parameters: ['petPersistModel'],
         return: () => undefined,
       },
       {
@@ -62,12 +62,12 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
-        parameters: ['petFindOneById'],
+        parameters: ['petFindModelById'],
         return: () => undefined,
       },
       {
         name: 'get',
-        parameters: ['petRemove'],
+        parameters: ['petRemoveModel'],
         return: () => undefined,
       },
       {
@@ -213,7 +213,7 @@ describe('service-factory', () => {
     expect(containerMocks.length).toBe(0);
   });
 
-  test('petFindOneByIdServiceFactory', async () => {
+  test('petFindModelByIdServiceFactory', async () => {
     const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
     const [db, dbMocks] = useObjectMock<Db>([
@@ -240,7 +240,7 @@ describe('service-factory', () => {
       },
     ]);
 
-    expect(await petFindOneByIdServiceFactory(container)).toBeInstanceOf(Function);
+    expect(await petFindModelByIdServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);
@@ -252,7 +252,7 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
-        parameters: ['petResolveList'],
+        parameters: ['petResolveModelList'],
         return: () => undefined,
       },
       {
@@ -277,7 +277,7 @@ describe('service-factory', () => {
     expect(containerMocks.length).toBe(0);
   });
 
-  test('petPersistServiceFactory', async () => {
+  test('petPersistModelServiceFactory', async () => {
     const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
     const [db, dbMocks] = useObjectMock<Db>([
@@ -304,7 +304,7 @@ describe('service-factory', () => {
       },
     ]);
 
-    expect(await petPersistServiceFactory(container)).toBeInstanceOf(Function);
+    expect(await petPersistModelServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);
@@ -316,7 +316,7 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
-        parameters: ['petFindOneById'],
+        parameters: ['petFindModelById'],
         return: () => undefined,
       },
       {
@@ -341,7 +341,7 @@ describe('service-factory', () => {
     expect(containerMocks.length).toBe(0);
   });
 
-  test('petRemoveServiceFactory', async () => {
+  test('petRemoveModelServiceFactory', async () => {
     const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
     const [db, dbMocks] = useObjectMock<Db>([
@@ -368,7 +368,7 @@ describe('service-factory', () => {
       },
     ]);
 
-    expect(await petRemoveServiceFactory(container)).toBeInstanceOf(Function);
+    expect(await petRemoveModelServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);
@@ -376,7 +376,7 @@ describe('service-factory', () => {
     expect(containerMocks.length).toBe(0);
   });
 
-  test('petResolveListServiceFactory', async () => {
+  test('petResolveModelListServiceFactory', async () => {
     const [collection, collectionMocks] = useObjectMock<Collection>([]);
 
     const [db, dbMocks] = useObjectMock<Db>([
@@ -403,11 +403,50 @@ describe('service-factory', () => {
       },
     ]);
 
-    expect(await petResolveListServiceFactory(container)).toBeInstanceOf(Function);
+    expect(await petResolveModelListServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);
     expect(mongoClientMocks.length).toBe(0);
+    expect(containerMocks.length).toBe(0);
+  });
+
+  test('petUpdateHandlerServiceFactory', async () => {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['petFindModelById'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['decoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petPersistModel'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => undefined,
+      },
+      {
+        name: 'get',
+        parameters: ['encoder'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['petEnrichModel'],
+        return: () => undefined,
+      },
+    ]);
+
+    expect(await petUpdateHandlerServiceFactory(container)).toBeInstanceOf(Function);
+
     expect(containerMocks.length).toBe(0);
   });
 
@@ -1410,45 +1449,6 @@ describe('service-factory', () => {
     `);
 
     await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, request, response);
-
-    expect(containerMocks.length).toBe(0);
-  });
-
-  test('petUpdateHandlerServiceFactory', async () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['petFindOneById'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['decoder'],
-        return: {},
-      },
-      {
-        name: 'get',
-        parameters: ['petPersist'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['encoder'],
-        return: {},
-      },
-      {
-        name: 'get',
-        parameters: ['petEnrichModel'],
-        return: () => undefined,
-      },
-    ]);
-
-    expect(await petUpdateHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(containerMocks.length).toBe(0);
   });

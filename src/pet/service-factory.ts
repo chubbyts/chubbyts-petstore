@@ -19,14 +19,18 @@ import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
 import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
 import { createDeleteHandler } from '@chubbyts/chubbyts-api/dist/handler/delete';
 import { createListHandler } from '@chubbyts/chubbyts-api/dist/handler/list';
-import type { FindOneById, Persist, Remove, ResolveList } from '@chubbyts/chubbyts-api/dist/repository';
+import type {
+  FindModelById,
+  PersistModel,
+  RemoveModel,
+  ResolveModelList,
+} from '@chubbyts/chubbyts-api/dist/repository';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import type { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
-import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import { createEnrichList, createEnrichModel } from '../enrich.js';
-import { createResolveList, createFindOneById, createPersist, createRemove } from '../repository.js';
+import { createResolveModelList, createFindModelById, createPersistModel, createRemoveModel } from '../repository.js';
 import type { Pet } from './model.js';
 import {
   petRequestSchema,
@@ -36,13 +40,11 @@ import {
   petRequestListOpenApiSchema,
 } from './model.js';
 
-extendZodWithOpenApi(z);
-
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createCreateHandler<Pet>(
     container.get<Decoder>('decoder'),
     petRequestSchema,
-    await container.get<Promise<Persist<Pet>>>('petPersist'),
+    await container.get<Promise<PersistModel<Pet>>>('petPersistModel'),
     container.get<ResponseFactory>('responseFactory'),
     petResponseSchema,
     container.get<Encoder>('encoder'),
@@ -52,8 +54,8 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
 
 export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createDeleteHandler<Pet>(
-    await container.get<Promise<FindOneById<Pet>>>('petFindOneById'),
-    await container.get<Promise<Remove<Pet>>>('petRemove'),
+    await container.get<Promise<FindModelById<Pet>>>('petFindModelById'),
+    await container.get<Promise<RemoveModel<Pet>>>('petRemoveModel'),
     container.get<ResponseFactory>('responseFactory'),
   );
 };
@@ -75,14 +77,14 @@ export const petEnrichListServiceFactory = (container: Container): EnrichList<Pe
   });
 };
 
-export const petFindOneByIdServiceFactory = async (container: Container): Promise<FindOneById<Pet>> => {
-  return createFindOneById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<Pet>> => {
+  return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createListHandler<Pet>(
     petRequestListSchema,
-    await container.get<Promise<ResolveList<Pet>>>('petResolveList'),
+    await container.get<Promise<ResolveModelList<Pet>>>('petResolveModelList'),
     container.get<ResponseFactory>('responseFactory'),
     petListResponseSchema,
     container.get<Encoder>('encoder'),
@@ -90,13 +92,13 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
   );
 };
 
-export const petPersistServiceFactory = async (container: Container): Promise<Persist<Pet>> => {
-  return createPersist(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<Pet>> => {
+  return createPersistModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createReadHandler(
-    await container.get<Promise<FindOneById<Pet>>>('petFindOneById'),
+    await container.get<Promise<FindModelById<Pet>>>('petFindModelById'),
     container.get<ResponseFactory>('responseFactory'),
     petResponseSchema,
     container.get<Encoder>('encoder'),
@@ -104,15 +106,32 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
   );
 };
 
-export const petRemoveServiceFactory = async (container: Container): Promise<Remove<Pet>> => {
-  return createRemove(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<Pet>> => {
+  return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
-export const petResolveListServiceFactory = async (container: Container): Promise<ResolveList<Pet>> => {
-  return createResolveList(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+export const petResolveModelListServiceFactory = async (container: Container): Promise<ResolveModelList<Pet>> => {
+  return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
+
+export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
+  return createUpdateHandler(
+    await container.get<Promise<FindModelById<Pet>>>('petFindModelById'),
+    container.get<Decoder>('decoder'),
+    petRequestSchema,
+    await container.get<Promise<PersistModel<Pet>>>('petPersistModel'),
+    container.get<ResponseFactory>('responseFactory'),
+    petResponseSchema,
+    container.get<Encoder>('encoder'),
+    container.get<EnrichModel<Pet>>('petEnrichModel'),
+  );
+};
+
+// delegators
 
 export const petOpenApiRegistryServiceDelegator = (_container: Container, _name: string, factory: () => unknown) => {
+  extendZodWithOpenApi(z);
+
   const registry = factory() as OpenAPIRegistry;
 
   registry.registerPath({
@@ -295,17 +314,4 @@ export const petRoutesServiceDelegator = (
       }),
     ),
   ];
-};
-
-export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createUpdateHandler(
-    await container.get<Promise<FindOneById<Pet>>>('petFindOneById'),
-    container.get<Decoder>('decoder'),
-    petRequestSchema,
-    await container.get<Promise<Persist<Pet>>>('petPersist'),
-    container.get<ResponseFactory>('responseFactory'),
-    petResponseSchema,
-    container.get<Encoder>('encoder'),
-    container.get<EnrichModel<Pet>>('petEnrichModel'),
-  );
 };

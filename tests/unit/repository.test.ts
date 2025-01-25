@@ -3,10 +3,15 @@ import { describe, expect, test } from 'vitest';
 import type { Collection, Db, FindCursor, MongoClient, WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import { createFindOneById, createPersist, createRemove, createResolveList } from '../../src/repository.js';
+import {
+  createFindModelById,
+  createPersistModel,
+  createRemoveModel,
+  createResolveModelList,
+} from '../../src/repository.js';
 
 describe('repository', () => {
-  test('createResolveList', async () => {
+  test('createResolveModelList', async () => {
     type SomeModel = Model<{ name: string }>;
 
     const _id = new ObjectId();
@@ -94,9 +99,9 @@ describe('repository', () => {
 
     const collectionName = 'collectionName';
 
-    const resolveList = createResolveList(mongoClient, collectionName);
+    const resolveModelList = createResolveModelList(mongoClient, collectionName);
 
-    expect(await resolveList(list)).toMatchInlineSnapshot(`
+    expect(await resolveModelList(list)).toMatchInlineSnapshot(`
       {
         "count": 2,
         "filters": {
@@ -124,7 +129,7 @@ describe('repository', () => {
     expect(mongoClientMocks.length).toBe(0);
   });
 
-  describe('createFindOneById', () => {
+  describe('createFindModelById', () => {
     test('with found model', async () => {
       type SomeModel = Model<{ name: string }>;
 
@@ -165,9 +170,9 @@ describe('repository', () => {
         },
       ]);
 
-      const FindOneById = createFindOneById(mongoClient, collectionName);
+      const FindModelById = createFindModelById(mongoClient, collectionName);
 
-      expect(await FindOneById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
+      expect(await FindModelById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
       {
         "createdAt": 2022-06-12T20:08:24.793Z,
         "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
@@ -212,9 +217,9 @@ describe('repository', () => {
         },
       ]);
 
-      const FindOneById = createFindOneById(mongoClient, collectionName);
+      const FindModelById = createFindModelById(mongoClient, collectionName);
 
-      expect(await FindOneById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
+      expect(await FindModelById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
 
       expect(collectionMocks.length).toBe(0);
       expect(dbMocks.length).toBe(0);
@@ -222,7 +227,7 @@ describe('repository', () => {
     });
   });
 
-  test('createPersist', async () => {
+  test('createPersistModel', async () => {
     type SomeModel = Model<{ name: string }>;
 
     const model: SomeModel = {
@@ -280,9 +285,9 @@ describe('repository', () => {
       },
     ]);
 
-    const persist = createPersist(mongoClient, collectionName);
+    const persistmodel = createPersistModel(mongoClient, collectionName);
 
-    expect(await persist(model)).toMatchInlineSnapshot(`
+    expect(await persistmodel(model)).toMatchInlineSnapshot(`
     {
       "createdAt": 2022-06-12T20:08:24.793Z,
       "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
@@ -296,7 +301,7 @@ describe('repository', () => {
     expect(mongoClientMocks.length).toBe(0);
   });
 
-  test('createRemove', async () => {
+  test('createRemoveModel', async () => {
     type SomeModel = Model<{ name: string }>;
 
     const model: SomeModel = {
@@ -335,9 +340,9 @@ describe('repository', () => {
       },
     ]);
 
-    const remove = createRemove(mongoClient, collectionName);
+    const removemodel = createRemoveModel(mongoClient, collectionName);
 
-    await remove(model);
+    await removemodel(model);
 
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);

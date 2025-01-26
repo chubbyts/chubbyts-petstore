@@ -1,4 +1,4 @@
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, Server, ServerResponse } from 'http';
 import { createServer } from 'http';
 import { createApplication } from '@chubbyts/chubbyts-framework/dist/application';
 import {
@@ -14,6 +14,18 @@ import type {
 import type { MongoClient } from 'mongodb';
 import type { Config } from '../config/production.js';
 import { containerFactory } from '../bootstrap/container.js';
+
+const shutdownServer = (server: Server) => {
+  server.close((err) => {
+    if (err) {
+      console.warn(`Shutdown server with error: ${err}`);
+      process.exit(1);
+    }
+
+    console.log('Shutdown server');
+    process.exit(0);
+  });
+};
 
 (async () => {
   const container = await containerFactory(process.env.NODE_ENV as string);
@@ -42,4 +54,7 @@ import { containerFactory } from '../bootstrap/container.js';
   server.listen(port, host, () => {
     console.log(`Listening to ${host}:${port}`);
   });
+
+  process.on('SIGINT', () => shutdownServer(server));
+  process.on('SIGTERM', () => shutdownServer(server));
 })();

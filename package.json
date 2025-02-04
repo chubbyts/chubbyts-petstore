@@ -42,24 +42,24 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",
-    "@chubbyts/chubbyts-api": "^4.4.0",
+    "@chubbyts/chubbyts-api": "^4.5.0",
     "@chubbyts/chubbyts-decode-encode": "^1.4.1",
     "@chubbyts/chubbyts-dic": "^1.3.1",
     "@chubbyts/chubbyts-dic-config": "^1.3.1",
     "@chubbyts/chubbyts-dic-types": "^1.3.1",
-    "@chubbyts/chubbyts-framework": "^1.10.1",
-    "@chubbyts/chubbyts-framework-router-path-to-regexp": "^1.5.2",
-    "@chubbyts/chubbyts-http": "^1.3.1",
-    "@chubbyts/chubbyts-http-cors": "^1.3.1",
+    "@chubbyts/chubbyts-framework": "^1.11.0",
+    "@chubbyts/chubbyts-framework-router-path-to-regexp": "^1.6.0",
+    "@chubbyts/chubbyts-http": "^1.4.0",
+    "@chubbyts/chubbyts-http-cors": "^1.4.0",
     "@chubbyts/chubbyts-http-error": "^2.4.1",
-    "@chubbyts/chubbyts-http-node-bridge": "^1.3.1",
-    "@chubbyts/chubbyts-http-types": "^1.3.1",
+    "@chubbyts/chubbyts-http-node-bridge": "^1.4.0",
+    "@chubbyts/chubbyts-http-types": "^2.0.0",
     "@chubbyts/chubbyts-log-types": "^1.4.3",
     "@chubbyts/chubbyts-mongodb": "^1.5.1",
     "@chubbyts/chubbyts-negotiation": "^3.3.1",
     "@chubbyts/chubbyts-pino-adapter": "^1.4.1",
     "commander": "^13.1.0",
-    "mongodb": "^6.12.0",
+    "mongodb": "^6.13.0",
     "openapi3-ts": "^4.4.0",
     "pino": "^9.6.0",
     "uuid": "^11.0.5",
@@ -81,5 +81,11 @@
     "typescript": "^5.7.3",
     "vitest": "^3.0.4"
   },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
+  "packageManager": "pnpm@10.2.0+sha512.0d27364e0139c6aadeed65ada153135e0ca96c8da42123bd50047f961339dc7a758fc2e944b428f52be570d1bd3372455c1c65fa2e7aa0bfbf931190f9552001",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "mongodb-memory-server"
+    ]
+  }
 }

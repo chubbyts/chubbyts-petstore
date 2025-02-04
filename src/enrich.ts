@@ -8,7 +8,7 @@ import type {
   Model,
 } from '@chubbyts/chubbyts-api/dist/model';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 
 type ModelLinks = {
   read?: string;
@@ -35,9 +35,9 @@ const createModelLinks = <C>(
   links: ModelLinks,
 ): { [key: string]: Link } => {
   return {
-    ...(links.read ? { read: createLink(generatePath(links.read, { id: model.id }), Method.GET) } : {}),
-    ...(links.update ? { update: createLink(generatePath(links.update, { id: model.id }), Method.PUT) } : {}),
-    ...(links.delete ? { delete: createLink(generatePath(links.delete, { id: model.id }), Method.DELETE) } : {}),
+    ...(links.read ? { read: createLink(generatePath(links.read, { id: model.id }), 'GET') } : {}),
+    ...(links.update ? { update: createLink(generatePath(links.update, { id: model.id }), 'PUT') } : {}),
+    ...(links.delete ? { delete: createLink(generatePath(links.delete, { id: model.id }), 'DELETE') } : {}),
   };
 };
 
@@ -56,7 +56,7 @@ export const createEnrichList = <C>(generatePath: GeneratePath, links: ListLinks
       _links: createModelLinks(generatePath, model, links),
     })),
     _links: {
-      ...(links.create ? { create: createLink(generatePath(links.create), Method.POST) } : {}),
+      ...(links.create ? { create: createLink(generatePath(links.create), 'POST') } : {}),
     },
   });
 };

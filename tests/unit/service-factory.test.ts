@@ -7,7 +7,6 @@ import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
-import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import {
   acceptNegotiationMiddlewareServiceFactory,
@@ -169,7 +168,7 @@ describe('service-factory', () => {
       const requestBody = new PassThrough();
 
       const request = {
-        method: Method.OPTIONS,
+        method: 'OPTIONS',
         headers: { origin: ['http://localhost:80'] },
         body: requestBody,
       } as unknown as ServerRequest;
@@ -243,7 +242,7 @@ describe('service-factory', () => {
       const requestBody = new PassThrough();
 
       const request = {
-        method: Method.OPTIONS,
+        method: 'OPTIONS',
         headers: { origin: ['http://localhost:80'] },
         body: requestBody,
       } as unknown as ServerRequest;
@@ -317,7 +316,7 @@ describe('service-factory', () => {
       const requestBody = new PassThrough();
 
       const request = {
-        method: Method.OPTIONS,
+        method: 'OPTIONS',
         headers: { origin: ['http://localhost:80'] },
         body: requestBody,
       } as unknown as ServerRequest;

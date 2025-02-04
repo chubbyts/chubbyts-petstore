@@ -3,7 +3,7 @@ import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
-import { Method } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.ts';
 import {
   petCreateHandlerServiceFactory,
@@ -98,7 +98,7 @@ export const configFactory = (env: string): Config => {
     cors: {
       allowCredentials: false,
       allowHeaders: ['Accept', 'Content-Type'],
-      allowMethods: [Method.DELETE, Method.GET, Method.POST, Method.PUT],
+      allowMethods: ['DELETE', 'GET', 'POST', 'PUT'],
       allowOrigins: {},
       exposeHeaders: [],
       maxAge: 7200,

@@ -39,6 +39,7 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$HOME/
     && fnm install 22 \
     && fnm default 22 \
     && fnm use 22 \
+    && npm install -g corepack@latest \
     && npm uninstall -g npm \
     && corepack enable pnpm
 

@@ -24,28 +24,28 @@ An api skeleton using mongodb for [chubbyts-framework][8].
 
  * node: 18
  * [@asteasolutions/zod-to-openapi][1]: ^7.3.0
- * [@chubbyts/chubbyts-api][2]: ^4.5.0
+ * [@chubbyts/chubbyts-api][2]: ^4.6.0
  * [@chubbyts/chubbyts-decode-encode][3]: ^1.4.1
  * [@chubbyts/chubbyts-dic][4]: ^1.3.1
  * [@chubbyts/chubbyts-dic-config][5]: ^1.3.1
  * [@chubbyts/chubbyts-dic-types][6]: ^1.3.1
- * [@chubbyts/chubbyts-framework][7]: ^1.11.0
+ * [@chubbyts/chubbyts-framework][7]: ^1.12.0
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^1.6.0
  * [@chubbyts/chubbyts-http][9]: ^1.4.0
  * [@chubbyts/chubbyts-http-cors][10]: ^1.4.0
- * [@chubbyts/chubbyts-http-error][11]: ^2.4.1
+ * [@chubbyts/chubbyts-http-error][11]: ^2.4.2
  * [@chubbyts/chubbyts-http-node-bridge][12]: ^1.4.0
  * [@chubbyts/chubbyts-http-types][13]: ^2.0.0
- * [@chubbyts/chubbyts-log-types][14]: ^1.4.2
+ * [@chubbyts/chubbyts-log-types][14]: ^2.0.1
  * [@chubbyts/chubbyts-mongodb][15]: ^1.5.1
  * [@chubbyts/chubbyts-negotiation][16]: ^3.3.1
- * [@chubbyts/chubbyts-pino-adapter][17]: ^1.4.1
+ * [@chubbyts/chubbyts-pino-adapter][17]: ^2.0.0
  * [commander][18]: ^13.1.0
- * [mongodb][19]: ^6.13.0
+ * [mongodb][19]: ^6.14.1
  * [openapi3-ts][20]: ^4.4.0
  * [pino][21]: ^9.6.0
- * [uuid][22]: ^11.0.5
- * [zod][23]: ^3.24.1
+ * [uuid][22]: ^11.1.0
+ * [zod][23]: ^3.24.2
 
 ## Environment
 

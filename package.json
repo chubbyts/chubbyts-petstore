@@ -42,28 +42,28 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",
-    "@chubbyts/chubbyts-api": "^4.5.0",
+    "@chubbyts/chubbyts-api": "^4.6.0",
     "@chubbyts/chubbyts-decode-encode": "^1.4.1",
     "@chubbyts/chubbyts-dic": "^1.3.1",
     "@chubbyts/chubbyts-dic-config": "^1.3.1",
     "@chubbyts/chubbyts-dic-types": "^1.3.1",
-    "@chubbyts/chubbyts-framework": "^1.11.0",
+    "@chubbyts/chubbyts-framework": "^1.12.0",
     "@chubbyts/chubbyts-framework-router-path-to-regexp": "^1.6.0",
     "@chubbyts/chubbyts-http": "^1.4.0",
     "@chubbyts/chubbyts-http-cors": "^1.4.0",
-    "@chubbyts/chubbyts-http-error": "^2.4.1",
+    "@chubbyts/chubbyts-http-error": "^2.4.2",
     "@chubbyts/chubbyts-http-node-bridge": "^1.4.0",
     "@chubbyts/chubbyts-http-types": "^2.0.0",
-    "@chubbyts/chubbyts-log-types": "^1.4.3",
+    "@chubbyts/chubbyts-log-types": "^2.0.1",
     "@chubbyts/chubbyts-mongodb": "^1.5.1",
     "@chubbyts/chubbyts-negotiation": "^3.3.1",
-    "@chubbyts/chubbyts-pino-adapter": "^1.4.1",
+    "@chubbyts/chubbyts-pino-adapter": "^2.0.0",
     "commander": "^13.1.0",
-    "mongodb": "^6.13.0",
+    "mongodb": "^6.14.1",
     "openapi3-ts": "^4.4.0",
     "pino": "^9.6.0",
-    "uuid": "^11.0.5",
-    "zod": "^3.24.1"
+    "uuid": "^11.1.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@chubbyts/chubbyts-eslint": "^3.0.4",
@@ -71,22 +71,22 @@
     "@stryker-mutator/core": "^8.7.1",
     "@stryker-mutator/typescript-checker": "^8.7.1",
     "@stryker-mutator/vitest-runner": "^8.7.1",
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.9",
     "@types/uuid": "^10.0.0",
-    "@vitest/coverage-v8": "^3.0.4",
+    "@vitest/coverage-v8": "^3.0.7",
     "cross-fetch": "^4.1.0",
-    "eslint": "^9.19.0",
-    "mongodb-memory-server": "^10.1.3",
-    "prettier": "^3.4.2",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.4"
+    "eslint": "^9.21.0",
+    "mongodb-memory-server": "^10.1.4",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
   },
-  "packageManager": "pnpm@10.2.0+sha512.0d27364e0139c6aadeed65ada153135e0ca96c8da42123bd50047f961339dc7a758fc2e944b428f52be570d1bd3372455c1c65fa2e7aa0bfbf931190f9552001",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
       "mongodb-memory-server"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"
 }

@@ -59,7 +59,7 @@
     "@chubbyts/chubbyts-negotiation": "^3.3.1",
     "@chubbyts/chubbyts-pino-adapter": "^2.0.0",
     "commander": "^13.1.0",
-    "mongodb": "^6.14.1",
+    "mongodb": "^6.14.2",
     "openapi3-ts": "^4.4.0",
     "pino": "^9.6.0",
     "uuid": "^11.1.0",
@@ -71,16 +71,16 @@
     "@stryker-mutator/core": "^8.7.1",
     "@stryker-mutator/typescript-checker": "^8.7.1",
     "@stryker-mutator/vitest-runner": "^8.7.1",
-    "@types/node": "^22.13.9",
+    "@types/node": "^22.13.10",
     "@types/uuid": "^10.0.0",
-    "@vitest/coverage-v8": "^3.0.7",
+    "@vitest/coverage-v8": "^3.0.8",
     "cross-fetch": "^4.1.0",
-    "eslint": "^9.21.0",
+    "eslint": "^9.22.0",
     "mongodb-memory-server": "^10.1.4",
     "prettier": "^3.5.3",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
-    "vitest": "^3.0.7"
+    "vitest": "^3.0.8"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -88,5 +88,5 @@
       "mongodb-memory-server"
     ]
   },
-  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6"
 }

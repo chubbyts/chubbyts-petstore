@@ -53,12 +53,14 @@ let mongoServer: MongoMemoryServer;
 let httpServer: ChildProcessWithoutNullStreams;
 
 export const setup = async () => {
+  // eslint-disable-next-line functional/immutable-data
+  process.env.MONGOMS_DOWNLOAD_URL = 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel93-8.0.4.tgz';
+  // eslint-disable-next-line functional/immutable-data
+  process.env.MONGOMS_VERSION = '8.0.4';
+
   mongoServer = await MongoMemoryServer.create({
     instance: {
       dbName: 'test',
-    },
-    binary: {
-      version: '7.0.16',
     },
   });
 

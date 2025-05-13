@@ -9,12 +9,11 @@ RUN dnf install -y 'dnf-command(config-manager)' \
     && dnf install -y epel-release
 
 RUN dnf install -y \
-    compat-openssl11 \
     git \
     glibc-langpack-de \
-    langpacks-de \
     jemalloc \
     jemalloc-devel \
+    langpacks-de \
     nmap-ncat \
     procps-ng \
     sudo \

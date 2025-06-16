@@ -10,14 +10,38 @@ describe('numberSchema', () => {
   test('invalid', () => {
     try {
       numberSchema.parse('test');
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
           {
-            "code": "custom",
-            "message": "Invalid input",
-            "path": []
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "custom",
+                    "message": "Invalid input",
+                    "path": []
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "string",
+                    "path": [],
+                    "message": "Expected number, received string"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [],
+            "message": "Invalid input"
           }
         ]]
       `);
@@ -37,7 +61,7 @@ describe('linkSchema', () => {
   test('invalid', () => {
     try {
       numberSchema.parse({ href: '/api/model', attributes: { method: 'POST' }, key: 'value' });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
@@ -90,7 +114,7 @@ describe('modelSchema', () => {
 
     try {
       modelSchema.parse(input);
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
@@ -120,7 +144,7 @@ describe('modelResponseSchema', () => {
 
     try {
       modelResponseSchema.parse(input);
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
@@ -150,7 +174,7 @@ describe('listRequestSchema', () => {
 
     try {
       listRequestSchema.parse(input);
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [

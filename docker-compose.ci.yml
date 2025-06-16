@@ -1,7 +1,7 @@
 services:
   node:
-    container_name: chubbyts-petstore-node
-    hostname: chubbyts-petstore-node
+    container_name: chubbyts-petstore-node-ci
+    hostname: chubbyts-petstore-node-ci
     build:
       dockerfile: ./docker/production/node/Dockerfile
       context: ./
@@ -13,22 +13,22 @@ services:
     depends_on:
       - mongo
   mongo:
-    container_name: chubbyts-petstore-mongo
-    hostname: chubbyts-petstore-mongo
+    container_name: chubbyts-petstore-mongo-ci
+    hostname: chubbyts-petstore-mongo-ci
     image: mongo:8.0.9
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
       MONGO_INITDB_ROOT_PASSWORD: KVKtkrTHhKuTJTor8pCP
   swagger-ui:
-    container_name: chubbyts-petstore-swagger-ui
-    hostname: chubbyts-petstore-swagger-ui
+    container_name: chubbyts-petstore-swagger-ui-ci
+    hostname: chubbyts-petstore-swagger-ui-ci
     image: swaggerapi/swagger-ui:v5.20.1
     environment:
       BASE_URL: /swagger
       URLS: '[ { url: "/openapi" } ]'
   nginx:
-    container_name: chubbyts-petstore-nginx
-    hostname: chubbyts-petstore-nginx
+    container_name: chubbyts-petstore-nginx-ci
+    hostname: chubbyts-petstore-nginx-ci
     image: nginx:1.27.5
     environment:
       SERVER_PORT: '443'

@@ -32,7 +32,7 @@ describe('petRequestSchema', () => {
   test('invalid', () => {
     try {
       petRequestSchema.parse({ ...validPetRequest, unknown: 'unknown' });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
           [ZodError: [
@@ -65,7 +65,7 @@ describe('petSchema', () => {
   test('invalid', () => {
     try {
       petSchema.parse({ ...validPet, unknown: 'unknown' });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
           [ZodError: [
@@ -103,7 +103,7 @@ describe('petResponseSchema', () => {
   test('invalid', () => {
     try {
       petResponseSchema.parse({ ...validPetResponse, unknown: 'unknown' });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
           [ZodError: [
@@ -143,7 +143,7 @@ describe('petRequestListSchema', () => {
   test('invalid', () => {
     try {
       petRequestListSchema.parse({ ...validPetRequestList, filters: { unknown: 'unknown' } });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
@@ -177,7 +177,7 @@ describe('petListSchema', () => {
   test('invalid', () => {
     try {
       petListSchema.parse({ ...validPetList, filters: { unknown: 'unknown' } });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
@@ -214,7 +214,7 @@ describe('petListResponseSchema', () => {
   test('invalid', () => {
     try {
       petListResponseSchema.parse({ ...validPetListResponseSchema, filters: { unknown: 'unknown' } });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [
@@ -258,7 +258,7 @@ describe('petRequestListOpenApiSchema', () => {
   test('invalid', () => {
     try {
       petRequestListOpenApiSchema.parse({ ...validPetRequestListOpenApiSchema, 'filters[unknown]': 'unknown' });
-      fail('Expect fail');
+      throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
         [ZodError: [

@@ -1,45 +1,47 @@
-import type { List, Model } from '@chubbyts/chubbyts-api/dist/model';
+import type { InputModel, InputModelList, Model, ModelList } from '@chubbyts/chubbyts-api/dist/model';
 import type {
   FindModelById,
   PersistModel,
   RemoveModel,
   ResolveModelList,
 } from '@chubbyts/chubbyts-api/dist/repository';
-import type { Filter, MongoClient, WithId } from 'mongodb';
+import type { Filter, MongoClient, Sort, WithId } from 'mongodb';
 
-const withoutMongoId = <C>(model: WithId<Model<C>>): Model<C> => {
+const withoutMongoId = <IM extends InputModel>(model: WithId<Model<IM>>): Model<IM> => {
   const { _id, ...rest } = model;
-
-  return rest as Model<C>;
+  return rest as unknown as Model<IM>;
 };
 
-export const createResolveModelList = <C>(
+export const createResolveModelList = <IM extends InputModel>(
   mongoClient: MongoClient,
   collectionName: string,
-): ResolveModelList<Model<C>> => {
-  const collection = mongoClient.db().collection<Model<C>>(collectionName);
+): ResolveModelList<IM> => {
+  const collection = mongoClient.db().collection<Model<IM>>(collectionName);
 
-  return async (list: List<Model<C>>): Promise<List<Model<C>>> => {
-    const cursor = collection.find(list.filters as Filter<Model<C>>);
+  return async (list: InputModelList): Promise<ModelList<IM>> => {
+    const cursor = collection.find(list.filters);
 
     cursor.skip(list.offset);
     cursor.limit(list.limit);
 
-    cursor.sort(list.sort);
+    cursor.sort(list.sort as Sort);
 
     return {
       ...list,
       items: (await cursor.toArray()).map(withoutMongoId),
-      count: await collection.countDocuments(list.filters as Filter<Model<C>>),
+      count: await collection.countDocuments(list.filters),
     };
   };
 };
 
-export const createFindModelById = <C>(mongoClient: MongoClient, collectionName: string): FindModelById<Model<C>> => {
-  const collection = mongoClient.db().collection<Model<C>>(collectionName);
+export const createFindModelById = <IM extends InputModel>(
+  mongoClient: MongoClient,
+  collectionName: string,
+): FindModelById<IM> => {
+  const collection = mongoClient.db().collection<Model<IM>>(collectionName);
 
-  return async (id: string): Promise<Model<C> | undefined> => {
-    const modelWithMongoId = await collection.findOne({ id } as Filter<Model<C>>);
+  return async (id: string): Promise<Model<IM> | undefined> => {
+    const modelWithMongoId = await collection.findOne({ id } as Filter<Model<IM>>);
 
     if (!modelWithMongoId) {
       return undefined;
@@ -49,26 +51,30 @@ export const createFindModelById = <C>(mongoClient: MongoClient, collectionName:
   };
 };
 
-export const createPersistModel = <C>(mongoClient: MongoClient, collectionName: string): PersistModel<Model<C>> => {
-  const collection = mongoClient.db().collection<Model<C>>(collectionName);
+export const createPersistModel = <IM extends InputModel>(
+  mongoClient: MongoClient,
+  collectionName: string,
+): PersistModel<IM> => {
+  const collection = mongoClient.db().collection<Model<IM>>(collectionName);
 
-  return async (model: Model<C>): Promise<Model<C>> => {
-    const filter = { id: model.id } as Filter<Model<C>>;
+  return async (model: Model<IM>): Promise<Model<IM>> => {
+    const filter = { id: model.id } as Filter<Model<IM>>;
 
     await collection.replaceOne(filter, model, { upsert: true });
 
-    const modelWithMongoId = (await collection.findOne(filter)) as WithId<Model<C>>;
+    const modelWithMongoId = (await collection.findOne(filter)) as WithId<Model<IM>>;
 
     return withoutMongoId(modelWithMongoId);
   };
 };
 
-export const createRemoveModel = <C>(mongoClient: MongoClient, collectionName: string): RemoveModel<Model<C>> => {
-  const collection = mongoClient.db().collection<Model<C>>(collectionName);
+export const createRemoveModel = <IM extends InputModel>(
+  mongoClient: MongoClient,
+  collectionName: string,
+): RemoveModel<IM> => {
+  const collection = mongoClient.db().collection<Model<IM>>(collectionName);
 
-  return async (model: Model<C>): Promise<void> => {
-    const filter = { id: model.id } as Filter<Model<C>>;
-
-    await collection.deleteOne(filter);
+  return async (model: Model<IM>): Promise<void> => {
+    await collection.deleteOne({ id: model.id } as Filter<Model<IM>>);
   };
 };

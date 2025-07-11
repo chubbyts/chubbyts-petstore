@@ -1,53 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { numberSchema, modelSchema, listRequestSchema, linkSchema, modelResponseSchema } from '../../src/model.js';
-
-describe('numberSchema', () => {
-  test('valid', () => {
-    expect(numberSchema.parse(10)).toEqual(10);
-    expect(numberSchema.parse('10')).toEqual(10);
-  });
-
-  test('invalid', () => {
-    try {
-      numberSchema.parse('test');
-      throw new Error('Expect fail');
-    } catch (e) {
-      expect(e).toMatchInlineSnapshot(`
-        [ZodError: [
-          {
-            "code": "invalid_union",
-            "unionErrors": [
-              {
-                "issues": [
-                  {
-                    "code": "custom",
-                    "message": "Invalid input",
-                    "path": []
-                  }
-                ],
-                "name": "ZodError"
-              },
-              {
-                "issues": [
-                  {
-                    "code": "invalid_type",
-                    "expected": "number",
-                    "received": "string",
-                    "path": [],
-                    "message": "Expected number, received string"
-                  }
-                ],
-                "name": "ZodError"
-              }
-            ],
-            "path": [],
-            "message": "Invalid input"
-          }
-        ]]
-      `);
-    }
-  });
-});
+import { linkSchema, listRequestSchema, listSchema, modelLinksSchema, modelListLinksSchema } from '../../src/model.js';
 
 describe('linkSchema', () => {
   test('valid', () => {
@@ -60,60 +12,7 @@ describe('linkSchema', () => {
 
   test('invalid', () => {
     try {
-      numberSchema.parse({ href: '/api/model', attributes: { method: 'POST' }, key: 'value' });
-      throw new Error('Expect fail');
-    } catch (e) {
-      expect(e).toMatchInlineSnapshot(`
-        [ZodError: [
-          {
-            "code": "invalid_union",
-            "unionErrors": [
-              {
-                "issues": [
-                  {
-                    "code": "invalid_type",
-                    "expected": "string",
-                    "received": "object",
-                    "path": [],
-                    "message": "Expected string, received object"
-                  }
-                ],
-                "name": "ZodError"
-              },
-              {
-                "issues": [
-                  {
-                    "code": "invalid_type",
-                    "expected": "number",
-                    "received": "object",
-                    "path": [],
-                    "message": "Expected number, received object"
-                  }
-                ],
-                "name": "ZodError"
-              }
-            ],
-            "path": [],
-            "message": "Invalid input"
-          }
-        ]]
-      `);
-    }
-  });
-});
-
-describe('modelSchema', () => {
-  test('valid', () => {
-    const input = { id: 'test', createdAt: new Date(), updatedAt: new Date() };
-
-    expect(modelSchema.parse(input)).toEqual(input);
-  });
-
-  test('invalid', () => {
-    const input = { id: 'test', createdAt: new Date(), updatedAt: new Date(), unknown: 'unknown' };
-
-    try {
-      modelSchema.parse(input);
+      linkSchema.parse({ href: '/api/model', attributes: { method: 'POST' }, key: 'value' });
       throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -121,10 +20,10 @@ describe('modelSchema', () => {
           {
             "code": "unrecognized_keys",
             "keys": [
-              "unknown"
+              "key"
             ],
             "path": [],
-            "message": "Unrecognized key(s) in object: 'unknown'"
+            "message": "Unrecognized key(s) in object: 'key'"
           }
         ]]
       `);
@@ -132,18 +31,25 @@ describe('modelSchema', () => {
   });
 });
 
-describe('modelResponseSchema', () => {
+describe('modelLinksSchema', () => {
   test('valid', () => {
-    const input = { id: 'test', createdAt: new Date().toJSON(), updatedAt: new Date().toJSON() };
-
-    expect(modelResponseSchema.parse(input)).toEqual(input);
+    expect(modelLinksSchema.parse({})).toEqual({});
+    expect(
+      modelLinksSchema.parse({
+        read: { href: '/api/model/id' },
+        update: { href: '/api/model/id' },
+        delete: { href: '/api/model/id' },
+      }),
+    ).toEqual({
+      read: { href: '/api/model/id' },
+      update: { href: '/api/model/id' },
+      delete: { href: '/api/model/id' },
+    });
   });
 
   test('invalid', () => {
-    const input = { id: 'test', createdAt: new Date().toJSON(), updatedAt: new Date().toJSON(), unknown: 'unknown' };
-
     try {
-      modelResponseSchema.parse(input);
+      modelLinksSchema.parse({ key: { href: '/api/model/id' } });
       throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -151,10 +57,37 @@ describe('modelResponseSchema', () => {
           {
             "code": "unrecognized_keys",
             "keys": [
-              "unknown"
+              "key"
             ],
             "path": [],
-            "message": "Unrecognized key(s) in object: 'unknown'"
+            "message": "Unrecognized key(s) in object: 'key'"
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+describe('modelListLinksSchema', () => {
+  test('valid', () => {
+    expect(modelListLinksSchema.parse({})).toEqual({});
+    expect(modelListLinksSchema.parse({ create: { href: '/api/model' } })).toEqual({ create: { href: '/api/model' } });
+  });
+
+  test('invalid', () => {
+    try {
+      modelListLinksSchema.parse({ key: { href: '/api/model' } });
+      throw new Error('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "key"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'key'"
           }
         ]]
       `);
@@ -164,16 +97,13 @@ describe('modelResponseSchema', () => {
 
 describe('listRequestSchema', () => {
   test('valid', () => {
-    const input = { offset: 0, limit: '20', filters: {}, sort: {} };
-
-    expect(listRequestSchema.parse(input)).toEqual({ ...input, limit: 20 });
+    expect(listRequestSchema.parse({})).toEqual({ offset: 0, limit: 20 });
+    expect(listRequestSchema.parse({ offset: 1, limit: 10 })).toEqual({ offset: 1, limit: 10 });
   });
 
   test('invalid', () => {
-    const input = { offset: 0, limit: 20, filters: { name: 'name' }, sort: {} };
-
     try {
-      listRequestSchema.parse(input);
+      listRequestSchema.parse({ key: 'unknown' });
       throw new Error('Expect fail');
     } catch (e) {
       expect(e).toMatchInlineSnapshot(`
@@ -181,12 +111,54 @@ describe('listRequestSchema', () => {
           {
             "code": "unrecognized_keys",
             "keys": [
-              "name"
+              "key"
             ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'key'"
+          }
+        ]]
+      `);
+    }
+  });
+});
+
+describe('listSchema', () => {
+  test('valid', () => {
+    expect(listSchema.parse({ offset: 1, limit: 10 })).toEqual({ offset: 1, limit: 10 });
+  });
+
+  test('invalid', () => {
+    try {
+      listSchema.parse({ key: 'unknown' });
+      throw new Error('Expect fail');
+    } catch (e) {
+      expect(e).toMatchInlineSnapshot(`
+        [ZodError: [
+          {
+            "code": "invalid_type",
+            "expected": "number",
+            "received": "nan",
             "path": [
-              "filters"
+              "offset"
             ],
-            "message": "Unrecognized key(s) in object: 'name'"
+            "message": "Expected number, received nan"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "number",
+            "received": "nan",
+            "path": [
+              "limit"
+            ],
+            "message": "Expected number, received nan"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "key"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'key'"
           }
         ]]
       `);

@@ -107,7 +107,7 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['routesByName'],
-        return: () => new Map(),
+        return: new Map(),
       },
     ]);
 

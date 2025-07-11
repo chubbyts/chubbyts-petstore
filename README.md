@@ -24,13 +24,13 @@ An api skeleton using mongodb for [chubbyts-framework][8].
 
  * node: 18
  * [@asteasolutions/zod-to-openapi][1]: ^7.3.4
- * [@chubbyts/chubbyts-api][2]: ^5.0.1
+ * [@chubbyts/chubbyts-api][2]: ^5.2.9
  * [@chubbyts/chubbyts-decode-encode][3]: ^2.0.1
  * [@chubbyts/chubbyts-dic][4]: ^2.0.1
  * [@chubbyts/chubbyts-dic-config][5]: ^2.0.1
  * [@chubbyts/chubbyts-dic-types][6]: ^2.0.1
  * [@chubbyts/chubbyts-framework][7]: ^2.0.1
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^2.0.1
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^2.0.2
  * [@chubbyts/chubbyts-http][9]: ^2.0.1
  * [@chubbyts/chubbyts-http-cors][10]: ^2.0.1
  * [@chubbyts/chubbyts-http-error][11]: ^3.0.1
@@ -42,7 +42,7 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-pino-adapter][17]: ^3.0.1
  * [commander][18]: ^14.0.0
  * [mongodb][19]: ^6.17.0
- * [openapi3-ts][20]: ^4.4.0
+ * [openapi3-ts][20]: ^4.5.0
  * [pino][21]: ^9.7.0
  * [uuid][22]: ^11.1.0
  * [zod][23]: ^3.25.64

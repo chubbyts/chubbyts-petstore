@@ -1,16 +1,17 @@
+import { baseModelSchema, numberSchema, sortSchema, stringSchema } from '@chubbyts/chubbyts-api/dist/model';
 import { z } from 'zod';
-import { linkSchema, modelResponseSchema, modelSchema, listRequestSchema } from '../model.js';
+import { embeddedSchema, modelLinksSchema, listRequestSchema, modelListLinksSchema, listSchema } from '../model.js';
 
 const vaccinationSchema = z
   .object({
-    name: z.string().min(1),
+    name: stringSchema,
   })
   .strict();
 
 export const petRequestSchema = z
   .object({
-    name: z.string().min(1),
-    tag: z.string().min(1).optional(),
+    name: stringSchema,
+    tag: stringSchema.optional(),
     vaccinations: z.array(vaccinationSchema).optional(),
   })
   .strict();
@@ -19,7 +20,7 @@ export type PetRequest = z.infer<typeof petRequestSchema>;
 
 export const petSchema = z
   .object({
-    ...modelSchema.shape,
+    ...baseModelSchema.shape,
     ...petRequestSchema.shape,
   })
   .strict();
@@ -28,15 +29,9 @@ export type Pet = z.infer<typeof petSchema>;
 
 export const petResponseSchema = z
   .object({
-    ...modelResponseSchema.shape,
-    ...petRequestSchema.shape,
-    _links: z
-      .object({
-        read: linkSchema.optional(),
-        update: linkSchema.optional(),
-        delete: linkSchema.optional(),
-      })
-      .optional(),
+    ...petSchema.shape,
+    _embedded: embeddedSchema,
+    _links: modelLinksSchema,
   })
   .strict();
 
@@ -46,20 +41,25 @@ export const petRequestListSchema = z
   .object({
     ...listRequestSchema.shape,
     filters: z.object({ name: z.string().optional() }).strict().default({}),
-    sort: z
-      .object({ name: z.enum(['asc', 'desc']).optional() })
-      .strict()
-      .default({}),
+    sort: z.object({ name: sortSchema.optional() }).strict().default({}),
   })
   .strict();
 
 export type PetRequestList = z.infer<typeof petRequestListSchema>;
 
+export const basePetListSchema = z
+  .object({
+    ...listSchema.shape,
+    filters: z.object({ name: z.string().optional() }).strict(),
+    sort: z.object({ name: sortSchema.optional() }).strict(),
+  })
+  .strict();
+
 export const petListSchema = z
   .object({
-    ...petRequestListSchema.shape,
+    ...basePetListSchema.shape,
     items: z.array(petSchema),
-    count: z.number(),
+    count: numberSchema,
   })
   .strict();
 
@@ -67,15 +67,11 @@ export type PetList = z.infer<typeof petListSchema>;
 
 export const petListResponseSchema = z
   .object({
-    ...petListSchema.shape,
-    offset: z.number(),
-    limit: z.number(),
+    ...basePetListSchema.shape,
     items: z.array(petResponseSchema),
-    _links: z
-      .object({
-        create: linkSchema.optional(),
-      })
-      .optional(),
+    count: numberSchema,
+    _embedded: embeddedSchema,
+    _links: modelListLinksSchema,
   })
   .strict();
 
@@ -83,8 +79,7 @@ export type PetListResponse = z.infer<typeof petListResponseSchema>;
 
 export const petRequestListOpenApiSchema = z
   .object({
-    offset: z.number().default(0),
-    limit: z.number().default(20),
+    ...listRequestSchema.shape,
     'filters[name]': z.string().optional(),
     'sort[name]': z.enum(['asc', 'desc']).optional(),
   })

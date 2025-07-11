@@ -1,16 +1,13 @@
+import { numberSchema } from '@chubbyts/chubbyts-api/dist/model';
 import { z } from 'zod';
 
-export const numberSchema = z.union([
-  z
-    .string()
-    .refine((number) => !Number.isNaN(parseInt(number, 10)))
-    .transform((number) => parseInt(number, 10)),
-  z.number(),
-]);
+export const embeddedSchema = z.object({}).strict().optional();
 
 export const linkSchema = z
   .object({
+    name: z.string().optional(),
     href: z.string(),
+    templated: z.boolean().optional(),
     attributes: z
       .object({
         method: z.string(),
@@ -19,27 +16,34 @@ export const linkSchema = z
   })
   .strict();
 
-export const modelSchema = z
-  .object({
-    id: z.string(),
-    createdAt: z.date(),
-    updatedAt: z.date().optional(),
-  })
-  .strict();
+export type Link = z.infer<typeof linkSchema>;
 
-export const modelResponseSchema = z
+export const modelLinksSchema = z
   .object({
-    id: z.string(),
-    createdAt: z.string(),
-    updatedAt: z.string().optional(),
+    read: linkSchema.optional(),
+    update: linkSchema.optional(),
+    delete: linkSchema.optional(),
   })
-  .strict();
+  .strict()
+  .optional();
+
+export const modelListLinksSchema = z
+  .object({
+    create: linkSchema.optional(),
+  })
+  .strict()
+  .optional();
 
 export const listRequestSchema = z
   .object({
     offset: numberSchema.default(0),
     limit: numberSchema.default(20),
-    filters: z.object({}).strict().default({}),
-    sort: z.object({}).strict().default({}),
+  })
+  .strict();
+
+export const listSchema = z
+  .object({
+    offset: numberSchema,
+    limit: numberSchema,
   })
   .strict();

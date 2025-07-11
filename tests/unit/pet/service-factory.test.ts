@@ -495,6 +495,7 @@ describe('service-factory', () => {
                   "required": false,
                   "schema": {
                     "default": 0,
+                    "nullable": true,
                     "type": "number",
                   },
                 },
@@ -504,6 +505,7 @@ describe('service-factory', () => {
                   "required": false,
                   "schema": {
                     "default": 20,
+                    "nullable": true,
                     "type": "number",
                   },
                 },
@@ -536,7 +538,13 @@ describe('service-factory', () => {
                         "additionalProperties": false,
                         "description": "Pets",
                         "properties": {
+                          "_embedded": {
+                            "additionalProperties": false,
+                            "properties": {},
+                            "type": "object",
+                          },
                           "_links": {
+                            "additionalProperties": false,
                             "properties": {
                               "create": {
                                 "additionalProperties": false,
@@ -555,6 +563,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -565,11 +579,11 @@ describe('service-factory', () => {
                             "type": "object",
                           },
                           "count": {
+                            "nullable": true,
                             "type": "number",
                           },
                           "filters": {
                             "additionalProperties": false,
-                            "default": {},
                             "properties": {
                               "name": {
                                 "type": "string",
@@ -581,7 +595,13 @@ describe('service-factory', () => {
                             "items": {
                               "additionalProperties": false,
                               "properties": {
+                                "_embedded": {
+                                  "additionalProperties": false,
+                                  "properties": {},
+                                  "type": "object",
+                                },
                                 "_links": {
+                                  "additionalProperties": false,
                                   "properties": {
                                     "delete": {
                                       "additionalProperties": false,
@@ -599,6 +619,12 @@ describe('service-factory', () => {
                                         },
                                         "href": {
                                           "type": "string",
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
                                         },
                                       },
                                       "required": [
@@ -623,6 +649,12 @@ describe('service-factory', () => {
                                         "href": {
                                           "type": "string",
                                         },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
+                                        },
                                       },
                                       "required": [
                                         "href",
@@ -646,6 +678,12 @@ describe('service-factory', () => {
                                         "href": {
                                           "type": "string",
                                         },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
+                                        },
                                       },
                                       "required": [
                                         "href",
@@ -656,9 +694,11 @@ describe('service-factory', () => {
                                   "type": "object",
                                 },
                                 "createdAt": {
+                                  "nullable": true,
                                   "type": "string",
                                 },
                                 "id": {
+                                  "minLength": 1,
                                   "type": "string",
                                 },
                                 "name": {
@@ -670,6 +710,7 @@ describe('service-factory', () => {
                                   "type": "string",
                                 },
                                 "updatedAt": {
+                                  "nullable": true,
                                   "type": "string",
                                 },
                                 "vaccinations": {
@@ -699,14 +740,15 @@ describe('service-factory', () => {
                             "type": "array",
                           },
                           "limit": {
+                            "nullable": true,
                             "type": "number",
                           },
                           "offset": {
+                            "nullable": true,
                             "type": "number",
                           },
                           "sort": {
                             "additionalProperties": false,
-                            "default": {},
                             "properties": {
                               "name": {
                                 "enum": [
@@ -722,6 +764,8 @@ describe('service-factory', () => {
                         "required": [
                           "offset",
                           "limit",
+                          "filters",
+                          "sort",
                           "items",
                           "count",
                         ],
@@ -787,7 +831,13 @@ describe('service-factory', () => {
                         "additionalProperties": false,
                         "description": "Pet",
                         "properties": {
+                          "_embedded": {
+                            "additionalProperties": false,
+                            "properties": {},
+                            "type": "object",
+                          },
                           "_links": {
+                            "additionalProperties": false,
                             "properties": {
                               "delete": {
                                 "additionalProperties": false,
@@ -805,6 +855,12 @@ describe('service-factory', () => {
                                   },
                                   "href": {
                                     "type": "string",
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
                                   },
                                 },
                                 "required": [
@@ -829,6 +885,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -852,6 +914,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -862,9 +930,11 @@ describe('service-factory', () => {
                             "type": "object",
                           },
                           "createdAt": {
+                            "nullable": true,
                             "type": "string",
                           },
                           "id": {
+                            "minLength": 1,
                             "type": "string",
                           },
                           "name": {
@@ -876,6 +946,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
+                            "nullable": true,
                             "type": "string",
                           },
                           "vaccinations": {
@@ -958,7 +1029,13 @@ describe('service-factory', () => {
                         "additionalProperties": false,
                         "description": "Pet",
                         "properties": {
+                          "_embedded": {
+                            "additionalProperties": false,
+                            "properties": {},
+                            "type": "object",
+                          },
                           "_links": {
+                            "additionalProperties": false,
                             "properties": {
                               "delete": {
                                 "additionalProperties": false,
@@ -976,6 +1053,12 @@ describe('service-factory', () => {
                                   },
                                   "href": {
                                     "type": "string",
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
                                   },
                                 },
                                 "required": [
@@ -1000,6 +1083,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -1023,6 +1112,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -1033,9 +1128,11 @@ describe('service-factory', () => {
                             "type": "object",
                           },
                           "createdAt": {
+                            "nullable": true,
                             "type": "string",
                           },
                           "id": {
+                            "minLength": 1,
                             "type": "string",
                           },
                           "name": {
@@ -1047,6 +1144,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
+                            "nullable": true,
                             "type": "string",
                           },
                           "vaccinations": {
@@ -1144,7 +1242,13 @@ describe('service-factory', () => {
                         "additionalProperties": false,
                         "description": "Pet",
                         "properties": {
+                          "_embedded": {
+                            "additionalProperties": false,
+                            "properties": {},
+                            "type": "object",
+                          },
                           "_links": {
+                            "additionalProperties": false,
                             "properties": {
                               "delete": {
                                 "additionalProperties": false,
@@ -1162,6 +1266,12 @@ describe('service-factory', () => {
                                   },
                                   "href": {
                                     "type": "string",
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
                                   },
                                 },
                                 "required": [
@@ -1186,6 +1296,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -1209,6 +1325,12 @@ describe('service-factory', () => {
                                   "href": {
                                     "type": "string",
                                   },
+                                  "name": {
+                                    "type": "string",
+                                  },
+                                  "templated": {
+                                    "type": "boolean",
+                                  },
                                 },
                                 "required": [
                                   "href",
@@ -1219,9 +1341,11 @@ describe('service-factory', () => {
                             "type": "object",
                           },
                           "createdAt": {
+                            "nullable": true,
                             "type": "string",
                           },
                           "id": {
+                            "minLength": 1,
                             "type": "string",
                           },
                           "name": {
@@ -1233,6 +1357,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
+                            "nullable": true,
                             "type": "string",
                           },
                           "vaccinations": {

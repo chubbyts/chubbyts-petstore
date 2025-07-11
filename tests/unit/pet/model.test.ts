@@ -85,8 +85,8 @@ describe('petSchema', () => {
 
 const validPetResponse: PetResponse = {
   id: 'test',
-  createdAt: new Date('2023-04-12T09:12:12.763Z').toJSON(),
-  updatedAt: new Date('2023-04-16T15:05:49.154Z').toJSON(),
+  createdAt: new Date('2023-04-12T09:12:12.763Z'),
+  updatedAt: new Date('2023-04-16T15:05:49.154Z'),
   ...validPetRequest,
   _links: {
     read: { href: '/api/pet/1' },

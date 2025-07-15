@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import type { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import { createEnrichList, createEnrichModel } from '../../src/enrich.js';
+import { createEnrichModelList, createEnrichModel } from '../../src/enrich.js';
 
 describe('createEnrichModel', () => {
   test('without links', async () => {
@@ -114,13 +114,13 @@ describe('createEnrichModel', () => {
   });
 });
 
-describe('createEnrichList', () => {
+describe('createEnrichModelList', () => {
   test('without links', async () => {
     const request = {} as ServerRequest;
 
     const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([]);
 
-    const enrichList = createEnrichList(generatePath, {});
+    const enrichList = createEnrichModelList(generatePath, {}, {});
 
     expect(
       await enrichList(
@@ -200,12 +200,17 @@ describe('createEnrichList', () => {
       },
     ]);
 
-    const enrichList = createEnrichList(generatePath, {
-      create: 'model_create',
-      read: 'model_read',
-      update: 'model_update',
-      delete: 'model_delete',
-    });
+    const enrichList = createEnrichModelList(
+      generatePath,
+      {
+        read: 'model_read',
+        update: 'model_update',
+        delete: 'model_delete',
+      },
+      {
+        create: 'model_create',
+      },
+    );
 
     expect(
       await enrichList(

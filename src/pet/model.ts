@@ -1,88 +1,88 @@
-import { baseModelSchema, numberSchema, sortSchema, stringSchema } from '@chubbyts/chubbyts-api/dist/model';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-import { embeddedSchema, modelLinksSchema, listRequestSchema, modelListLinksSchema, listSchema } from '../model.js';
+import type {
+  EnrichedModel,
+  EnrichedModelList,
+  EnrichedModelListSchema,
+  EnrichedModelSchema,
+  InputModel,
+  InputModelList,
+  Model,
+  ModelList,
+  ModelListSchema,
+  ModelSchema,
+} from '@chubbyts/chubbyts-api/dist/model';
+import {
+  numberSchema,
+  sortSchema,
+  stringSchema,
+  createEnrichedModelListSchema,
+  createModelSchema,
+  createModelListSchema,
+  createEnrichedModelSchema,
+} from '@chubbyts/chubbyts-api/dist/model';
 
-const vaccinationSchema = z
-  .object({
-    name: stringSchema,
-  })
-  .strict();
+extendZodWithOpenApi(z);
 
-export const petRequestSchema = z
+export const inputPetSchema = z
   .object({
     name: stringSchema,
     tag: stringSchema.optional(),
-    vaccinations: z.array(vaccinationSchema).optional(),
+    vaccinations: z.array(z.object({ name: stringSchema }).strict()).optional(),
   })
   .strict();
 
-export type PetRequest = z.infer<typeof petRequestSchema>;
+export type InputPetSchema = typeof inputPetSchema;
 
-export const petSchema = z
+export type InputPet = InputModel<InputPetSchema>;
+
+export const inputPetListSchema = z
   .object({
-    ...baseModelSchema.shape,
-    ...petRequestSchema.shape,
+    offset: numberSchema.default(0),
+    limit: numberSchema.default(20),
+    filters: z.object({ name: stringSchema.optional() }).strict().default({}),
+    sort: z.object({ name: sortSchema }).strict().default({}),
   })
   .strict();
 
-export type Pet = z.infer<typeof petSchema>;
+export type InputPetListSchema = typeof inputPetListSchema;
 
-export const petResponseSchema = z
+export type InputPetList = InputModelList<InputPetListSchema>;
+
+export type PetSchema = ModelSchema<InputPetSchema>;
+
+export const petSchema: PetSchema = createModelSchema(inputPetSchema);
+
+export type Pet = Model<InputPetSchema>;
+
+export type PetListSchema = ModelListSchema<InputPetSchema, InputPetListSchema>;
+
+export const petListSchema: PetListSchema = createModelListSchema(inputPetSchema, inputPetListSchema);
+
+export type PetList = ModelList<InputPetSchema, InputPetListSchema>;
+
+export type EnrichedPetSchema = EnrichedModelSchema<InputPetSchema>;
+
+export const enrichedPetSchema: EnrichedPetSchema = createEnrichedModelSchema(inputPetSchema);
+
+export type EnrichedPet = EnrichedModel<InputPetSchema>;
+
+export type EnrichedPetListSchema = EnrichedModelListSchema<InputPetSchema, InputPetListSchema>;
+
+export const enrichedPetListSchema: EnrichedPetListSchema = createEnrichedModelListSchema(
+  inputPetSchema,
+  inputPetListSchema,
+);
+
+export type EnrichedPetList = EnrichedModelList<InputPetSchema, InputPetListSchema>;
+
+export const inputPetListOpenApiSchema = z
   .object({
-    ...petSchema.shape,
-    _embedded: embeddedSchema,
-    _links: modelLinksSchema,
-  })
-  .strict();
-
-export type PetResponse = z.infer<typeof petResponseSchema>;
-
-export const petRequestListSchema = z
-  .object({
-    ...listRequestSchema.shape,
-    filters: z.object({ name: z.string().optional() }).strict().default({}),
-    sort: z.object({ name: sortSchema.optional() }).strict().default({}),
-  })
-  .strict();
-
-export type PetRequestList = z.infer<typeof petRequestListSchema>;
-
-export const basePetListSchema = z
-  .object({
-    ...listSchema.shape,
-    filters: z.object({ name: z.string().optional() }).strict(),
-    sort: z.object({ name: sortSchema.optional() }).strict(),
-  })
-  .strict();
-
-export const petListSchema = z
-  .object({
-    ...basePetListSchema.shape,
-    items: z.array(petSchema),
-    count: numberSchema,
-  })
-  .strict();
-
-export type PetList = z.infer<typeof petListSchema>;
-
-export const petListResponseSchema = z
-  .object({
-    ...basePetListSchema.shape,
-    items: z.array(petResponseSchema),
-    count: numberSchema,
-    _embedded: embeddedSchema,
-    _links: modelListLinksSchema,
-  })
-  .strict();
-
-export type PetListResponse = z.infer<typeof petListResponseSchema>;
-
-export const petRequestListOpenApiSchema = z
-  .object({
-    ...listRequestSchema.shape,
+    offset: numberSchema.default(0),
+    limit: numberSchema.default(20),
     'filters[name]': z.string().optional(),
     'sort[name]': z.enum(['asc', 'desc']).optional(),
   })
   .strict();
 
-export type PetRequestListOpenApi = z.infer<typeof petRequestListOpenApiSchema>;
+export type InputPetListOpenApi = z.infer<typeof inputPetListOpenApiSchema>;

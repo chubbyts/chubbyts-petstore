@@ -7,7 +7,7 @@ import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
-  petEnrichListServiceFactory,
+  petEnrichModelListServiceFactory,
   petEnrichModelServiceFactory,
   petFindModelByIdServiceFactory,
   petListHandlerServiceFactory,
@@ -137,7 +137,7 @@ describe('service-factory', () => {
     expect(containerMocks.length).toBe(0);
   });
 
-  test('petEnrichListServiceFactory', async () => {
+  test('petEnrichModelListServiceFactory', async () => {
     const request = {} as ServerRequest;
 
     const petList: PetList = validPetList;
@@ -150,7 +150,7 @@ describe('service-factory', () => {
       },
     ]);
 
-    const petEnrichList = petEnrichListServiceFactory(container);
+    const petEnrichList = petEnrichModelListServiceFactory(container);
 
     expect(petEnrichList).toBeInstanceOf(Function);
 
@@ -267,7 +267,7 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
-        parameters: ['petEnrichList'],
+        parameters: ['petEnrichModelList'],
         return: () => undefined,
       },
     ]);
@@ -539,42 +539,72 @@ describe('service-factory', () => {
                         "description": "Pets",
                         "properties": {
                           "_embedded": {
-                            "additionalProperties": false,
-                            "properties": {},
+                            "additionalProperties": {
+                              "nullable": true,
+                            },
                             "type": "object",
                           },
                           "_links": {
-                            "additionalProperties": false,
-                            "properties": {
-                              "create": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "allOf": [
+                                    {
+                                      "properties": {
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
+                                        },
                                       },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
                                     },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
+                                    {
+                                      "additionalProperties": {
+                                        "nullable": true,
+                                      },
+                                      "type": "object",
+                                    },
+                                  ],
                                 },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
+                                {
+                                  "items": {
+                                    "allOf": [
+                                      {
+                                        "properties": {
+                                          "href": {
+                                            "type": "string",
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                          },
+                                          "templated": {
+                                            "type": "boolean",
+                                          },
+                                        },
+                                        "required": [
+                                          "href",
+                                        ],
+                                        "type": "object",
+                                      },
+                                      {
+                                        "additionalProperties": {
+                                          "nullable": true,
+                                        },
+                                        "type": "object",
+                                      },
+                                    ],
+                                  },
+                                  "type": "array",
+                                },
+                              ],
                             },
                             "type": "object",
                           },
@@ -584,8 +614,10 @@ describe('service-factory', () => {
                           },
                           "filters": {
                             "additionalProperties": false,
+                            "default": {},
                             "properties": {
                               "name": {
+                                "minLength": 1,
                                 "type": "string",
                               },
                             },
@@ -596,104 +628,77 @@ describe('service-factory', () => {
                               "additionalProperties": false,
                               "properties": {
                                 "_embedded": {
-                                  "additionalProperties": false,
-                                  "properties": {},
+                                  "additionalProperties": {
+                                    "nullable": true,
+                                  },
                                   "type": "object",
                                 },
                                 "_links": {
-                                  "additionalProperties": false,
-                                  "properties": {
-                                    "delete": {
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "attributes": {
-                                          "properties": {
-                                            "method": {
-                                              "type": "string",
+                                  "additionalProperties": {
+                                    "anyOf": [
+                                      {
+                                        "allOf": [
+                                          {
+                                            "properties": {
+                                              "href": {
+                                                "type": "string",
+                                              },
+                                              "name": {
+                                                "type": "string",
+                                              },
+                                              "templated": {
+                                                "type": "boolean",
+                                              },
                                             },
+                                            "required": [
+                                              "href",
+                                            ],
+                                            "type": "object",
                                           },
-                                          "required": [
-                                            "method",
-                                          ],
-                                          "type": "object",
-                                        },
-                                        "href": {
-                                          "type": "string",
-                                        },
-                                        "name": {
-                                          "type": "string",
-                                        },
-                                        "templated": {
-                                          "type": "boolean",
-                                        },
-                                      },
-                                      "required": [
-                                        "href",
-                                      ],
-                                      "type": "object",
-                                    },
-                                    "read": {
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "attributes": {
-                                          "properties": {
-                                            "method": {
-                                              "type": "string",
+                                          {
+                                            "additionalProperties": {
+                                              "nullable": true,
                                             },
+                                            "type": "object",
                                           },
-                                          "required": [
-                                            "method",
-                                          ],
-                                          "type": "object",
-                                        },
-                                        "href": {
-                                          "type": "string",
-                                        },
-                                        "name": {
-                                          "type": "string",
-                                        },
-                                        "templated": {
-                                          "type": "boolean",
-                                        },
+                                        ],
                                       },
-                                      "required": [
-                                        "href",
-                                      ],
-                                      "type": "object",
-                                    },
-                                    "update": {
-                                      "additionalProperties": false,
-                                      "properties": {
-                                        "attributes": {
-                                          "properties": {
-                                            "method": {
-                                              "type": "string",
+                                      {
+                                        "items": {
+                                          "allOf": [
+                                            {
+                                              "properties": {
+                                                "href": {
+                                                  "type": "string",
+                                                },
+                                                "name": {
+                                                  "type": "string",
+                                                },
+                                                "templated": {
+                                                  "type": "boolean",
+                                                },
+                                              },
+                                              "required": [
+                                                "href",
+                                              ],
+                                              "type": "object",
                                             },
-                                          },
-                                          "required": [
-                                            "method",
+                                            {
+                                              "additionalProperties": {
+                                                "nullable": true,
+                                              },
+                                              "type": "object",
+                                            },
                                           ],
-                                          "type": "object",
                                         },
-                                        "href": {
-                                          "type": "string",
-                                        },
-                                        "name": {
-                                          "type": "string",
-                                        },
-                                        "templated": {
-                                          "type": "boolean",
-                                        },
+                                        "type": "array",
                                       },
-                                      "required": [
-                                        "href",
-                                      ],
-                                      "type": "object",
-                                    },
+                                    ],
                                   },
                                   "type": "object",
                                 },
                                 "createdAt": {
+                                  "format": "date",
                                   "nullable": true,
                                   "type": "string",
                                 },
@@ -710,6 +715,7 @@ describe('service-factory', () => {
                                   "type": "string",
                                 },
                                 "updatedAt": {
+                                  "format": "date",
                                   "nullable": true,
                                   "type": "string",
                                 },
@@ -740,34 +746,42 @@ describe('service-factory', () => {
                             "type": "array",
                           },
                           "limit": {
+                            "default": 20,
                             "nullable": true,
                             "type": "number",
                           },
                           "offset": {
+                            "default": 0,
                             "nullable": true,
                             "type": "number",
                           },
                           "sort": {
                             "additionalProperties": false,
+                            "default": {},
                             "properties": {
                               "name": {
-                                "enum": [
-                                  "asc",
-                                  "desc",
+                                "anyOf": [
+                                  {
+                                    "enum": [
+                                      "asc",
+                                    ],
+                                    "type": "string",
+                                  },
+                                  {
+                                    "enum": [
+                                      "desc",
+                                    ],
+                                    "type": "string",
+                                  },
                                 ],
-                                "type": "string",
                               },
                             },
                             "type": "object",
                           },
                         },
                         "required": [
-                          "offset",
-                          "limit",
-                          "filters",
-                          "sort",
-                          "items",
                           "count",
+                          "items",
                         ],
                         "type": "object",
                       },
@@ -832,144 +846,249 @@ describe('service-factory', () => {
                         "description": "Pet",
                         "properties": {
                           "_embedded": {
-                            "additionalProperties": false,
-                            "properties": {},
+                            "additionalProperties": {
+                              "nullable": true,
+                            },
                             "type": "object",
                           },
                           "_links": {
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "allOf": [
+                                    {
+                                      "properties": {
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
+                                        },
+                                      },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
+                                    },
+                                    {
+                                      "additionalProperties": {
+                                        "nullable": true,
+                                      },
+                                      "type": "object",
+                                    },
+                                  ],
+                                },
+                                {
+                                  "items": {
+                                    "allOf": [
+                                      {
+                                        "properties": {
+                                          "href": {
+                                            "type": "string",
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                          },
+                                          "templated": {
+                                            "type": "boolean",
+                                          },
+                                        },
+                                        "required": [
+                                          "href",
+                                        ],
+                                        "type": "object",
+                                      },
+                                      {
+                                        "additionalProperties": {
+                                          "nullable": true,
+                                        },
+                                        "type": "object",
+                                      },
+                                    ],
+                                  },
+                                  "type": "array",
+                                },
+                              ],
+                            },
+                            "type": "object",
+                          },
+                          "count": {
+                            "nullable": true,
+                            "type": "number",
+                          },
+                          "filters": {
                             "additionalProperties": false,
+                            "default": {},
                             "properties": {
-                              "delete": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
-                                      },
-                                    },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
-                                },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
-                              "read": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
-                                      },
-                                    },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
-                                },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
-                              "update": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
-                                      },
-                                    },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
-                                },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
+                              "name": {
+                                "minLength": 1,
+                                "type": "string",
                               },
                             },
                             "type": "object",
                           },
-                          "createdAt": {
-                            "nullable": true,
-                            "type": "string",
-                          },
-                          "id": {
-                            "minLength": 1,
-                            "type": "string",
-                          },
-                          "name": {
-                            "minLength": 1,
-                            "type": "string",
-                          },
-                          "tag": {
-                            "minLength": 1,
-                            "type": "string",
-                          },
-                          "updatedAt": {
-                            "nullable": true,
-                            "type": "string",
-                          },
-                          "vaccinations": {
+                          "items": {
                             "items": {
                               "additionalProperties": false,
                               "properties": {
+                                "_embedded": {
+                                  "additionalProperties": {
+                                    "nullable": true,
+                                  },
+                                  "type": "object",
+                                },
+                                "_links": {
+                                  "additionalProperties": {
+                                    "anyOf": [
+                                      {
+                                        "allOf": [
+                                          {
+                                            "properties": {
+                                              "href": {
+                                                "type": "string",
+                                              },
+                                              "name": {
+                                                "type": "string",
+                                              },
+                                              "templated": {
+                                                "type": "boolean",
+                                              },
+                                            },
+                                            "required": [
+                                              "href",
+                                            ],
+                                            "type": "object",
+                                          },
+                                          {
+                                            "additionalProperties": {
+                                              "nullable": true,
+                                            },
+                                            "type": "object",
+                                          },
+                                        ],
+                                      },
+                                      {
+                                        "items": {
+                                          "allOf": [
+                                            {
+                                              "properties": {
+                                                "href": {
+                                                  "type": "string",
+                                                },
+                                                "name": {
+                                                  "type": "string",
+                                                },
+                                                "templated": {
+                                                  "type": "boolean",
+                                                },
+                                              },
+                                              "required": [
+                                                "href",
+                                              ],
+                                              "type": "object",
+                                            },
+                                            {
+                                              "additionalProperties": {
+                                                "nullable": true,
+                                              },
+                                              "type": "object",
+                                            },
+                                          ],
+                                        },
+                                        "type": "array",
+                                      },
+                                    ],
+                                  },
+                                  "type": "object",
+                                },
+                                "createdAt": {
+                                  "format": "date",
+                                  "nullable": true,
+                                  "type": "string",
+                                },
+                                "id": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
                                 "name": {
                                   "minLength": 1,
                                   "type": "string",
                                 },
+                                "tag": {
+                                  "minLength": 1,
+                                  "type": "string",
+                                },
+                                "updatedAt": {
+                                  "format": "date",
+                                  "nullable": true,
+                                  "type": "string",
+                                },
+                                "vaccinations": {
+                                  "items": {
+                                    "additionalProperties": false,
+                                    "properties": {
+                                      "name": {
+                                        "minLength": 1,
+                                        "type": "string",
+                                      },
+                                    },
+                                    "required": [
+                                      "name",
+                                    ],
+                                    "type": "object",
+                                  },
+                                  "type": "array",
+                                },
                               },
                               "required": [
+                                "id",
+                                "createdAt",
                                 "name",
                               ],
                               "type": "object",
                             },
                             "type": "array",
                           },
+                          "limit": {
+                            "default": 20,
+                            "nullable": true,
+                            "type": "number",
+                          },
+                          "offset": {
+                            "default": 0,
+                            "nullable": true,
+                            "type": "number",
+                          },
+                          "sort": {
+                            "additionalProperties": false,
+                            "default": {},
+                            "properties": {
+                              "name": {
+                                "anyOf": [
+                                  {
+                                    "enum": [
+                                      "asc",
+                                    ],
+                                    "type": "string",
+                                  },
+                                  {
+                                    "enum": [
+                                      "desc",
+                                    ],
+                                    "type": "string",
+                                  },
+                                ],
+                              },
+                            },
+                            "type": "object",
+                          },
                         },
                         "required": [
-                          "id",
-                          "createdAt",
-                          "name",
+                          "count",
+                          "items",
                         ],
                         "type": "object",
                       },
@@ -1030,104 +1149,77 @@ describe('service-factory', () => {
                         "description": "Pet",
                         "properties": {
                           "_embedded": {
-                            "additionalProperties": false,
-                            "properties": {},
+                            "additionalProperties": {
+                              "nullable": true,
+                            },
                             "type": "object",
                           },
                           "_links": {
-                            "additionalProperties": false,
-                            "properties": {
-                              "delete": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "allOf": [
+                                    {
+                                      "properties": {
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
+                                        },
                                       },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
                                     },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
-                                },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
-                              "read": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                                    {
+                                      "additionalProperties": {
+                                        "nullable": true,
                                       },
+                                      "type": "object",
                                     },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
+                                  ],
                                 },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
-                              "update": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                                {
+                                  "items": {
+                                    "allOf": [
+                                      {
+                                        "properties": {
+                                          "href": {
+                                            "type": "string",
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                          },
+                                          "templated": {
+                                            "type": "boolean",
+                                          },
+                                        },
+                                        "required": [
+                                          "href",
+                                        ],
+                                        "type": "object",
                                       },
-                                    },
-                                    "required": [
-                                      "method",
+                                      {
+                                        "additionalProperties": {
+                                          "nullable": true,
+                                        },
+                                        "type": "object",
+                                      },
                                     ],
-                                    "type": "object",
                                   },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
+                                  "type": "array",
                                 },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
+                              ],
                             },
                             "type": "object",
                           },
                           "createdAt": {
+                            "format": "date",
                             "nullable": true,
                             "type": "string",
                           },
@@ -1144,6 +1236,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
+                            "format": "date",
                             "nullable": true,
                             "type": "string",
                           },
@@ -1243,104 +1336,77 @@ describe('service-factory', () => {
                         "description": "Pet",
                         "properties": {
                           "_embedded": {
-                            "additionalProperties": false,
-                            "properties": {},
+                            "additionalProperties": {
+                              "nullable": true,
+                            },
                             "type": "object",
                           },
                           "_links": {
-                            "additionalProperties": false,
-                            "properties": {
-                              "delete": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "allOf": [
+                                    {
+                                      "properties": {
+                                        "href": {
+                                          "type": "string",
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                        },
+                                        "templated": {
+                                          "type": "boolean",
+                                        },
                                       },
+                                      "required": [
+                                        "href",
+                                      ],
+                                      "type": "object",
                                     },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
-                                },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
-                              "read": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                                    {
+                                      "additionalProperties": {
+                                        "nullable": true,
                                       },
+                                      "type": "object",
                                     },
-                                    "required": [
-                                      "method",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
+                                  ],
                                 },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
-                              "update": {
-                                "additionalProperties": false,
-                                "properties": {
-                                  "attributes": {
-                                    "properties": {
-                                      "method": {
-                                        "type": "string",
+                                {
+                                  "items": {
+                                    "allOf": [
+                                      {
+                                        "properties": {
+                                          "href": {
+                                            "type": "string",
+                                          },
+                                          "name": {
+                                            "type": "string",
+                                          },
+                                          "templated": {
+                                            "type": "boolean",
+                                          },
+                                        },
+                                        "required": [
+                                          "href",
+                                        ],
+                                        "type": "object",
                                       },
-                                    },
-                                    "required": [
-                                      "method",
+                                      {
+                                        "additionalProperties": {
+                                          "nullable": true,
+                                        },
+                                        "type": "object",
+                                      },
                                     ],
-                                    "type": "object",
                                   },
-                                  "href": {
-                                    "type": "string",
-                                  },
-                                  "name": {
-                                    "type": "string",
-                                  },
-                                  "templated": {
-                                    "type": "boolean",
-                                  },
+                                  "type": "array",
                                 },
-                                "required": [
-                                  "href",
-                                ],
-                                "type": "object",
-                              },
+                              ],
                             },
                             "type": "object",
                           },
                           "createdAt": {
+                            "format": "date",
                             "nullable": true,
                             "type": "string",
                           },
@@ -1357,6 +1423,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
+                            "format": "date",
                             "nullable": true,
                             "type": "string",
                           },

@@ -26,41 +26,43 @@ import type {
   ResolveModelList,
 } from '@chubbyts/chubbyts-api/dist/repository';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import type { EnrichList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
+import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
 import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-import { createEnrichList, createEnrichModel } from '../enrich.js';
+import { createEnrichModelList, createEnrichModel } from '../enrich.js';
 import { createResolveModelList, createFindModelById, createPersistModel, createRemoveModel } from '../repository.js';
-import type { Pet, PetRequest } from './model.js';
+import type { InputPetListSchema, InputPetSchema } from './model.js';
 import {
-  petRequestSchema,
-  petRequestListSchema,
-  petResponseSchema,
-  petListResponseSchema,
-  petRequestListOpenApiSchema,
+  enrichedPetListSchema,
+  enrichedPetSchema,
+  inputPetListOpenApiSchema,
+  inputPetListSchema,
+  inputPetSchema,
 } from './model.js';
 
+extendZodWithOpenApi(z);
+
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createCreateHandler<PetRequest>(
+  return createCreateHandler(
     container.get<Decoder>('decoder'),
-    petRequestSchema,
-    await container.get<Promise<PersistModel<PetRequest>>>('petPersistModel'),
+    inputPetSchema,
+    await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
     container.get<ResponseFactory>('responseFactory'),
-    petResponseSchema,
+    enrichedPetSchema,
     container.get<Encoder>('encoder'),
-    container.get<EnrichModel<PetRequest>>('petEnrichModel'),
+    container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
   );
 };
 
 export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createDeleteHandler<PetRequest>(
-    await container.get<Promise<FindModelById<PetRequest>>>('petFindModelById'),
-    await container.get<Promise<RemoveModel<PetRequest>>>('petRemoveModel'),
+  return createDeleteHandler(
+    await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
+    await container.get<Promise<RemoveModel<InputPetSchema>>>('petRemoveModel'),
     container.get<ResponseFactory>('responseFactory'),
   );
 };
 
-export const petEnrichModelServiceFactory = (container: Container): EnrichModel<PetRequest> => {
+export const petEnrichModelServiceFactory = (container: Container): EnrichModel<InputPetSchema> => {
   return createEnrichModel(container.get<GeneratePath>('generatePath'), {
     read: 'pet_read',
     update: 'pet_update',
@@ -68,72 +70,77 @@ export const petEnrichModelServiceFactory = (container: Container): EnrichModel<
   });
 };
 
-export const petEnrichListServiceFactory = (container: Container): EnrichList<PetRequest> => {
-  return createEnrichList(container.get<GeneratePath>('generatePath'), {
-    create: 'pet_create',
-    read: 'pet_read',
-    update: 'pet_update',
-    delete: 'pet_delete',
-  });
+export const petEnrichModelListServiceFactory = (
+  container: Container,
+): EnrichModelList<InputPetSchema, InputPetListSchema> => {
+  return createEnrichModelList(
+    container.get<GeneratePath>('generatePath'),
+    {
+      read: 'pet_read',
+      update: 'pet_update',
+      delete: 'pet_delete',
+    },
+    {
+      create: 'pet_create',
+    },
+  );
 };
 
-export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<PetRequest>> => {
+export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> => {
   return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createListHandler<PetRequest>(
-    petRequestListSchema,
-    await container.get<Promise<ResolveModelList<PetRequest>>>('petResolveModelList'),
+  return createListHandler(
+    inputPetListSchema,
+    await container.get<Promise<ResolveModelList<InputPetSchema, InputPetListSchema>>>('petResolveModelList'),
     container.get<ResponseFactory>('responseFactory'),
-    petListResponseSchema,
+    enrichedPetListSchema,
     container.get<Encoder>('encoder'),
-    container.get<EnrichList<Pet>>('petEnrichList'),
+    container.get<EnrichModelList<InputPetSchema, InputPetListSchema>>('petEnrichModelList'),
   );
 };
 
-export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<PetRequest>> => {
+export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
   return createPersistModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createReadHandler<PetRequest>(
-    await container.get<Promise<FindModelById<PetRequest>>>('petFindModelById'),
+  return createReadHandler(
+    await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
     container.get<ResponseFactory>('responseFactory'),
-    petResponseSchema,
+    enrichedPetSchema,
     container.get<Encoder>('encoder'),
-    container.get<EnrichModel<Pet>>('petEnrichModel'),
+    container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
   );
 };
 
-export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<PetRequest>> => {
+export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
   return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petResolveModelListServiceFactory = async (
   container: Container,
-): Promise<ResolveModelList<PetRequest>> => {
+): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> => {
   return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createUpdateHandler<PetRequest>(
-    await container.get<Promise<FindModelById<PetRequest>>>('petFindModelById'),
+  return createUpdateHandler(
+    await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
     container.get<Decoder>('decoder'),
-    petRequestSchema,
-    await container.get<Promise<PersistModel<PetRequest>>>('petPersistModel'),
+    inputPetSchema,
+    await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
     container.get<ResponseFactory>('responseFactory'),
-    petResponseSchema,
+    enrichedPetSchema,
     container.get<Encoder>('encoder'),
-    container.get<EnrichModel<PetRequest>>('petEnrichModel'),
+    container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
   );
 };
 
 // delegator's
 
 export const petOpenApiRegistryServiceDelegator = (_container: Container, _name: string, factory: () => unknown) => {
-  extendZodWithOpenApi(z);
-
   const registry = factory() as OpenAPIRegistry;
 
   registry.registerPath({
@@ -143,14 +150,14 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     operationId: 'listPets',
     tags: ['Pets'],
     request: {
-      query: petRequestListOpenApiSchema.strip(),
+      query: inputPetListOpenApiSchema.strip(),
     },
     responses: {
       200: {
         description: 'Pets',
         content: {
           'application/json': {
-            schema: petListResponseSchema.openapi({
+            schema: enrichedPetListSchema.openapi({
               description: 'Pets',
             }),
           },
@@ -170,7 +177,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet data',
         content: {
           'application/json': {
-            schema: petRequestSchema.strip(),
+            schema: inputPetSchema.strip(),
           },
         },
         required: true,
@@ -181,7 +188,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet',
         content: {
           'application/json': {
-            schema: petResponseSchema.openapi({
+            schema: enrichedPetListSchema.openapi({
               description: 'Pet',
             }),
           },
@@ -206,7 +213,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet',
         content: {
           'application/json': {
-            schema: petResponseSchema.openapi({
+            schema: enrichedPetSchema.openapi({
               description: 'Pet',
             }),
           },
@@ -229,7 +236,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet data',
         content: {
           'application/json': {
-            schema: petRequestSchema.strip(),
+            schema: inputPetSchema.strip(),
           },
         },
         required: true,
@@ -240,7 +247,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet',
         content: {
           'application/json': {
-            schema: petResponseSchema.openapi({
+            schema: enrichedPetSchema.openapi({
               description: 'Pet',
             }),
           },

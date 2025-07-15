@@ -23,8 +23,8 @@ An api skeleton using mongodb for [chubbyts-framework][8].
 ## Requirements
 
  * node: 18
- * [@asteasolutions/zod-to-openapi][1]: ^7.3.4
- * [@chubbyts/chubbyts-api][2]: ^5.2.9
+ * [@asteasolutions/zod-to-openapi][1]: ^8.0.0
+ * [@chubbyts/chubbyts-api][2]: ^6.0.3
  * [@chubbyts/chubbyts-decode-encode][3]: ^2.0.1
  * [@chubbyts/chubbyts-dic][4]: ^2.0.1
  * [@chubbyts/chubbyts-dic-config][5]: ^2.0.1
@@ -45,7 +45,7 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [openapi3-ts][20]: ^4.5.0
  * [pino][21]: ^9.7.0
  * [uuid][22]: ^11.1.0
- * [zod][23]: ^3.25.64
+ * [zod][23]: ^4.0.5
 
 ## Environment
 

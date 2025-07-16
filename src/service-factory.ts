@@ -69,6 +69,8 @@ import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
 import { createOpenApiHandler, createPingHandler } from './handler.js';
 
+extendZodWithOpenApi(z);
+
 export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
 };
@@ -203,8 +205,6 @@ export const openApiObjectServiceFactory = (container: Container): OpenAPICompon
 };
 
 export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
-  extendZodWithOpenApi(z);
-
   const registry = new OpenAPIRegistry();
 
   registry.registerPath({

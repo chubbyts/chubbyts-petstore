@@ -45,7 +45,7 @@ describe('list', () => {
               ],
             },
             "name": "filters",
-            "reason": "Unrecognized key(s) in object: 'name1'",
+            "reason": "Unrecognized key: "name1"",
           },
         ],
         "status": 400,

@@ -17,7 +17,7 @@ import {
   petRemoveModelServiceFactory,
   petRoutesServiceDelegator,
   petEnrichModelServiceFactory,
-  petEnrichListServiceFactory,
+  petEnrichModelListServiceFactory,
   petOpenApiRegistryServiceDelegator,
 } from '../src/pet/service-factory.js';
 import {
@@ -126,7 +126,7 @@ export const configFactory = (env: string): Config => {
         ['openApiRegistry', openApiRegistryServiceFactory],
         ['petCreateHandler', petCreateHandlerServiceFactory],
         ['petDeleteHandler', petDeleteHandlerServiceFactory],
-        ['petEnrichList', petEnrichListServiceFactory],
+        ['petEnrichModelList', petEnrichModelListServiceFactory],
         ['petEnrichModel', petEnrichModelServiceFactory],
         ['petFindModelById', petFindModelByIdServiceFactory],
         ['petListHandler', petListHandlerServiceFactory],

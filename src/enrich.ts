@@ -1,12 +1,11 @@
 import type {
-  EnrichedList,
-  EnrichedModel,
-  EnrichList,
-  EnrichModel,
-  InputModel,
-  Link,
-  List,
+  InputModelListSchema,
+  InputModelSchema,
   Model,
+  Link,
+  ModelList,
+  EnrichModelList,
+  EnrichModel,
 } from '@chubbyts/chubbyts-api/dist/model';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
@@ -19,7 +18,7 @@ type ModelLinks = {
 
 type ListLinks = {
   create?: string;
-} & ModelLinks;
+};
 
 const createLink = (href: string, method: Method): Link & { attributes: { method: string } } => {
   return {
@@ -30,40 +29,32 @@ const createLink = (href: string, method: Method): Link & { attributes: { method
   };
 };
 
-const createModelLinks = <IM extends InputModel>(
-  generatePath: GeneratePath,
-  model: Model<IM>,
-  links: ModelLinks,
-): { [key: string]: Link } => {
-  return {
-    ...(links.read ? { read: createLink(generatePath(links.read, { id: model.id }), 'GET') } : {}),
-    ...(links.update ? { update: createLink(generatePath(links.update, { id: model.id }), 'PUT') } : {}),
-    ...(links.delete ? { delete: createLink(generatePath(links.delete, { id: model.id }), 'DELETE') } : {}),
-  };
+const enrichModel = (generatePath: GeneratePath, model: Model<InputModelSchema>, modelLinks: ModelLinks) => ({
+  ...model,
+  _links: {
+    ...(modelLinks.read ? { read: createLink(generatePath(modelLinks.read, { id: model.id }), 'GET') } : {}),
+    ...(modelLinks.update ? { update: createLink(generatePath(modelLinks.update, { id: model.id }), 'PUT') } : {}),
+    ...(modelLinks.delete ? { delete: createLink(generatePath(modelLinks.delete, { id: model.id }), 'DELETE') } : {}),
+  },
+});
+
+export const createEnrichModel = <IMS extends InputModelSchema>(generatePath: GeneratePath, modelLinks: ModelLinks) => {
+  return (async (model: Model<InputModelSchema>) =>
+    enrichModel(generatePath, model, modelLinks)) as unknown as EnrichModel<IMS>;
 };
 
-export const createEnrichModel = <IM extends InputModel>(
+export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends InputModelListSchema>(
   generatePath: GeneratePath,
-  links: ModelLinks,
-): EnrichModel<IM> => {
-  return async (model: Model<IM>): Promise<EnrichedModel<IM>> => ({
-    ...model,
-    _links: createModelLinks(generatePath, model, links),
-  });
-};
-
-export const createEnrichList = <IM extends InputModel>(
-  generatePath: GeneratePath,
-  links: ListLinks,
-): EnrichList<IM> => {
-  return async (list: List<IM>): Promise<EnrichedList<IM>> => ({
-    ...list,
-    items: list.items.map((model) => ({
-      ...model,
-      _links: createModelLinks(generatePath, model, links),
-    })),
-    _links: {
-      ...(links.create ? { create: createLink(generatePath(links.create), 'POST') } : {}),
-    },
-  });
+  modelLinks: ModelLinks,
+  listLinks: ListLinks,
+) => {
+  return (async (modelList: ModelList<InputModelSchema, InputModelListSchema>) => {
+    return {
+      ...modelList,
+      items: modelList.items.map((model) => enrichModel(generatePath, model, modelLinks)),
+      _links: {
+        ...(listLinks.create ? { create: createLink(generatePath(listLinks.create), 'POST') } : {}),
+      },
+    };
+  }) as unknown as EnrichModelList<IMS, IMLS>;
 };

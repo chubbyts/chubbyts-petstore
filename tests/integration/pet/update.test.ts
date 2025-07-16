@@ -117,10 +117,9 @@ describe('update', () => {
             "context": {
               "code": "invalid_type",
               "expected": "string",
-              "received": "undefined",
             },
             "name": "name",
-            "reason": "Required",
+            "reason": "Invalid input: expected string, received undefined",
           },
         ],
         "status": 400,

@@ -542,6 +542,7 @@ describe('service-factory', () => {
                             "additionalProperties": {
                               "nullable": true,
                             },
+                            "properties": {},
                             "type": "object",
                           },
                           "_links": {
@@ -631,6 +632,7 @@ describe('service-factory', () => {
                                   "additionalProperties": {
                                     "nullable": true,
                                   },
+                                  "properties": {},
                                   "type": "object",
                                 },
                                 "_links": {
@@ -849,6 +851,7 @@ describe('service-factory', () => {
                             "additionalProperties": {
                               "nullable": true,
                             },
+                            "properties": {},
                             "type": "object",
                           },
                           "_links": {
@@ -938,6 +941,7 @@ describe('service-factory', () => {
                                   "additionalProperties": {
                                     "nullable": true,
                                   },
+                                  "properties": {},
                                   "type": "object",
                                 },
                                 "_links": {
@@ -1152,6 +1156,7 @@ describe('service-factory', () => {
                             "additionalProperties": {
                               "nullable": true,
                             },
+                            "properties": {},
                             "type": "object",
                           },
                           "_links": {
@@ -1339,6 +1344,7 @@ describe('service-factory', () => {
                             "additionalProperties": {
                               "nullable": true,
                             },
+                            "properties": {},
                             "type": "object",
                           },
                           "_links": {

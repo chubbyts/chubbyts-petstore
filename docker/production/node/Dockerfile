@@ -1,5 +1,5 @@
 # base
-FROM rockylinux/rockylinux:9.5 AS base
+FROM rockylinux/rockylinux:10.0 AS base
 
 SHELL ["/bin/bash", "-c"]
 
@@ -11,8 +11,8 @@ RUN dnf install -y 'dnf-command(config-manager)' \
 
 RUN dnf install -y \
     glibc-langpack-de \
-    jemalloc \
-    jemalloc-devel \
+    mimalloc \
+    mimalloc-devel \
     langpacks-de \
     nmap-ncat \
     procps-ng \
@@ -75,11 +75,12 @@ RUN chown -Rf node: /app
 
 USER node
 
+ENV LD_PRELOAD=/usr/lib64/libmimalloc.so
+
 WORKDIR /app
 
 RUN source ~/.bashrc \
     && pnpm install --prod
 
 CMD source ~/.bashrc \
-    && export LD_PRELOAD=`jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision` \
     && node bootstrap/index.js

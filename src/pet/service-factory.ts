@@ -1,5 +1,5 @@
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/lazy-middleware';

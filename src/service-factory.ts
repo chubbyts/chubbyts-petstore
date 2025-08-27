@@ -40,14 +40,14 @@ import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chu
 import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-negotiator';
 import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
 import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
+import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
 import { createJsonTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/json-type-decoder';
 import { createJsonxTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/jsonx-type-decoder';
 import { createUrlEncodedTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/url-encoded-type-decoder';
 import { createYamlTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/yaml-type-decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
+import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
 import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/json-type-encoder';
 import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';

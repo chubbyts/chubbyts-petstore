@@ -64,10 +64,13 @@ import {
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import type { Config } from '../config/production.js';
 import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
 import { createOpenApiHandler, createPingHandler } from './handler.js';
+import * as schema from './schema.js';
 
 extendZodWithOpenApi(z);
 
@@ -188,6 +191,10 @@ export const mongoClientServiceFactory = async (container: Container): Promise<M
   await upsertIndexes(mongoClient, mongoConfig.indexes);
 
   return mongoClient;
+};
+
+export const dbServiceFactory = (container: Container): NodePgDatabase<typeof schema> => {
+  return drizzle(container.get<Config>('config').postgres, { schema });
 };
 
 export const openApiHandlerServiceFactory = (container: Container) => {

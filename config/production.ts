@@ -29,6 +29,7 @@ import {
   contentTypeNegotiatorServiceFactory,
   corsMiddlewareServiceFactory,
   decoderServiceFactory,
+  dbServiceFactory,
   encoderServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
@@ -78,6 +79,7 @@ export type Config = {
     options: LoggerOptions;
     stream: DestinationStream;
   };
+  postgres: string;
   server: {
     host: string;
     port: number;
@@ -114,6 +116,7 @@ export const configFactory = (env: string): Config => {
         ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory],
         ['corsMiddleware', corsMiddlewareServiceFactory],
         ['decoder', decoderServiceFactory],
+        ['db', dbServiceFactory],
         ['encoder', encoderServiceFactory],
         ['errorMiddleware', errorMiddlewareServiceFactory],
         ['generatePath', generatePathServiceFactory],
@@ -121,13 +124,13 @@ export const configFactory = (env: string): Config => {
         ['match', matchServiceFactory],
         ['middlewares', middlewaresServiceFactory],
         ['mongoClient', mongoClientServiceFactory],
-        ['openApiObject', openApiObjectServiceFactory],
         ['openApiHandler', openApiHandlerServiceFactory],
+        ['openApiObject', openApiObjectServiceFactory],
         ['openApiRegistry', openApiRegistryServiceFactory],
         ['petCreateHandler', petCreateHandlerServiceFactory],
         ['petDeleteHandler', petDeleteHandlerServiceFactory],
-        ['petEnrichModelList', petEnrichModelListServiceFactory],
         ['petEnrichModel', petEnrichModelServiceFactory],
+        ['petEnrichModelList', petEnrichModelListServiceFactory],
         ['petFindModelById', petFindModelByIdServiceFactory],
         ['petListHandler', petListHandlerServiceFactory],
         ['petPersistModel', petPersistModelServiceFactory],
@@ -199,6 +202,7 @@ export const configFactory = (env: string): Config => {
         },
       },
     },
+    postgres: process.env.POSTGRES_URI as string,
     server: {
       host: process.env.SERVER_HOST as string,
       port: parseInt(process.env.SERVER_PORT as string, 10),

@@ -13,7 +13,6 @@ import {
 } from '@chubbyts/chubbyts-framework/dist/router/route';
 import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
 import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import type { MongoClient } from 'mongodb';
 import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
 import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
 import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
@@ -29,8 +28,9 @@ import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-
 import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
 import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
-import { createResolveModelList, createFindModelById, createPersistModel, createRemoveModel } from '../repository.js';
+import type { Config } from '../../config/production.js';
 import type { InputPetListSchema, InputPetSchema } from './model.js';
 import {
   enrichedPetListSchema,
@@ -39,6 +39,7 @@ import {
   inputPetListSchema,
   inputPetSchema,
 } from './model.js';
+import { createFindPetById, createPersistPet, createRemovePet, createResolvePetList } from './repository.js';
 
 extendZodWithOpenApi(z);
 
@@ -87,7 +88,7 @@ export const petEnrichModelListServiceFactory = (
 };
 
 export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> => {
-  return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createFindPetById(container.get<NodePgDatabase<Config['drizzle']>>('db'));
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -102,7 +103,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
-  return createPersistModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createPersistPet(container.get<NodePgDatabase<Config['drizzle']>>('db'));
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -116,13 +117,13 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
-  return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createRemovePet(container.get<NodePgDatabase<Config['drizzle']>>('db'));
 };
 
 export const petResolveModelListServiceFactory = async (
   container: Container,
 ): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> => {
-  return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createResolvePetList(container.get<NodePgDatabase<Config['drizzle']>>('db'));
 };
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {

@@ -11,6 +11,7 @@ services:
     environment:
       NODE_ENV: development
       MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
+      POSTGRES_URI: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
       SSH_AUTH_SOCK: /ssh-agent
@@ -42,6 +43,18 @@ services:
       - ${PWD}/var/log:/app/var/log
     depends_on:
       - opensearch
+  postgres:
+    container_name: chubbyts-petstore-postgres
+    hostname: chubbyts-petstore-postgres
+    image: postgres:17
+    command: -c log_statement=all -c log_error_verbosity=VERBOSE
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
   mongo:
     container_name: chubbyts-petstore-mongo
     hostname: chubbyts-petstore-mongo
@@ -111,3 +124,4 @@ services:
 
 volumes:
   mongo:
+  postgres:

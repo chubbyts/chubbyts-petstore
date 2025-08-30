@@ -739,9 +739,9 @@ describe('service-factory', () => {
                                 },
                               },
                               "required": [
+                                "name",
                                 "id",
                                 "createdAt",
-                                "name",
                               ],
                               "type": "object",
                             },
@@ -1048,9 +1048,9 @@ describe('service-factory', () => {
                                 },
                               },
                               "required": [
+                                "name",
                                 "id",
                                 "createdAt",
-                                "name",
                               ],
                               "type": "object",
                             },
@@ -1263,9 +1263,9 @@ describe('service-factory', () => {
                           },
                         },
                         "required": [
+                          "name",
                           "id",
                           "createdAt",
-                          "name",
                         ],
                         "type": "object",
                       },
@@ -1451,9 +1451,9 @@ describe('service-factory', () => {
                           },
                         },
                         "required": [
+                          "name",
                           "id",
                           "createdAt",
-                          "name",
                         ],
                         "type": "object",
                       },

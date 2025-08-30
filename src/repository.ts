@@ -1,11 +1,5 @@
-import type {
-  InputModelList,
-  InputModelListSchema,
-  InputModelSchema,
-  Model,
-  ModelList,
-} from '@chubbyts/chubbyts-api/dist/model';
-import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-api/dist/repository';
+import type { InputModelList, InputModelListSchema, InputModelSchema, Model } from '@chubbyts/chubbyts-api/dist/model';
+import type { FindModelById, ResolveModelList } from '@chubbyts/chubbyts-api/dist/repository';
 import type { MongoClient, Sort, WithId } from 'mongodb';
 
 const withoutMongoId = <IMS extends InputModelSchema>(model: WithId<Model<IMS>>): Model<IMS> => {
@@ -19,7 +13,7 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
 ): ResolveModelList<IMS, IMLS> => {
   const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
 
-  return async (list: InputModelList<InputModelListSchema>) => {
+  return async (list: InputModelList<IMLS>) => {
     const cursor = collection.find(list.filters);
 
     cursor.skip(list.offset);
@@ -31,7 +25,7 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
       ...list,
       items: (await cursor.toArray()).map(withoutMongoId),
       count: await collection.countDocuments(list.filters),
-    } as ModelList<IMS, IMLS>;
+    };
   };
 };
 
@@ -41,21 +35,21 @@ export const createFindModelById = <IMS extends InputModelSchema>(
 ): FindModelById<IMS> => {
   const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
 
-  return (async (id: string) => {
-    const modelWithMongoId = await collection.findOne({ id });
+  return async (id: string): Promise<Model<IMS> | undefined> => {
+    const modelWithMongoId = (await collection.findOne({ id })) as WithId<Model<IMS>> | null;
 
     if (!modelWithMongoId) {
       return undefined;
     }
 
-    return withoutMongoId(modelWithMongoId);
-  }) as unknown as FindModelById<IMS>;
+    return withoutMongoId<IMS>(modelWithMongoId);
+  };
 };
 
 export const createPersistModel = <IMS extends InputModelSchema>(mongoClient: MongoClient, collectionName: string) => {
   const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
 
-  return (async (model: Model<InputModelSchema>) => {
+  return async (model: Model<IMS>) => {
     const filter = { id: model.id };
 
     await collection.replaceOne(filter, model, { upsert: true });
@@ -67,7 +61,7 @@ export const createPersistModel = <IMS extends InputModelSchema>(mongoClient: Mo
     }
 
     return withoutMongoId(modelWithMongoId);
-  }) as unknown as PersistModel<IMS>;
+  };
 };
 
 export const createRemoveModel = (mongoClient: MongoClient, collectionName: string) => {

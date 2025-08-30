@@ -1,7 +1,6 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
-import type { Collection, Db, MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import {
@@ -214,37 +213,10 @@ describe('service-factory', () => {
   });
 
   test('petFindModelByIdServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petFindModelByIdServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
     expect(containerMocks.length).toBe(0);
   });
 
@@ -278,37 +250,10 @@ describe('service-factory', () => {
   });
 
   test('petPersistModelServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petPersistModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
     expect(containerMocks.length).toBe(0);
   });
 
@@ -342,72 +287,18 @@ describe('service-factory', () => {
   });
 
   test('petRemoveModelServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petRemoveModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
     expect(containerMocks.length).toBe(0);
   });
 
   test('petResolveModelListServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petResolveModelListServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
     expect(containerMocks.length).toBe(0);
   });
 
@@ -740,6 +631,7 @@ describe('service-factory', () => {
                               },
                               "required": [
                                 "name",
+                                "vaccinations",
                                 "id",
                                 "createdAt",
                               ],
@@ -803,6 +695,7 @@ describe('service-factory', () => {
                 "content": {
                   "application/json": {
                     "schema": {
+                      "additionalProperties": false,
                       "properties": {
                         "name": {
                           "minLength": 1,
@@ -831,6 +724,7 @@ describe('service-factory', () => {
                       },
                       "required": [
                         "name",
+                        "vaccinations",
                       ],
                       "type": "object",
                     },
@@ -1049,6 +943,7 @@ describe('service-factory', () => {
                               },
                               "required": [
                                 "name",
+                                "vaccinations",
                                 "id",
                                 "createdAt",
                               ],
@@ -1264,6 +1159,7 @@ describe('service-factory', () => {
                         },
                         "required": [
                           "name",
+                          "vaccinations",
                           "id",
                           "createdAt",
                         ],
@@ -1296,6 +1192,7 @@ describe('service-factory', () => {
                 "content": {
                   "application/json": {
                     "schema": {
+                      "additionalProperties": false,
                       "properties": {
                         "name": {
                           "minLength": 1,
@@ -1324,6 +1221,7 @@ describe('service-factory', () => {
                       },
                       "required": [
                         "name",
+                        "vaccinations",
                       ],
                       "type": "object",
                     },
@@ -1452,6 +1350,7 @@ describe('service-factory', () => {
                         },
                         "required": [
                           "name",
+                          "vaccinations",
                           "id",
                           "createdAt",
                         ],

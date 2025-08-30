@@ -28,7 +28,7 @@ export const inputPetSchema = z
   .object({
     name: stringSchema,
     tag: stringSchema.optional(),
-    vaccinations: z.array(z.object({ name: stringSchema }).strict()).optional(),
+    vaccinations: z.array(z.object({ name: stringSchema }).strict()),
   })
   .strict();
 

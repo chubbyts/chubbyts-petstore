@@ -59,7 +59,6 @@ RUN source ~/.bashrc && pnpm install
 RUN source ~/.bashrc && pnpm run cs
 RUN source ~/.bashrc && pnpm run lint
 RUN source ~/.bashrc && pnpm run test --run --coverage --no-cache
-RUN source ~/.bashrc && pnpm run test:integration --run --no-cache
 RUN source ~/.bashrc && pnpm run build
 
 # prod

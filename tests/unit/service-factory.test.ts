@@ -2,7 +2,6 @@ import { PassThrough } from 'stream';
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
-import { MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
@@ -16,6 +15,7 @@ import {
   contentTypeNegotiationMiddlewareServiceFactory,
   contentTypeNegotiatorServiceFactory,
   corsMiddlewareServiceFactory,
+  dbServiceFactory,
   decoderServiceFactory,
   encoderServiceFactory,
   errorMiddlewareServiceFactory,
@@ -23,7 +23,6 @@ import {
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
-  mongoClientServiceFactory,
   openApiHandlerServiceFactory,
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
@@ -39,10 +38,6 @@ import {
   uriFactoryServiceFactory,
 } from '../../src/service-factory.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route.js';
-
-// prettier-ignore
-// eslint-disable-next-line functional/immutable-data
-MongoClient.connect = async () => ({}) as MongoClient;
 
 describe('service-factory', () => {
   test('acceptNegotiationMiddlewareServiceFactory', () => {
@@ -375,6 +370,20 @@ describe('service-factory', () => {
     });
   });
 
+  test('dbServiceFactory', () => {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: { postgres: '' },
+      },
+    ]);
+
+    expect(dbServiceFactory(container)).toBeInstanceOf(Object);
+
+    expect(containerMocks.length).toBe(0);
+  });
+
   test('decoderServiceFactory', () => {
     const decoder = decoderServiceFactory();
 
@@ -530,27 +539,6 @@ describe('service-factory', () => {
     );
 
     expect(handlerMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
-  });
-
-  test('mongoClientServiceFactory', async () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['config'],
-        return: {
-          mongodb: {
-            uri: 'mongodb://localhost',
-            indexes: {},
-          },
-        },
-      },
-    ]);
-
-    const middlewares = await mongoClientServiceFactory(container);
-
-    expect(middlewares).toBeInstanceOf(Object);
-
     expect(containerMocks.length).toBe(0);
   });
 

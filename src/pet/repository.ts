@@ -6,13 +6,36 @@ import type {
   ResolveModelList,
 } from '@chubbyts/chubbyts-api/dist/repository';
 import { type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import type { BuildQueryResult } from 'drizzle-orm';
 import { and, asc, count, desc, eq } from 'drizzle-orm';
 import type * as schema from '../schema.js';
 import { pets, petsVaccinations } from '../schema.js';
-import { type InputPetListSchema, type InputPetSchema } from './model.js';
+import type { Schema, TablesWithRelations } from '../repository.js';
+import type { Pet, InputPetListSchema, InputPetSchema } from './model.js';
+
+export type PetQueryResult = BuildQueryResult<
+  TablesWithRelations,
+  TablesWithRelations['pets'],
+  {
+    with: {
+      vaccinations: true;
+    };
+  }
+>;
+
+const mapPetResultToPet = (petResult: PetQueryResult): Pet => ({
+  ...petResult,
+  updatedAt: petResult.updatedAt ?? undefined,
+  tag: petResult.tag ?? undefined,
+  vaccinations: petResult.vaccinations.map((vaccinationResult) => {
+    const { petId: _, ...rest } = vaccinationResult;
+
+    return rest;
+  }),
+});
 
 export const createResolvePetList = (
-  db: NodePgDatabase<typeof schema>,
+  db: NodePgDatabase<Schema>,
 ): ResolveModelList<InputPetSchema, InputPetListSchema> => {
   return async (list: InputModelList<InputPetListSchema>): Promise<ModelList<InputPetSchema, InputPetListSchema>> => {
     const where = and(
@@ -27,62 +50,49 @@ export const createResolvePetList = (
       db
         .select({ count: count(pets.id) })
         .from(pets)
-        .where(where),
-      db.query.pets.findMany({
-        with: {
-          vaccinations: true,
-        },
-        where,
-        orderBy,
-        limit: list.limit,
-        offset: list.offset,
-      }),
+        .where(where)
+        .execute(),
+      db.query.pets
+        .findMany({
+          with: {
+            vaccinations: true,
+          },
+          where,
+          orderBy,
+          limit: list.limit,
+          offset: list.offset,
+        })
+        .execute(),
     ]);
 
     return {
       ...list,
-      items: petsResult.map((petResult) => ({
-        ...petResult,
-        updatedAt: petResult.updatedAt ?? undefined,
-        tag: petResult.tag ?? undefined,
-        vaccinations: petResult.vaccinations.map((vaccinationResult) => {
-          const { petId: _, ...rest } = vaccinationResult;
-
-          return rest;
-        }),
-      })),
+      items: petsResult.map(mapPetResultToPet),
       count: petCountResult[0].count,
     };
   };
 };
 
-export const createFindPetById = (db: NodePgDatabase<typeof schema>): FindModelById<InputPetSchema> => {
+export const createFindPetById = (db: NodePgDatabase<Schema>): FindModelById<InputPetSchema> => {
   return async (id: string) => {
-    const petResult = await db.query.pets.findFirst({
-      with: {
-        vaccinations: true,
-      },
-      where: eq(pets.id, id),
-    });
+    const petResult = await db.query.pets
+      .findFirst({
+        with: {
+          vaccinations: true,
+        },
+        where: eq(pets.id, id),
+      })
+      .execute();
 
     if (!petResult) {
       return undefined;
     }
 
-    return {
-      ...petResult,
-      updatedAt: petResult.updatedAt ?? undefined,
-      tag: petResult.tag ?? undefined,
-      vaccinations: petResult.vaccinations.map((vaccinationResult) => {
-        const { petId: _, ...rest } = vaccinationResult;
-
-        return rest;
-      }),
-    };
+    return mapPetResultToPet(petResult);
   };
 };
 
-export const createPersistPet = (db: NodePgDatabase<typeof schema>): PersistModel<InputPetSchema> => {
+export const createPersistPet = (db: NodePgDatabase<Schema>): PersistModel<InputPetSchema> => {
   return async (pet: Model<InputPetSchema>) => {
     await db.transaction(async (transaction) => {
       const exist =
@@ -91,38 +101,34 @@ export const createPersistPet = (db: NodePgDatabase<typeof schema>): PersistMode
             .select({ count: count(pets.id) })
             .from(pets)
             .where(eq(pets.id, pet.id))
+            .execute()
         )[0].count !== 0;
 
-      if (exist) {
-        await transaction.delete(petsVaccinations).where(eq(petsVaccinations.petId, pet.id));
+      const petInsertOrUpdate = {
+        id: pet.id,
+        createdAt: pet.createdAt,
+        updatedAt: pet.updatedAt ?? null,
+        name: pet.name,
+        tag: pet.tag ?? null,
+      };
 
-        await db
-          .update(pets)
-          .set({
-            id: pet.id,
-            createdAt: pet.createdAt,
-            updatedAt: pet.updatedAt ?? null,
-            name: pet.name,
-            tag: pet.tag ?? null,
-          })
-          .where(eq(pets.id, pet.id));
+      if (!exist) {
+        await transaction.insert(pets).values([petInsertOrUpdate]).execute();
       } else {
-        await transaction.insert(pets).values({
-          id: pet.id,
-          createdAt: pet.createdAt,
-          updatedAt: pet.updatedAt ?? null,
-          name: pet.name,
-          tag: pet.tag ?? null,
-        });
+        await transaction.delete(petsVaccinations).where(eq(petsVaccinations.petId, pet.id)).execute();
+        await transaction.update(pets).set(petInsertOrUpdate).where(eq(pets.id, pet.id)).execute();
       }
 
       if (pet.vaccinations && pet.vaccinations?.length > 0) {
-        await transaction.insert(petsVaccinations).values(
-          pet.vaccinations.map((vaccination) => ({
-            petId: pet.id,
-            name: vaccination.name,
-          })),
-        );
+        await transaction
+          .insert(petsVaccinations)
+          .values(
+            pet.vaccinations.map((vaccination) => ({
+              petId: pet.id,
+              name: vaccination.name,
+            })),
+          )
+          .execute();
       }
     });
 
@@ -130,11 +136,11 @@ export const createPersistPet = (db: NodePgDatabase<typeof schema>): PersistMode
   };
 };
 
-export const createRemovePet = (db: NodePgDatabase<typeof schema>): RemoveModel<InputPetSchema> => {
+export const createRemovePet = (db: NodePgDatabase<Schema>): RemoveModel<InputPetSchema> => {
   return async (pet: Model<InputPetSchema>) => {
     await db.transaction(async (transaction) => {
-      await transaction.delete(petsVaccinations).where(eq(petsVaccinations.petId, pet.id));
-      await transaction.delete(pets).where(eq(pets.id, pet.id));
+      await transaction.delete(petsVaccinations).where(eq(petsVaccinations.petId, pet.id)).execute();
+      await transaction.delete(pets).where(eq(pets.id, pet.id)).execute();
     });
   };
 };

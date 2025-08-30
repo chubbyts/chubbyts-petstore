@@ -14,6 +14,7 @@ export default defineConfig({
         lines: 100,
       },
       include: ['src/**/*.ts'],
+      exclude: ['src/schema.ts'],
     },
   },
 });

@@ -8,6 +8,7 @@ services:
     environment:
       NODE_ENV: production
       POSTGRES_URI: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres'
+      POSTGRES_URI_TEST: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres_test'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
     depends_on:

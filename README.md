@@ -18,7 +18,7 @@
 
 ## Description
 
-An api skeleton using mongodb for [chubbyts-framework][8].
+An api skeleton using postgres for [chubbyts-framework][8].
 
 ## Requirements
 
@@ -37,12 +37,12 @@ An api skeleton using mongodb for [chubbyts-framework][8].
  * [@chubbyts/chubbyts-http-node-bridge][12]: ^2.0.1
  * [@chubbyts/chubbyts-http-types][13]: ^3.0.1
  * [@chubbyts/chubbyts-log-types][14]: ^3.0.1
- * [@chubbyts/chubbyts-mongodb][15]: ^2.0.1
- * [@chubbyts/chubbyts-negotiation][16]: ^4.0.2
- * [@chubbyts/chubbyts-pino-adapter][17]: ^3.0.1
- * [commander][18]: ^14.0.0
- * [mongodb][19]: ^6.19.0
- * [openapi3-ts][20]: ^4.5.0
+ * [@chubbyts/chubbyts-negotiation][15]: ^4.0.2
+ * [@chubbyts/chubbyts-pino-adapter][16]: ^3.0.1
+ * [commander][17]: ^14.0.0
+ * [drizzle-orm][18]: ^0.44.5
+ * [openapi3-ts][19]: ^4.5.0
+ * [pg][20]: ^8.16.3
  * [pino][21]: ^9.9.0
  * [uuid][22]: ^11.1.0
  * [zod][23]: ^4.1.5

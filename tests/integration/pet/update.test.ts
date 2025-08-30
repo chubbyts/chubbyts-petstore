@@ -87,7 +87,7 @@ describe('update', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({ name: 'update.test' }),
+      body: JSON.stringify({ name: 'update.test', vaccinations: [] }),
     });
 
     expect(createResponse.status).toBe(201);
@@ -121,6 +121,14 @@ describe('update', () => {
             "name": "name",
             "reason": "Invalid input: expected string, received undefined",
           },
+          {
+            "context": {
+              "code": "invalid_type",
+              "expected": "array",
+            },
+            "name": "vaccinations",
+            "reason": "Invalid input: expected array, received undefined",
+          },
         ],
         "status": 400,
         "title": "Bad Request",
@@ -136,7 +144,7 @@ describe('update', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({ name: 'update.test' }),
+      body: JSON.stringify({ name: 'update.test', vaccinations: [] }),
     });
 
     expect(createResponse.status).toBe(201);

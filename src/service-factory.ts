@@ -69,6 +69,7 @@ import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
 import { createOpenApiHandler, createPingHandler } from './handler.js';
 import * as schema from './schema.js';
+import type { Schema } from './repository.js';
 
 extendZodWithOpenApi(z);
 
@@ -121,6 +122,10 @@ export const corsMiddlewareServiceFactory = (container: Container) => {
     cors.allowCredentials,
     cors.maxAge,
   );
+};
+
+export const dbServiceFactory = (container: Container): NodePgDatabase<Schema> => {
+  return drizzle(container.get<Config>('config').postgres, { schema });
 };
 
 export const decoderServiceFactory = (): Decoder => {
@@ -181,10 +186,6 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
   const m = (name: string) => createLazyMiddleware(container, name);
 
   return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
-};
-
-export const dbServiceFactory = (container: Container): NodePgDatabase<typeof schema> => {
-  return drizzle(container.get<Config>('config').postgres, { schema });
 };
 
 export const openApiHandlerServiceFactory = (container: Container) => {

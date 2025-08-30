@@ -51,7 +51,7 @@ describe('delete', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({ name: 'read.test' }),
+      body: JSON.stringify({ name: 'read.test', vaccinations: [] }),
     });
 
     expect(createResponse.status).toBe(201);

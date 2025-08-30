@@ -1,14 +1,14 @@
 {
   "name": "@chubbyts/petstore",
   "version": "1.0.0",
-  "description": "An api skeleton using mongodb for chubbyts-framework.",
+  "description": "An api skeleton using postgres for chubbyts-framework.",
   "type": "module",
   "keywords": [
     "chubbyts",
     "framework",
     "skleton",
     "api",
-    "mongodb"
+    "postgres"
   ],
   "author": "Dominik Zogg",
   "license": "MIT",
@@ -18,6 +18,7 @@
     "command": "ts-node bin/console.ts",
     "cs-fix": "prettier --write bin bootstrap config src tests *.js *.ts",
     "cs": "prettier --check bin bootstrap config src tests *.js *.ts",
+    "db:push": "drizzle-kit push",
     "develop:debug": "tsx watch --inspect=0.0.0.0:8888 bootstrap/index.ts",
     "develop": "tsx watch bootstrap/index.ts",
     "infection": "stryker run",
@@ -72,12 +73,13 @@
     "@stryker-mutator/typescript-checker": "^9.1.0",
     "@stryker-mutator/vitest-runner": "^9.1.0",
     "@types/node": "^24.3.0",
+    "@types/pg": "^8.15.5",
     "@types/uuid": "^10.0.0",
     "@vitest/coverage-v8": "^3.2.4",
     "cross-fetch": "^4.1.0",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.34.0",
-    "mongodb-memory-server": "^10.2.0",
+    "pg-connection-string": "^2.9.1",
     "prettier": "^3.6.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
@@ -86,7 +88,6 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
-      "mongodb-memory-server",
       "unrs-resolver"
     ]
   },

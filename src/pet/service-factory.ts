@@ -30,7 +30,7 @@ import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-
 import { z } from 'zod';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
-import type { Config } from '../../config/production.js';
+import type { Schema } from '../repository.js';
 import type { InputPetListSchema, InputPetSchema } from './model.js';
 import {
   enrichedPetListSchema,
@@ -64,7 +64,7 @@ export const petDeleteHandlerServiceFactory = async (container: Container): Prom
 };
 
 export const petEnrichModelServiceFactory = (container: Container): EnrichModel<InputPetSchema> => {
-  return createEnrichModel(container.get<GeneratePath>('generatePath'), {
+  return createEnrichModel<InputPetSchema>(container.get<GeneratePath>('generatePath'), {
     read: 'pet_read',
     update: 'pet_update',
     delete: 'pet_delete',
@@ -74,7 +74,7 @@ export const petEnrichModelServiceFactory = (container: Container): EnrichModel<
 export const petEnrichModelListServiceFactory = (
   container: Container,
 ): EnrichModelList<InputPetSchema, InputPetListSchema> => {
-  return createEnrichModelList(
+  return createEnrichModelList<InputPetSchema, InputPetListSchema>(
     container.get<GeneratePath>('generatePath'),
     {
       read: 'pet_read',
@@ -88,7 +88,7 @@ export const petEnrichModelListServiceFactory = (
 };
 
 export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> => {
-  return createFindPetById(container.get<NodePgDatabase<Config['drizzle']>>('db'));
+  return createFindPetById(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -103,7 +103,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
-  return createPersistPet(container.get<NodePgDatabase<Config['drizzle']>>('db'));
+  return createPersistPet(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -117,13 +117,13 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
-  return createRemovePet(container.get<NodePgDatabase<Config['drizzle']>>('db'));
+  return createRemovePet(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petResolveModelListServiceFactory = async (
   container: Container,
 ): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> => {
-  return createResolvePetList(container.get<NodePgDatabase<Config['drizzle']>>('db'));
+  return createResolvePetList(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -178,7 +178,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet data',
         content: {
           'application/json': {
-            schema: inputPetSchema.strip(),
+            schema: inputPetSchema,
           },
         },
         required: true,
@@ -237,7 +237,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet data',
         content: {
           'application/json': {
-            schema: inputPetSchema.strip(),
+            schema: inputPetSchema,
           },
         },
         required: true,

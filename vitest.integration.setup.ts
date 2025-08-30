@@ -1,9 +1,10 @@
 /* eslint-disable functional/no-let */
 
 import type { ChildProcessWithoutNullStreams } from 'child_process';
-import { spawn } from 'child_process';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { exec, execSync, spawn } from 'child_process';
 import fetch from 'cross-fetch';
+import { Client } from 'pg';
+import { parse } from 'pg-connection-string';
 
 const getRandomInt = (min, max) => {
   const ceiledMin = Math.ceil(min);
@@ -18,11 +19,27 @@ const timeout = 20000;
 const iterationTimeout = 500;
 
 const startServer = async () => {
+  const { database, ...postgresConfig } = parse(process.env.POSTGRES_URI_TEST as string);
+
+  const postgresClient = new Client(postgresConfig);
+  await postgresClient.connect();
+  await postgresClient.query(`DROP DATABASE IF EXISTS "${database}"`);
+  await postgresClient.query(`CREATE DATABASE "${database}"`);
+
+  execSync('./node_modules/.bin/drizzle-kit push', {
+    env: {
+      ...process.env,
+      NODE_ENV: 'test',
+      POSTGRES_URI: process.env.POSTGRES_URI_TEST,
+    },
+    stdio: 'inherit',
+  });
+
   const child = spawn('./node_modules/.bin/tsx', ['bootstrap/index.ts'], {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      MONGO_URI: process.env.MONGO_URI,
+      POSTGRES_URI: process.env.POSTGRES_URI_TEST,
       SERVER_HOST: testServerHost,
       SERVER_PORT: `${testServerPort}`,
     },
@@ -48,25 +65,9 @@ const startServer = async () => {
   throw new Error('Timeout in starting the server');
 };
 
-let mongoServer: MongoMemoryServer;
-
 let httpServer: ChildProcessWithoutNullStreams;
 
 export const setup = async () => {
-  // eslint-disable-next-line functional/immutable-data
-  process.env.MONGOMS_DOWNLOAD_URL = 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel93-8.0.4.tgz';
-  // eslint-disable-next-line functional/immutable-data
-  process.env.MONGOMS_VERSION = '8.0.4';
-
-  mongoServer = await MongoMemoryServer.create({
-    instance: {
-      dbName: 'test',
-    },
-  });
-
-  // eslint-disable-next-line functional/immutable-data
-  process.env.MONGO_URI = mongoServer.getUri();
-
   httpServer = await startServer();
 
   // eslint-disable-next-line functional/immutable-data
@@ -75,5 +76,4 @@ export const setup = async () => {
 
 export const teardown = async () => {
   await httpServer.kill();
-  await mongoServer.stop();
 };

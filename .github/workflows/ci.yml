@@ -26,6 +26,14 @@ jobs:
   docker:
     name: docker (development container)
     runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+        ports:
+          - 5432:5432
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -40,7 +48,7 @@ jobs:
       - name: pnpm run test --run --coverage --no-cache
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --run --coverage --no-cache'
       - name: pnpm run test:integration --run --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'POSTGRES_URI_TEST=postgres://root:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/postgres_test' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run infection
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run infection'
       - name: pnpm run build
@@ -76,6 +84,14 @@ jobs:
   node22:
     name: Node 22
     runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+        ports:
+          - 5432:5432
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -90,6 +106,8 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run test --run --coverage --no-cache
       - run: pnpm run test:integration --run --no-cache
+        env:
+          POSTGRES_URI_TEST: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/postgres_test'
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

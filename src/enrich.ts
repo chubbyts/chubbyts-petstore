@@ -21,7 +21,11 @@ const createLink = (href: string, method: Method): Link & { attributes: { method
   };
 };
 
-const enrichModel = (generatePath: GeneratePath, model: Model<InputModelSchema>, modelLinks: ModelLinks) => ({
+const enrichModel = <IMS extends InputModelSchema>(
+  generatePath: GeneratePath,
+  model: Model<IMS>,
+  modelLinks: ModelLinks,
+) => ({
   ...model,
   _links: {
     ...(modelLinks.read ? { read: createLink(generatePath(modelLinks.read, { id: model.id }), 'GET') } : {}),

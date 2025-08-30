@@ -1,12 +1,4 @@
-import type {
-  InputModelListSchema,
-  InputModelSchema,
-  Model,
-  Link,
-  ModelList,
-  EnrichModelList,
-  EnrichModel,
-} from '@chubbyts/chubbyts-api/dist/model';
+import type { InputModelListSchema, InputModelSchema, Model, Link, ModelList } from '@chubbyts/chubbyts-api/dist/model';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 
@@ -39,8 +31,7 @@ const enrichModel = (generatePath: GeneratePath, model: Model<InputModelSchema>,
 });
 
 export const createEnrichModel = <IMS extends InputModelSchema>(generatePath: GeneratePath, modelLinks: ModelLinks) => {
-  return (async (model: Model<InputModelSchema>) =>
-    enrichModel(generatePath, model, modelLinks)) as unknown as EnrichModel<IMS>;
+  return async (model: Model<IMS>) => enrichModel(generatePath, model, modelLinks);
 };
 
 export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends InputModelListSchema>(
@@ -48,7 +39,7 @@ export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends
   modelLinks: ModelLinks,
   listLinks: ListLinks,
 ) => {
-  return (async (modelList: ModelList<InputModelSchema, InputModelListSchema>) => {
+  return async (modelList: ModelList<IMS, IMLS>) => {
     return {
       ...modelList,
       items: modelList.items.map((model) => enrichModel(generatePath, model, modelLinks)),
@@ -56,5 +47,5 @@ export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends
         ...(listLinks.create ? { create: createLink(generatePath(listLinks.create), 'POST') } : {}),
       },
     };
-  }) as unknown as EnrichModelList<IMS, IMLS>;
+  };
 };

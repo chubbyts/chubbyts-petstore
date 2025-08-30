@@ -33,26 +33,24 @@ import { createRoutesByName } from '@chubbyts/chubbyts-framework/dist/router/rou
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { createGetRoute } from '@chubbyts/chubbyts-framework/dist/router/route';
-import { MongoClient } from 'mongodb';
 import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/accept-negotiation-middleware';
 import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/content-type-negotiation-middleware';
 import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/error-middleware';
 import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-negotiator';
 import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
 import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
-import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
+import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
 import { createJsonTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/json-type-decoder';
 import { createJsonxTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/jsonx-type-decoder';
 import { createUrlEncodedTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/url-encoded-type-decoder';
 import { createYamlTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/yaml-type-decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
-import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
+import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
 import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/json-type-encoder';
 import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
-import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { createCorsMiddleware } from '@chubbyts/chubbyts-http-cors/dist/middleware';
 import {
   createAllowOriginExact,
@@ -183,14 +181,6 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
   const m = (name: string) => createLazyMiddleware(container, name);
 
   return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
-};
-
-export const mongoClientServiceFactory = async (container: Container): Promise<MongoClient> => {
-  const mongoConfig = container.get<Config>('config').mongodb;
-  const mongoClient = await MongoClient.connect(mongoConfig.uri);
-  await upsertIndexes(mongoClient, mongoConfig.indexes);
-
-  return mongoClient;
 };
 
 export const dbServiceFactory = (container: Container): NodePgDatabase<typeof schema> => {

@@ -11,7 +11,6 @@ import type {
   StreamFromResourceFactory,
   UriFactory,
 } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import type { MongoClient } from 'mongodb';
 import type { Config } from '../config/production.js';
 import { containerFactory } from '../bootstrap/container.js';
 
@@ -29,9 +28,6 @@ const shutdownServer = (server: Server) => {
 
 (async () => {
   const container = await containerFactory(process.env.NODE_ENV as string);
-
-  // connect mongodb
-  await container.get<Promise<MongoClient>>('mongoClient');
 
   const app = createApplication(container.get<Array<Middleware>>('middlewares'));
 

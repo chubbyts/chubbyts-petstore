@@ -7,18 +7,19 @@ services:
       context: ./
     environment:
       NODE_ENV: production
-      MONGO_URI: 'mongodb://petstore:KVKtkrTHhKuTJTor8pCP@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
+      POSTGRES_URI: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
     depends_on:
-      - mongo
-  mongo:
-    container_name: chubbyts-petstore-mongo-ci
-    hostname: chubbyts-petstore-mongo-ci
-    image: mongo:8.0.9
+      - postgres
+  postgres:
+    container_name: chubbyts-petstore-postgres
+    hostname: chubbyts-petstore-postgres
+    image: postgres:17
+    command: -c log_statement=all -c log_error_verbosity=VERBOSE
     environment:
-      MONGO_INITDB_ROOT_USERNAME: petstore
-      MONGO_INITDB_ROOT_PASSWORD: KVKtkrTHhKuTJTor8pCP
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui-ci
     hostname: chubbyts-petstore-swagger-ui-ci

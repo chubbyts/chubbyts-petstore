@@ -10,7 +10,6 @@ services:
         GROUP_ID: ${GROUP_ID:-1000}
     environment:
       NODE_ENV: development
-      MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
       POSTGRES_URI: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
@@ -25,7 +24,7 @@ services:
       - ~/.zsh_docker:/home/node/.zsh_docker
       - $SSH_AUTH_SOCK:/ssh-agent
     depends_on:
-      - mongo
+      - postgres
   node-fluentd:
     container_name: chubbyts-petstore-node-fluentd
     hostname: chubbyts-petstore-node-fluentd
@@ -43,29 +42,6 @@ services:
       - ${PWD}/var/log:/app/var/log
     depends_on:
       - opensearch
-  postgres:
-    container_name: chubbyts-petstore-postgres
-    hostname: chubbyts-petstore-postgres
-    image: postgres:17
-    command: -c log_statement=all -c log_error_verbosity=VERBOSE
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
-    ports:
-      - '5432:5432'
-    volumes:
-      - postgres:/var/lib/postgresql/data
-  mongo:
-    container_name: chubbyts-petstore-mongo
-    hostname: chubbyts-petstore-mongo
-    image: mongo:8.0.9
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: petstore
-      MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo:/data/db
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
@@ -114,6 +90,18 @@ services:
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
     ports:
       - 5601:5601
+  postgres:
+    container_name: chubbyts-petstore-postgres
+    hostname: chubbyts-petstore-postgres
+    image: postgres:17
+    command: -c log_statement=all -c log_error_verbosity=VERBOSE
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui
     hostname: chubbyts-petstore-swagger-ui
@@ -123,5 +111,4 @@ services:
       URLS: '[ { url: "/openapi" } ]'
 
 volumes:
-  mongo:
   postgres:

@@ -2,7 +2,6 @@ import { createWriteStream, realpathSync } from 'fs';
 import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.ts';
 import {
@@ -36,7 +35,6 @@ import {
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
-  mongoClientServiceFactory,
   openApiHandlerServiceFactory,
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
@@ -70,10 +68,6 @@ export type Config = {
     delegators: Map<string, Array<ConfigDelegator>>;
   };
   directories: Map<string, string>;
-  mongodb: {
-    uri: string;
-    indexes: IndexesByCollection;
-  };
   openApi: OpenAPIObjectConfig;
   pino: {
     options: LoggerOptions;
@@ -123,7 +117,6 @@ export const configFactory = (env: string): Config => {
         ['logger', loggerServiceFactory],
         ['match', matchServiceFactory],
         ['middlewares', middlewaresServiceFactory],
-        ['mongoClient', mongoClientServiceFactory],
         ['openApiHandler', openApiHandlerServiceFactory],
         ['openApiObject', openApiObjectServiceFactory],
         ['openApiRegistry', openApiRegistryServiceFactory],
@@ -158,28 +151,6 @@ export const configFactory = (env: string): Config => {
       ['cache', cacheDir],
       ['log', logDir],
     ]),
-    mongodb: {
-      uri: process.env.MONGO_URI as string,
-      indexes: {
-        pets: [
-          {
-            key: { id: 1 },
-            name: 'pets.id',
-            unique: true,
-          },
-          {
-            key: { name: 1 },
-            name: 'pets.name',
-          },
-          {
-            key: { tag: 1 },
-            name: 'pets.tag',
-            unique: true,
-            sparse: true,
-          },
-        ],
-      },
-    },
     openApi: {
       openapi: '3.0.0',
       info: {

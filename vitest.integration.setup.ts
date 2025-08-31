@@ -6,7 +6,7 @@ import fetch from 'cross-fetch';
 import { Client } from 'pg';
 import { parse } from 'pg-connection-string';
 
-const getRandomInt = (min, max) => {
+const getRandomInt = (min: number, max: number) => {
   const ceiledMin = Math.ceil(min);
   const flooredMax = Math.floor(max);
   return Math.floor(Math.random() * (flooredMax - ceiledMin + 1)) + ceiledMin;

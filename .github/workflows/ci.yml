@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   docker-compose:
@@ -62,7 +62,7 @@ jobs:
       - name: checkout node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
       - run: npm install -g corepack@latest \
       - run: corepack enable pnpm
       - run: pnpm install
@@ -76,7 +76,7 @@ jobs:
       - name: checkout node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: npm install -g corepack@latest \
       - run: corepack enable pnpm
       - run: pnpm install
@@ -98,7 +98,7 @@ jobs:
       - name: checkout node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
       - run: npm install -g corepack@latest \
       - run: corepack enable pnpm
       - run: pnpm install
@@ -107,7 +107,7 @@ jobs:
       - run: pnpm run test --run --coverage --no-cache
       - run: pnpm run test:integration --run --no-cache
         env:
-          POSTGRES_URI_TEST: 'postgres://root:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/postgres_test'
+          POSTGRES_URI_TEST: "postgres://root:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/postgres_test"
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

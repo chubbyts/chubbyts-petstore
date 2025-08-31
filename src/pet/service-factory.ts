@@ -63,7 +63,7 @@ export const petDeleteHandlerServiceFactory = async (container: Container): Prom
 };
 
 export const petEnrichModelServiceFactory = (container: Container): EnrichModel<InputPetSchema> => {
-  return createEnrichModel(container.get<GeneratePath>('generatePath'), {
+  return createEnrichModel<InputPetSchema>(container.get<GeneratePath>('generatePath'), {
     read: 'pet_read',
     update: 'pet_update',
     delete: 'pet_delete',
@@ -73,7 +73,7 @@ export const petEnrichModelServiceFactory = (container: Container): EnrichModel<
 export const petEnrichModelListServiceFactory = (
   container: Container,
 ): EnrichModelList<InputPetSchema, InputPetListSchema> => {
-  return createEnrichModelList(
+  return createEnrichModelList<InputPetSchema, InputPetListSchema>(
     container.get<GeneratePath>('generatePath'),
     {
       read: 'pet_read',
@@ -102,7 +102,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
-  return createPersistModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createPersistModel<InputPetSchema>(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -177,7 +177,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet data',
         content: {
           'application/json': {
-            schema: inputPetSchema.strip(),
+            schema: inputPetSchema,
           },
         },
         required: true,
@@ -236,7 +236,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet data',
         content: {
           'application/json': {
-            schema: inputPetSchema.strip(),
+            schema: inputPetSchema,
           },
         },
         required: true,

@@ -51,7 +51,7 @@ describe('read', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({ name: 'read.test' }),
+      body: JSON.stringify({ name: 'read.test', vaccinations: [] }),
     });
 
     expect(createResponse.status).toBe(201);
@@ -75,6 +75,7 @@ describe('read', () => {
       id: expect.any(String),
       createdAt: expect.any(String),
       name: 'read.test',
+      vaccinations: [],
       _links: {
         read: {
           href: expect.stringMatching(/^\/api\/pets/),

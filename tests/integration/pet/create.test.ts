@@ -81,6 +81,14 @@ describe('create', () => {
             "name": "name",
             "reason": "Invalid input: expected string, received undefined",
           },
+          {
+            "context": {
+              "code": "invalid_type",
+              "expected": "array",
+            },
+            "name": "vaccinations",
+            "reason": "Invalid input: expected array, received undefined",
+          },
         ],
         "status": 400,
         "title": "Bad Request",

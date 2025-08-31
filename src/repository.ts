@@ -1,5 +1,5 @@
 import type { InputModelList, InputModelListSchema, InputModelSchema, Model } from '@chubbyts/chubbyts-api/dist/model';
-import type { FindModelById, ResolveModelList } from '@chubbyts/chubbyts-api/dist/repository';
+import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-api/dist/repository';
 import type { MongoClient, Sort, WithId } from 'mongodb';
 
 const withoutMongoId = <IMS extends InputModelSchema>(model: WithId<Model<IMS>>): Model<IMS> => {
@@ -46,7 +46,10 @@ export const createFindModelById = <IMS extends InputModelSchema>(
   };
 };
 
-export const createPersistModel = <IMS extends InputModelSchema>(mongoClient: MongoClient, collectionName: string) => {
+export const createPersistModel = <IMS extends InputModelSchema>(
+  mongoClient: MongoClient,
+  collectionName: string,
+): PersistModel<IMS> => {
   const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
 
   return async (model: Model<IMS>) => {
@@ -54,13 +57,13 @@ export const createPersistModel = <IMS extends InputModelSchema>(mongoClient: Mo
 
     await collection.replaceOne(filter, model, { upsert: true });
 
-    const modelWithMongoId = await collection.findOne(filter);
+    const modelWithMongoId = (await collection.findOne(filter)) as WithId<Model<IMS>> | null;
 
     if (!modelWithMongoId) {
       throw new Error(`Failed to persist model with id: ${model.id}`);
     }
 
-    return withoutMongoId(modelWithMongoId);
+    return withoutMongoId<IMS>(modelWithMongoId);
   };
 };
 

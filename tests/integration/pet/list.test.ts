@@ -62,7 +62,7 @@ describe('list', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({ name: 'list.test' }),
+      body: JSON.stringify({ name: 'list.test', vaccinations: [] }),
     });
 
     expect(createResponse1.status).toBe(201);
@@ -73,7 +73,7 @@ describe('list', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({ name: 'list.test' }),
+      body: JSON.stringify({ name: 'list.test', vaccinations: [] }),
     });
 
     expect(createResponse2.status).toBe(201);
@@ -104,6 +104,7 @@ describe('list', () => {
           id: expect.any(String),
           createdAt: expect.any(String),
           name: 'list.test',
+          vaccinations: [],
           _links: {
             read: {
               href: expect.stringMatching(/^\/api\/pets/),

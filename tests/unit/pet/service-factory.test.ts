@@ -740,6 +740,7 @@ describe('service-factory', () => {
                               },
                               "required": [
                                 "name",
+                                "vaccinations",
                                 "id",
                                 "createdAt",
                               ],
@@ -803,6 +804,7 @@ describe('service-factory', () => {
                 "content": {
                   "application/json": {
                     "schema": {
+                      "additionalProperties": false,
                       "properties": {
                         "name": {
                           "minLength": 1,
@@ -831,6 +833,7 @@ describe('service-factory', () => {
                       },
                       "required": [
                         "name",
+                        "vaccinations",
                       ],
                       "type": "object",
                     },
@@ -1049,6 +1052,7 @@ describe('service-factory', () => {
                               },
                               "required": [
                                 "name",
+                                "vaccinations",
                                 "id",
                                 "createdAt",
                               ],
@@ -1264,6 +1268,7 @@ describe('service-factory', () => {
                         },
                         "required": [
                           "name",
+                          "vaccinations",
                           "id",
                           "createdAt",
                         ],
@@ -1296,6 +1301,7 @@ describe('service-factory', () => {
                 "content": {
                   "application/json": {
                     "schema": {
+                      "additionalProperties": false,
                       "properties": {
                         "name": {
                           "minLength": 1,
@@ -1324,6 +1330,7 @@ describe('service-factory', () => {
                       },
                       "required": [
                         "name",
+                        "vaccinations",
                       ],
                       "type": "object",
                     },
@@ -1452,6 +1459,7 @@ describe('service-factory', () => {
                         },
                         "required": [
                           "name",
+                          "vaccinations",
                           "id",
                           "createdAt",
                         ],

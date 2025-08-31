@@ -5,7 +5,7 @@ import { spawn } from 'child_process';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import fetch from 'cross-fetch';
 
-const getRandomInt = (min, max) => {
+const getRandomInt = (min: number, max: number) => {
   const ceiledMin = Math.ceil(min);
   const flooredMax = Math.floor(max);
   return Math.floor(Math.random() * (flooredMax - ceiledMin + 1)) + ceiledMin;

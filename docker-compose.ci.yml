@@ -7,7 +7,7 @@ services:
       context: ./
     environment:
       NODE_ENV: production
-      MONGO_URI: 'mongodb://petstore:KVKtkrTHhKuTJTor8pCP@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
+      MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
     depends_on:
@@ -15,10 +15,10 @@ services:
   mongo:
     container_name: chubbyts-petstore-mongo-ci
     hostname: chubbyts-petstore-mongo-ci
-    image: mongo:8.0.9
+    image: mongo:8
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
-      MONGO_INITDB_ROOT_PASSWORD: KVKtkrTHhKuTJTor8pCP
+      MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui-ci
     hostname: chubbyts-petstore-swagger-ui-ci

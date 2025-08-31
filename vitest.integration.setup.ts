@@ -2,8 +2,9 @@
 
 import type { ChildProcessWithoutNullStreams } from 'child_process';
 import { spawn } from 'child_process';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import fetch from 'cross-fetch';
+import { MongoClient } from 'mongodb';
+import { parse, format } from 'mongodb-uri';
 
 const getRandomInt = (min: number, max: number) => {
   const ceiledMin = Math.ceil(min);
@@ -18,11 +19,20 @@ const timeout = 20000;
 const iterationTimeout = 500;
 
 const startServer = async () => {
+  const { database, ...mongoConfigWithoutDatabase } = parse(process.env.MONGO_URI as string);
+
+  const testDatabase = `${database}_test`;
+
+  const mongoClient = await MongoClient.connect(format({ ...mongoConfigWithoutDatabase }));
+
+  await mongoClient.db(testDatabase).dropDatabase();
+  await mongoClient.close();
+
   const child = spawn('./node_modules/.bin/tsx', ['bootstrap/index.ts'], {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      MONGO_URI: process.env.MONGO_URI,
+      MONGO_URI: format({ ...mongoConfigWithoutDatabase, database: testDatabase }),
       SERVER_HOST: testServerHost,
       SERVER_PORT: `${testServerPort}`,
     },
@@ -48,25 +58,9 @@ const startServer = async () => {
   throw new Error('Timeout in starting the server');
 };
 
-let mongoServer: MongoMemoryServer;
-
 let httpServer: ChildProcessWithoutNullStreams;
 
 export const setup = async () => {
-  // eslint-disable-next-line functional/immutable-data
-  process.env.MONGOMS_DOWNLOAD_URL = 'https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel93-8.0.4.tgz';
-  // eslint-disable-next-line functional/immutable-data
-  process.env.MONGOMS_VERSION = '8.0.4';
-
-  mongoServer = await MongoMemoryServer.create({
-    instance: {
-      dbName: 'test',
-    },
-  });
-
-  // eslint-disable-next-line functional/immutable-data
-  process.env.MONGO_URI = mongoServer.getUri();
-
   httpServer = await startServer();
 
   // eslint-disable-next-line functional/immutable-data
@@ -75,5 +69,4 @@ export const setup = async () => {
 
 export const teardown = async () => {
   await httpServer.kill();
-  await mongoServer.stop();
 };

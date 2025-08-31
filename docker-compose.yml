@@ -10,7 +10,7 @@ services:
         GROUP_ID: ${GROUP_ID:-1000}
     environment:
       NODE_ENV: development
-      POSTGRES_URI: 'postgres://postgres:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres'
+      POSTGRES_URI: 'postgres://petstore:4aAUfBjDACcdZxNwJgJ6@postgres:5432/petstore'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
       SSH_AUTH_SOCK: /ssh-agent
@@ -96,8 +96,9 @@ services:
     image: postgres:17
     command: -c log_statement=all -c log_error_verbosity=VERBOSE
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_DB: petstore
       POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+      POSTGRES_USER: petstore
     ports:
       - '5432:5432'
     volumes:

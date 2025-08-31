@@ -7,7 +7,7 @@ services:
       context: ./
     environment:
       NODE_ENV: production
-      POSTGRES_URI: 'postgres://postgres:4aAUfBjDACcdZxNwJgJ6@postgres:5432/postgres'
+      POSTGRES_URI: 'postgres://petstore:4aAUfBjDACcdZxNwJgJ6@postgres:5432/petstore'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
     depends_on:
@@ -18,8 +18,9 @@ services:
     image: postgres:17
     command: -c log_statement=all -c log_error_verbosity=VERBOSE
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_DB: petstore
       POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+      POSTGRES_USER: petstore
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui-ci
     hostname: chubbyts-petstore-swagger-ui-ci

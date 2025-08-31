@@ -30,8 +30,9 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_DB: petstore
           POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+          POSTGRES_USER: petstore
         ports:
           - 5432:5432
     steps:
@@ -48,7 +49,7 @@ jobs:
       - name: pnpm run test --run --coverage --no-cache
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --run --coverage --no-cache'
       - name: pnpm run test:integration --run --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'POSTGRES_URI_TEST=postgres://postgres:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/postgres' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'POSTGRES_URI_TEST=postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run infection
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run infection'
       - name: pnpm run build
@@ -88,8 +89,9 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_DB: petstore
           POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+          POSTGRES_USER: petstore
         ports:
           - 5432:5432
     steps:
@@ -107,7 +109,7 @@ jobs:
       - run: pnpm run test --run --coverage --no-cache
       - run: pnpm run test:integration --run --no-cache
         env:
-          POSTGRES_URI: 'postgres://postgres:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/postgres'
+          POSTGRES_URI: 'postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore'
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

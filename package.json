@@ -24,8 +24,8 @@
     "infection": "stryker run",
     "lint-fix": "eslint bin bootstrap config src tests *.js *.ts --fix",
     "lint": "eslint bin bootstrap config src tests",
-    "start:debug": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm run develop:debug",
-    "start": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm run develop",
+    "start:debug": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm db:push && pnpm run develop:debug",
+    "start": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm db:push && pnpm run develop",
     "test:integration": "vitest --config vitest.integration.config.js",
     "test": "vitest --config vitest.config.js"
   },

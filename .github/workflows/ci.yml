@@ -49,7 +49,7 @@ jobs:
       - name: pnpm run test --run --coverage --no-cache
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --run --coverage --no-cache'
       - name: pnpm run test:integration --run --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'POSTGRES_URI_TEST=postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'POSTGRES_URI=postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run infection
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run infection'
       - name: pnpm run build

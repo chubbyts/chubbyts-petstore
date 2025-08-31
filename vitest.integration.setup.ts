@@ -1,10 +1,10 @@
 /* eslint-disable functional/no-let */
 
 import type { ChildProcessWithoutNullStreams } from 'child_process';
-import { exec, execSync, spawn } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import fetch from 'cross-fetch';
 import { Client } from 'pg';
-import { parse } from 'pg-connection-string';
+import { ConnectionString } from 'connection-string';
 
 const getRandomInt = (min: number, max: number) => {
   const ceiledMin = Math.ceil(min);
@@ -19,18 +19,43 @@ const timeout = 20000;
 const iterationTimeout = 500;
 
 const startServer = async () => {
-  const { database, ...postgresConfig } = parse(process.env.POSTGRES_URI_TEST as string);
+  const postgresUriWithDatabase = process.env.POSTGRES_URI as string;
 
-  const postgresClient = new Client(postgresConfig);
+  const connectionString = new ConnectionString(postgresUriWithDatabase);
+
+  if (connectionString.path?.length !== 1) {
+    throw new Error('Cannot parse database name');
+  }
+
+  const database = connectionString.path[0];
+  const testDatabase = `${database}_test`;
+
+  const connectionStringWithoutDatabase = new ConnectionString(postgresUriWithDatabase);
+  // eslint-disable-next-line functional/immutable-data
+  connectionStringWithoutDatabase.path = [];
+  const postgresUriWithoutDatabase = connectionStringWithoutDatabase.toString();
+
+  const connectionStringWithTestDatabase = new ConnectionString(postgresUriWithDatabase);
+  // eslint-disable-next-line functional/immutable-data
+  connectionStringWithTestDatabase.path = [testDatabase];
+  const postgresUriWithTestDatabase = connectionStringWithTestDatabase.toString();
+
+  console.log({
+    postgresUriWithoutDatabase,
+    postgresUriWithDatabase,
+    postgresUriWithTestDatabase,
+  });
+
+  const postgresClient = new Client(postgresUriWithoutDatabase);
   await postgresClient.connect();
-  await postgresClient.query(`DROP DATABASE IF EXISTS "${database}"`);
-  await postgresClient.query(`CREATE DATABASE "${database}"`);
+  await postgresClient.query(`DROP DATABASE IF EXISTS "${testDatabase}"`);
+  await postgresClient.query(`CREATE DATABASE "${testDatabase}"`);
 
   execSync('./node_modules/.bin/drizzle-kit push', {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      POSTGRES_URI: process.env.POSTGRES_URI_TEST,
+      POSTGRES_URI: postgresUriWithTestDatabase,
     },
     stdio: 'inherit',
   });
@@ -39,7 +64,7 @@ const startServer = async () => {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      POSTGRES_URI: process.env.POSTGRES_URI_TEST,
+      POSTGRES_URI: postgresUriWithTestDatabase,
       SERVER_HOST: testServerHost,
       SERVER_PORT: `${testServerPort}`,
     },

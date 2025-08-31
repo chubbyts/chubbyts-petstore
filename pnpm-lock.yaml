@@ -105,6 +105,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/node@24.3.0)(tsx@4.20.5)(yaml@2.8.1))
+      connection-string:
+        specifier: ^5.0.0
+        version: 5.0.0
       cross-fetch:
         specifier: ^4.1.0
         version: 4.1.0
@@ -114,9 +117,6 @@ importers:
       eslint:
         specifier: ^9.34.0
         version: 9.34.0
-      pg-connection-string:
-        specifier: ^2.9.1
-        version: 2.9.1
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -1439,6 +1439,10 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  connection-string@5.0.0:
+    resolution: {integrity: sha512-IUt5Jc77f11LH+/836erXFnGHWHTuAAjgivjE1O44ZiVG1JpcvSjNJnSO8ebeQs+BohHz3Mfj5VXd6z588uMfg==}
+    engines: {node: '>=20.0.0'}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -4308,6 +4312,8 @@ snapshots:
   commander@14.0.0: {}
 
   concat-map@0.0.1: {}
+
+  connection-string@5.0.0: {}
 
   convert-source-map@2.0.0: {}
 

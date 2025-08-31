@@ -9,12 +9,12 @@ import {
   createContainerRegistryDockerReadWriteCredentials,
 } from './src/build';
 import {
-  createMongoDbCluster,
-  createMongoDbDatabase,
-  createMongoDbDatabaseUser,
-  createMongoDbFirewall,
-  resolveMongoDbUri,
-} from './src/mongodb';
+  createPostgresCluster,
+  createPostgresDatabase,
+  createPostgresDatabaseUser,
+  createPostgresFirewall,
+  resolvePostgresUri,
+} from './src/postgres';
 import { createVpc } from './src/network';
 import {
   installK8sHelmCertManager,
@@ -37,7 +37,7 @@ type NodeFactoryProps = {
   context: string;
   containerRegistry: digitalocean.ContainerRegistry;
   containerRegistryDockerReadWriteCredentials: digitalocean.ContainerRegistryDockerCredentials;
-  mongoDbCluster: digitalocean.DatabaseCluster;
+  postgresCluster: digitalocean.DatabaseCluster;
   opensearchCluster: digitalocean.DatabaseCluster;
   config: pulumi.Config;
   stack: string;
@@ -48,7 +48,7 @@ const nodeFactory = ({
   context,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
-  mongoDbCluster,
+  postgresCluster,
   opensearchCluster,
   stack,
 }: NodeFactoryProps): void => {
@@ -72,8 +72,8 @@ const nodeFactory = ({
     containerRegistryDockerReadWriteCredentials,
   });
 
-  const mongoDbDatabase = createMongoDbDatabase({ mongoDbCluster, name });
-  const mongoDbDatabaseUser = createMongoDbDatabaseUser({ mongoDbCluster, name });
+  const postgresDatabase = createPostgresDatabase({ postgresCluster, name });
+  const postgresDatabaseUser = createPostgresDatabaseUser({ postgresCluster, name });
 
   createK8sHttpDeployment({
     k8sProvider,
@@ -81,7 +81,7 @@ const nodeFactory = ({
     image,
     env: [
       { name: 'NODE_ENV', value: 'production' },
-      { name: 'MONGO_URI', value: resolveMongoDbUri({ mongoDbCluster, mongoDbDatabase, mongoDbDatabaseUser }) },
+      { name: 'POSTGRES_URI', value: resolvePostgresUri({ postgresCluster, postgresDatabase, postgresDatabaseUser }) },
       { name: 'SERVER_HOST', value: '0.0.0.0' },
       { name: 'SERVER_PORT', value: '1234' },
     ],
@@ -174,8 +174,8 @@ const k8sProvider = createK8sProvider({ k8sTokenKubeConfig });
 installK8sDockerRegistrySecret({ k8sProvider, containerRegistryDockerReadCredentials });
 
 // setup databases
-const mongoDbCluster = createMongoDbCluster({ region, vpc, nodeCount: parseInt(config.require('mongodb-node-count')) });
-createMongoDbFirewall({ mongoDbCluster, k8sCluster });
+const postgresCluster = createPostgresCluster({ region, vpc, nodeCount: parseInt(config.require('postgres-node-count')) });
+createPostgresFirewall({ postgresCluster, k8sCluster });
 
 const opensearchCluster = createOpensearchCluster({
   region,
@@ -189,7 +189,7 @@ nodeFactory({
   context,
   containerRegistry,
   containerRegistryDockerReadWriteCredentials,
-  mongoDbCluster,
+  postgresCluster,
   opensearchCluster,
   config,
   stack,

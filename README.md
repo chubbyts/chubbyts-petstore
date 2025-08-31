@@ -135,7 +135,7 @@ pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:cert-manager-email XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:ip-range 10.10.11.0/24
 pulumi config set chubbyts-petstore:k8s-node-Count: "1"
-pulumi config set chubbyts-petstore:mongodb-node-Count: "1"
+pulumi config set chubbyts-petstore:postgres-node-Count: "1"
 pulumi config set chubbyts-petstore:opensearch-node-Count: "1"
 pulumi up
 ```
@@ -177,11 +177,11 @@ kubectl exec -it <podname> -- /bin/bash
 
 ### Debug production build
 
-Make sure the development version is running to reuse its mongodb instance.
+Make sure the development version is running to reuse its postgres instance.
 
 ```sh
 docker build --platform=linux/amd64 -f ./docker/production/node/Dockerfile -t chubbyts-petstore-node .
-docker run -it -e NODE_ENV=production -e MONGO_URI="<see docker-compose.yml, replace @mongo with @host.docker.internal>" -e SERVER_HOST=0.0.0.0 -e SERVER_PORT=3000 -p 3000:3000 chubbyts-petstore-node
+docker run -it -e NODE_ENV=production -e POSTGRES_URI="<see docker-compose.yml, replace @posgres with @host.docker.internal>" -e SERVER_HOST=0.0.0.0 -e SERVER_PORT=3000 -p 3000:3000 chubbyts-petstore-node
 ```
 
 ## Copyright
@@ -202,13 +202,13 @@ docker run -it -e NODE_ENV=production -e MONGO_URI="<see docker-compose.yml, rep
 [12]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-node-bridge
 [13]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
 [14]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
-[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[17]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[18]: https://www.npmjs.com/package/commander
-[19]: https://www.npmjs.com/package/mongodb
-[20]: https://www.npmjs.com/package/openapi3-ts
-[21]: https://www.npmjs.com/package/pino
+[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
+[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[17]: https://www.npmjs.com/package/commander
+[18]: https://www.npmjs.com/package/drizzle-orm
+[19]: https://www.npmjs.com/package/openapi3-ts
+[20]: https://www.npmjs.com/package/pino
+[21]: https://www.npmjs.com/package/pg
 [22]: https://www.npmjs.com/package/uuid
 [23]: https://www.npmjs.com/package/zod
 

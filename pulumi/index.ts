@@ -28,7 +28,6 @@ import {
   installK8sDockerRegistrySecret,
   createK8sTokenKubeconfig,
   installK8sHelmMetricsServer,
-  installK8sHelmKubernetesDashboard,
 } from './src/k8s';
 import { createOpensearchCluster, createOpensearchFirewall } from './src/opensearch';
 
@@ -146,7 +145,6 @@ const swaggerUiFactory = ({ k8sProvider }: SwaggerUiFactoryProps): void => {
 };
 
 const config = new pulumi.Config();
-const digitaloceanConfig = new pulumi.Config('digitalocean');
 
 const region = digitalocean.Region.FRA1;
 const stack = pulumi.getStack();
@@ -164,11 +162,15 @@ const containerRegistryDockerReadCredentials = createContainerRegistryDockerRead
 const vpc = createVpc({ region, ipRange: config.require('ip-range') });
 
 // setup k8s cluster
-const k8sCluster = createK8sCluster({ region, vpc, nodeCount: parseInt(config.require('k8s-node-count')) });
+const k8sCluster = createK8sCluster({
+  region,
+  vpc,
+  nodeCount: parseInt(config.require('k8s-node-count')),
+  highAvailability: config.require('k8s-high-availability') === 'true',
+});
 const k8sTokenKubeConfig = createK8sTokenKubeconfig({
   k8sCluster,
   user: 'admin',
-  apiToken: digitaloceanConfig.require('token'),
 });
 const k8sProvider = createK8sProvider({ k8sTokenKubeConfig });
 installK8sDockerRegistrySecret({ k8sProvider, containerRegistryDockerReadCredentials });
@@ -203,7 +205,7 @@ installK8sHelmMetricsServer({ k8sProvider });
 // install ingress controller (make sure the entry exists)
 const helmIngressNginxController = installK8sHelmIngressNginxController({
   k8sProvider,
-  doLoadbalancerHostname: 'kube.chubbyts-petstore.dev',
+  doLoadBalancerHostname: 'kube.chubbyts-petstore.dev',
 });
 
 const ingress = createK8sIngressNginx({
@@ -274,9 +276,6 @@ const ingress = createK8sIngressNginx({
 const helmCertManager = installK8sHelmCertManager({ k8sProvider });
 
 createK8sCertManager({ k8sProvider, helmCertManager, email: config.require('cert-manager-email') });
-
-// install kubernetes dashboard
-const kubernetesDashboard = installK8sHelmKubernetesDashboard({ k8sProvider });
 
 export const containerRegistryId = containerRegistry.id;
 export const dns = pulumi.interpolate`Make sure to add A-Record for ${

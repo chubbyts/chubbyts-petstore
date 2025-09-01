@@ -1,12 +1,13 @@
+import * as digitalocean from '@pulumi/digitalocean';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
-import * as digitalocean from '@pulumi/digitalocean';
 
 type CreateK8sClusterProps = {
   region: digitalocean.Region;
   vpc: digitalocean.Vpc;
   nodeCount: number;
   size?: string;
+  highAvailability?: boolean;
 };
 
 export const createK8sCluster = ({
@@ -14,6 +15,7 @@ export const createK8sCluster = ({
   vpc,
   nodeCount,
   size = digitalocean.DropletSlug.DropletS2VCPU4GB,
+  highAvailability = false,
 }: CreateK8sClusterProps): digitalocean.KubernetesCluster => {
   return new digitalocean.KubernetesCluster('k8s-cluster', {
     nodePool: {
@@ -22,23 +24,22 @@ export const createK8sCluster = ({
       nodeCount,
     },
     region,
-    version: '1.31.1-do.5',
+    version: '1.33.1-do.2',
     autoUpgrade: false,
     vpcUuid: vpc.id,
+    ha: highAvailability,
   });
 };
 
 type CreateK8sTokenKubeconfigProps = {
   k8sCluster: digitalocean.KubernetesCluster;
   user: pulumi.Input<string>;
-  apiToken: pulumi.Input<string>;
 };
 
 // https://github.com/pulumi/pulumi-digitalocean/issues/78#issuecomment-639669865
 export const createK8sTokenKubeconfig = ({
   k8sCluster,
   user,
-  apiToken,
 }: CreateK8sTokenKubeconfigProps): pulumi.Output<string> => {
   return pulumi.interpolate`apiVersion: v1
 clusters:
@@ -56,7 +57,19 @@ kind: Config
 users:
 - name: ${k8sCluster.name}-${user}
   user:
-    token: ${apiToken}
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      args:
+      - kubernetes
+      - cluster
+      - kubeconfig
+      - exec-credential
+      - --version=v1beta1
+      - --context=laliquedev
+      - ${k8sCluster.id}
+      command: doctl
+      env: null
+      provideClusterInfo: false
 `;
 };
 
@@ -443,7 +456,7 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
     'helm-metrics-server',
     {
       chart: 'metrics-server',
-      version: '3.12.2',
+      version: '3.13.0',
       repositoryOpts: {
         repo: 'https://kubernetes-sigs.github.io/metrics-server',
       },
@@ -462,12 +475,12 @@ export const installK8sHelmMetricsServer = ({ k8sProvider }: InstallK8sHelmMetri
 
 type InstallK8sHelmIngressNginxControllerProps = {
   k8sProvider: k8s.Provider;
-  doLoadbalancerHostname: string;
+  doLoadBalancerHostname: string;
 };
 
 export const installK8sHelmIngressNginxController = ({
   k8sProvider,
-  doLoadbalancerHostname,
+  doLoadBalancerHostname,
 }: InstallK8sHelmIngressNginxControllerProps): k8s.helm.v3.Release => {
   // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/ingress-nginx
   // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/ingress-nginx/values.yml
@@ -476,7 +489,7 @@ export const installK8sHelmIngressNginxController = ({
     'helm-ingress-nginx',
     {
       chart: 'ingress-nginx',
-      version: '4.12.0',
+      version: '4.13.2',
       repositoryOpts: {
         repo: 'https://kubernetes.github.io/ingress-nginx',
       },
@@ -485,11 +498,11 @@ export const installK8sHelmIngressNginxController = ({
       values: {
         controller: {
           allowSnippetAnnotations: 'true',
-          replicaCount: 1,
+          replicaCount: 2,
           service: {
             type: 'LoadBalancer',
             annotations: {
-              'service.beta.kubernetes.io/do-loadbalancer-hostname': doLoadbalancerHostname,
+              'service.beta.kubernetes.io/do-loadbalancer-hostname': doLoadBalancerHostname,
               'service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol': 'true',
             },
           },
@@ -497,12 +510,13 @@ export const installK8sHelmIngressNginxController = ({
             enable: true,
           },
           config: {
+            'annotations-risk-level': 'Critical',
             'compute-full-forward-for': 'true',
             'limit-conn-status-code': '429',
             'limit-req-status-code': '429',
+            'strict-validate-path-type': 'false',
             'use-forward-headers': 'true',
             'use-proxy-protocol': 'true',
-            'annotations-risk-level': 'Critical',
           },
           metrics: {
             enabled: true,
@@ -536,7 +550,7 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
     'helm-cert-manager',
     {
       chart: 'cert-manager',
-      version: '1.17.1',
+      version: '1.18.2',
       repositoryOpts: {
         repo: 'https://charts.jetstack.io',
       },
@@ -553,55 +567,11 @@ export const installK8sHelmCertManager = ({ k8sProvider }: InstallK8sHelmCertMan
   );
 };
 
-type InstallK8sHelmKubernetesDashboardProps = {
-  k8sProvider: k8s.Provider;
-};
-
-export const installK8sHelmKubernetesDashboard = ({
-  k8sProvider,
-}: InstallK8sHelmKubernetesDashboardProps): k8s.helm.v3.Release => {
-  // https://github.com/digitalocean/marketplace-kubernetes/tree/master/stacks/kubernetes-dashboard
-  // https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/kubernetes-dashboard/values.yml
-  return new k8s.helm.v3.Release(
-    'helm-kubernetes-dashboard',
-    {
-      chart: 'kubernetes-dashboard',
-      version: '6.0.8', // do not upgrade to 7!!
-      repositoryOpts: {
-        repo: 'https://kubernetes.github.io/dashboard',
-      },
-      namespace: 'kubernetes-dashboard',
-      createNamespace: true,
-      values: {
-        app: {
-          ingress: {
-            enabled: false,
-          },
-        },
-        metricsScraper: {
-          enabled: false,
-        },
-        nginx: {
-          enabled: false,
-        },
-        'cert-manager': {
-          // other chart
-          enabled: false,
-        },
-        'metrics-server': {
-          // other chart
-          enabled: false,
-        },
-      },
-    },
-    { provider: k8sProvider },
-  );
-};
-
 type CreateK8sIngressNginxProps = {
   k8sProvider: k8s.Provider;
   helmIngressNginxController: k8s.helm.v3.Release;
   rules: Array<k8s.types.input.networking.v1.IngressRule>;
+  limitWhiteList?: Array<string>;
   addWwwAliasForHosts?: Array<string>;
   annotations?: { [key: string]: string };
 };
@@ -610,6 +580,7 @@ export const createK8sIngressNginx = ({
   k8sProvider,
   helmIngressNginxController,
   rules,
+  limitWhiteList = [],
   addWwwAliasForHosts = [],
   annotations = {},
 }: CreateK8sIngressNginxProps): k8s.networking.v1.Ingress => {
@@ -620,17 +591,19 @@ export const createK8sIngressNginx = ({
         name: 'nginx-ingress',
         annotations: {
           'cert-manager.io/cluster-issuer': 'letsencrypt-prod',
-          'kubernetes.io/ingress.class': 'nginx',
+          'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
+          'nginx.ingress.kubernetes.io/limit-rpm': '300',
+          'nginx.ingress.kubernetes.io/limit-whitelist': limitWhiteList.join(','),
           'nginx.ingress.kubernetes.io/proxy-body-size': '0',
           'nginx.ingress.kubernetes.io/proxy-read-timeout': '600',
           'nginx.ingress.kubernetes.io/proxy-send-timeout': '600',
-          'nginx.ingress.kubernetes.io/from-to-www-redirect': 'true',
-          'nginx.ingress.kubernetes.io/limit-rpm': '300',
+          'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
           ...annotations,
           helmId: helmIngressNginxController.id,
         },
       },
       spec: {
+        ingressClassName: 'nginx',
         rules,
         tls: [
           {
@@ -682,7 +655,7 @@ export const createK8sCertManager = ({
             {
               http01: {
                 ingress: {
-                  class: 'nginx',
+                  ingressClassName: 'nginx',
                 },
               },
             },

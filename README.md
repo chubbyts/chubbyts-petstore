@@ -135,6 +135,7 @@ pulumi config set digitalocean:token XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:cert-manager-email XXXXXXXXXXXXXX --secret
 pulumi config set chubbyts-petstore:ip-range 10.10.11.0/24
 pulumi config set chubbyts-petstore:k8s-node-Count: "1"
+pulumi config set chubbyts-petstore:k8s-high-availability: "false"
 pulumi config set chubbyts-petstore:mongodb-node-Count: "1"
 pulumi config set chubbyts-petstore:opensearch-node-Count: "1"
 pulumi up

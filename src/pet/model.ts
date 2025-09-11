@@ -11,7 +11,7 @@ import type {
   ModelList,
   ModelListSchema,
   ModelSchema,
-} from '@chubbyts/chubbyts-api/dist/model';
+} from '@chubbyts/chubbyts-undici-api/dist/model';
 import {
   numberSchema,
   sortSchema,
@@ -20,7 +20,7 @@ import {
   createModelSchema,
   createModelListSchema,
   createEnrichedModelSchema,
-} from '@chubbyts/chubbyts-api/dist/model';
+} from '@chubbyts/chubbyts-undici-api/dist/model';
 
 extendZodWithOpenApi(z);
 

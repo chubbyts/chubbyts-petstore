@@ -2,15 +2,10 @@ import type { IncomingMessage, Server, ServerResponse } from 'http';
 import { createServer } from 'http';
 import { createApplication } from '@chubbyts/chubbyts-framework/dist/application';
 import {
-  createNodeToServerRequestFactory,
-  createResponseToNodeEmitter,
-} from '@chubbyts/chubbyts-http-node-bridge/dist/node-http';
-import type { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
-import type {
-  ServerRequestFactory,
-  StreamFromResourceFactory,
-  UriFactory,
-} from '@chubbyts/chubbyts-http-types/dist/message-factory';
+  createNodeRequestToUndiciRequestFactory,
+  createUndiciResponseToNodeResponseEmitter,
+} from '@chubbyts/chubbyts-undici-server-node/dist/node';
+import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
 import type { Config } from '../config/production.js';
 import { containerFactory } from '../bootstrap/container.js';
 
@@ -31,16 +26,11 @@ const shutdownServer = (server: Server) => {
 
   const app = createApplication(container.get<Array<Middleware>>('middlewares'));
 
-  const nodeToServerRequestFactory = createNodeToServerRequestFactory(
-    container.get<UriFactory>('uriFactory'),
-    container.get<ServerRequestFactory>('serverRequestFactory'),
-    container.get<StreamFromResourceFactory>('streamFromResourceFactory'),
-  );
-
-  const responseToNodeEmitter = createResponseToNodeEmitter();
+  const nodeRequestToUndiciRequestFactory = createNodeRequestToUndiciRequestFactory();
+  const undiciResponseToNodeResponseEmitter = createUndiciResponseToNodeResponseEmitter();
 
   const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
-    responseToNodeEmitter(await app(nodeToServerRequestFactory(req)), res);
+    undiciResponseToNodeResponseEmitter(await app(nodeRequestToUndiciRequestFactory(req)), res);
   });
 
   const config = container.get<Config>('config');

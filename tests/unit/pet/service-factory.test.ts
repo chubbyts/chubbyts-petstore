@@ -3,7 +3,6 @@ import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
 import type { Collection, Db, MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -38,11 +37,6 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
-        parameters: ['responseFactory'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
         parameters: ['encoder'],
         return: {},
       },
@@ -68,11 +62,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petRemoveModel'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
     ]);
@@ -257,11 +246,6 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
-        parameters: ['responseFactory'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
         parameters: ['encoder'],
         return: {},
       },
@@ -317,11 +301,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petFindModelById'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
       {
@@ -426,11 +405,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petPersistModel'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
       {

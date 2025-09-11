@@ -1,5 +1,10 @@
-import type { InputModelList, InputModelListSchema, InputModelSchema, Model } from '@chubbyts/chubbyts-api/dist/model';
-import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-api/dist/repository';
+import type {
+  InputModelList,
+  InputModelListSchema,
+  InputModelSchema,
+  Model,
+} from '@chubbyts/chubbyts-undici-api/dist/model';
+import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-undici-api/dist/repository';
 import type { MongoClient, Sort, WithId } from 'mongodb';
 
 const withoutMongoId = <IMS extends InputModelSchema>(model: WithId<Model<IMS>>): Model<IMS> => {

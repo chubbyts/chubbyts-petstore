@@ -1,4 +1,4 @@
-import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-api/dist/model';
+import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-undici-api/dist/model';
 import { describe, expect, test } from 'vitest';
 import type { Collection, Db, FindCursor, MongoClient, WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';

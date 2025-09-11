@@ -1,6 +1,11 @@
-import type { InputModelListSchema, InputModelSchema, Model, Link, ModelList } from '@chubbyts/chubbyts-api/dist/model';
+import type {
+  InputModelListSchema,
+  InputModelSchema,
+  Model,
+  Link,
+  ModelList,
+} from '@chubbyts/chubbyts-undici-api/dist/model';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 
 type ModelLinks = {
   read?: string;
@@ -12,7 +17,7 @@ type ListLinks = {
   create?: string;
 };
 
-const createLink = (href: string, method: Method): Link & { attributes: { method: string } } => {
+const createLink = (href: string, method: string): Link & { attributes: { method: string } } => {
   return {
     href,
     attributes: {

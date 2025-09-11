@@ -18,7 +18,7 @@ describe('create', () => {
 
     const responseData = await response.text();
 
-    expect(responseData).toMatch(/Allowed accepts/);
+    expect(responseData).toMatch(/Not Acceptable/);
   });
 
   test('missing content-type', async () => {

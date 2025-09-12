@@ -4,8 +4,8 @@ import { describe, expect, test } from 'vitest';
 import { MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import type { Handler, Response } from '@chubbyts/chubbyts-undici-server/dist/server';
-import { ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
+import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
+import { ServerRequest, Response } from '@chubbyts/chubbyts-undici-server/dist/server';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -582,8 +582,8 @@ describe('service-factory', () => {
   });
 
   test('routesServiceFactory', async () => {
-    const request = {} as ServerRequest;
-    const response = {} as Response;
+    const serverRequest = new ServerRequest('https://example.com/');
+    const response = new Response();
 
     const dummyHandler = async () => response;
 
@@ -629,7 +629,7 @@ describe('service-factory', () => {
       ]
     `);
 
-    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, request, response);
+    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, serverRequest, response);
 
     expect(containerMocks.length).toBe(0);
   });

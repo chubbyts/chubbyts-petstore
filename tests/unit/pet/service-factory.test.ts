@@ -3,6 +3,7 @@ import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
 import type { Collection, Db, MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { ServerRequest, Response } from '@chubbyts/chubbyts-undici-server/dist/server';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -1458,8 +1459,8 @@ describe('service-factory', () => {
   });
 
   test('petRoutesServiceDelegator', async () => {
-    const request = {} as ServerRequest;
-    const response = {} as Response;
+    const serverRequest = new ServerRequest('https://example.com/');
+    const response = new Response();
 
     const dummyHandler = async () => response;
     const dummyMiddleware = async () => response;
@@ -1628,7 +1629,7 @@ describe('service-factory', () => {
       ]
     `);
 
-    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, request, response);
+    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, serverRequest, response);
 
     expect(containerMocks.length).toBe(0);
   });

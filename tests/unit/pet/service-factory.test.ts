@@ -2,7 +2,7 @@ import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-open
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
+import { Response, ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -18,9 +18,7 @@ import {
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
-import type { Pet, PetList } from '../../../src/pet/model.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../../utils/route.js';
-import { validPet, validPetList } from './model.test.js';
 
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
@@ -33,11 +31,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petPersistModel'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
       {
@@ -69,11 +62,6 @@ describe('service-factory', () => {
         parameters: ['petRemoveModel'],
         return: () => undefined,
       },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
-        return: () => undefined,
-      },
     ]);
 
     expect(await petDeleteHandlerServiceFactory(container)).toBeInstanceOf(Function);
@@ -82,15 +70,11 @@ describe('service-factory', () => {
   });
 
   test('petEnrichModelServiceFactory', async () => {
-    const request = {} as ServerRequest;
-
-    const pet: Pet = validPet;
-
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
         parameters: ['generatePath'],
-        return: () => '__generated_link',
+        return: () => {},
       },
     ]);
 
@@ -98,116 +82,21 @@ describe('service-factory', () => {
 
     expect(petEnrichModel).toBeInstanceOf(Function);
 
-    expect(await petEnrichModel(pet, { request })).toMatchInlineSnapshot(`
-      {
-        "_links": {
-          "delete": {
-            "attributes": {
-              "method": "DELETE",
-            },
-            "href": "__generated_link",
-          },
-          "read": {
-            "attributes": {
-              "method": "GET",
-            },
-            "href": "__generated_link",
-          },
-          "update": {
-            "attributes": {
-              "method": "PUT",
-            },
-            "href": "__generated_link",
-          },
-        },
-        "createdAt": 2023-04-12T09:12:12.763Z,
-        "id": "test",
-        "name": "name",
-        "tag": "tag",
-        "updatedAt": 2023-04-16T15:05:49.154Z,
-        "vaccinations": [
-          {
-            "name": "name",
-          },
-        ],
-      }
-    `);
-
     expect(containerMocks.length).toBe(0);
   });
 
   test('petEnrichModelListServiceFactory', async () => {
-    const request = {} as ServerRequest;
-
-    const petList: PetList = validPetList;
-
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
         parameters: ['generatePath'],
-        return: () => '__generated_link',
+        return: () => {},
       },
     ]);
 
     const petEnrichList = petEnrichModelListServiceFactory(container);
 
     expect(petEnrichList).toBeInstanceOf(Function);
-
-    expect(await petEnrichList(petList, { request })).toMatchInlineSnapshot(`
-      {
-        "_links": {
-          "create": {
-            "attributes": {
-              "method": "POST",
-            },
-            "href": "__generated_link",
-          },
-        },
-        "count": 2,
-        "filters": {
-          "name": "name",
-        },
-        "items": [
-          {
-            "_links": {
-              "delete": {
-                "attributes": {
-                  "method": "DELETE",
-                },
-                "href": "__generated_link",
-              },
-              "read": {
-                "attributes": {
-                  "method": "GET",
-                },
-                "href": "__generated_link",
-              },
-              "update": {
-                "attributes": {
-                  "method": "PUT",
-                },
-                "href": "__generated_link",
-              },
-            },
-            "createdAt": 2023-04-12T09:12:12.763Z,
-            "id": "test",
-            "name": "name",
-            "tag": "tag",
-            "updatedAt": 2023-04-16T15:05:49.154Z,
-            "vaccinations": [
-              {
-                "name": "name",
-              },
-            ],
-          },
-        ],
-        "limit": 20,
-        "offset": 0,
-        "sort": {
-          "name": "asc",
-        },
-      }
-    `);
 
     expect(containerMocks.length).toBe(0);
   });
@@ -225,11 +114,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petResolveModelList'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
       {
@@ -262,11 +146,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petFindModelById'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
       {
@@ -317,11 +196,6 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['petPersistModel'],
-        return: () => undefined,
-      },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
         return: () => undefined,
       },
       {
@@ -1375,8 +1249,8 @@ describe('service-factory', () => {
   });
 
   test('petRoutesServiceDelegator', async () => {
-    const request = {} as ServerRequest;
-    const response = {} as Response;
+    const serverRequest = new ServerRequest('https://example.com/');
+    const response = new Response();
 
     const dummyHandler = async () => response;
     const dummyMiddleware = async () => response;
@@ -1545,7 +1419,7 @@ describe('service-factory', () => {
       ]
     `);
 
-    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, request, response);
+    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, serverRequest, response);
 
     expect(containerMocks.length).toBe(0);
   });

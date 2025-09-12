@@ -1,53 +1,32 @@
-import { PassThrough } from 'stream';
 import { describe, expect, test } from 'vitest';
-import type { ServerRequest, Response } from '@chubbyts/chubbyts-http-types/dist/message';
-import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
-import { streamToString } from '@chubbyts/chubbyts-api/dist/stream';
+import { ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { createOpenApiHandler, createPingHandler } from '../../src/handler.js';
 
 describe('handler', () => {
   test('createPingHandler', async () => {
-    const request = {} as unknown as ServerRequest;
+    const serverRequest = new ServerRequest('https://example.com/ping');
 
-    const responseBody = new PassThrough();
+    const pingHandler = createPingHandler();
 
-    const response = {
-      headers: {},
-      body: responseBody,
-    } as unknown as Response;
+    const response = await pingHandler(serverRequest);
 
-    const [responseFactory, responseFactoryMocks] = useFunctionMock<ResponseFactory>([
-      { parameters: [200], return: response },
-    ]);
+    expect(response.status).toBe(200);
+    expect(response.statusText).toBe('OK');
+    expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
+      {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "content-type": "application/json",
+        "expires": "0",
+        "pragma": "no-cache",
+      }
+    `);
 
-    const pingHandler = createPingHandler(responseFactory);
-
-    expect(await pingHandler(request)).toEqual({
-      ...response,
-      headers: {
-        'content-type': ['application/json'],
-        'cache-control': ['no-cache, no-store, must-revalidate'],
-        pragma: ['no-cache'],
-        expires: ['0'],
-      },
-    });
-
-    expect(JSON.parse(await streamToString(response.body))).toEqual({ datetime: expect.any(String) });
-
-    expect(responseFactoryMocks.length).toBe(0);
+    expect(await response.json()).toEqual({ datetime: expect.any(String) });
   });
 
   test('createOpenApiHandler', async () => {
-    const request = {} as unknown as ServerRequest;
-
-    const responseBody = new PassThrough();
-
-    const response = {
-      headers: {},
-      body: responseBody,
-    } as unknown as Response;
+    const serverRequest = new ServerRequest('https://example.com/openapi');
 
     const openApiObject: OpenAPIComponentObject = {
       openapi: '3.0.0',
@@ -70,30 +49,27 @@ describe('handler', () => {
       paths: {},
     };
 
-    const [responseFactory, responseFactoryMocks] = useFunctionMock<ResponseFactory>([
-      { parameters: [200], return: response },
-    ]);
+    const openApiHandler = createOpenApiHandler(openApiObject);
 
-    const pingHandler = createOpenApiHandler(openApiObject, responseFactory);
+    const response = await openApiHandler(serverRequest);
 
-    expect(await pingHandler(request)).toEqual({
-      ...response,
-      headers: {
-        'content-type': ['application/json'],
-        'cache-control': ['no-cache, no-store, must-revalidate'],
-        pragma: ['no-cache'],
-        expires: ['0'],
-      },
-    });
+    expect(response.status).toBe(200);
+    expect(response.statusText).toBe('OK');
+    expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
+      {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "content-type": "application/json",
+        "expires": "0",
+        "pragma": "no-cache",
+      }
+    `);
 
-    expect(JSON.parse(await streamToString(response.body))).toEqual({
+    expect(await response.json()).toEqual({
       openapi: '3.0.0',
       info: { version: '1.0.0', title: 'Petstore', license: { name: 'MIT' } },
       servers: [{ url: 'https://localhost' }],
       components: { schemas: {}, parameters: {} },
       paths: {},
     });
-
-    expect(responseFactoryMocks.length).toBe(0);
   });
 });

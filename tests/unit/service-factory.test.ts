@@ -1,12 +1,10 @@
-import { PassThrough } from 'stream';
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
-import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
-import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
+import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
+import { Response, ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   acceptNegotiatorServiceFactory,
@@ -27,15 +25,9 @@ import {
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
   pingHandlerServiceFactory,
-  requestFactoryServiceFactory,
-  responseFactoryServiceFactory,
   routeMatcherMiddlewareServiceFactory,
   routesByNameServiceFactory,
   routesServiceFactory,
-  serverRequestFactoryServiceFactory,
-  streamFactoryServiceFactory,
-  streamFromResourceFactoryServiceFactory,
-  uriFactoryServiceFactory,
 } from '../../src/service-factory.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route.js';
 
@@ -70,11 +62,6 @@ describe('service-factory', () => {
 
   test('apiErrorMiddlewareServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
-        return: () => undefined,
-      },
       {
         name: 'get',
         parameters: ['encoder'],
@@ -160,26 +147,12 @@ describe('service-factory', () => {
 
   describe('corsMiddlewareServiceFactory', () => {
     test('with allowOrigins: createAllowOriginExact', async () => {
-      const requestBody = new PassThrough();
-
-      const request = {
+      const serverRequest = new ServerRequest('https://example.com/', {
         method: 'OPTIONS',
-        headers: { origin: ['http://localhost:80'] },
-        body: requestBody,
-      } as unknown as ServerRequest;
-
-      const responseBody = new PassThrough();
-
-      const response = {
-        headers: {},
-        body: responseBody,
-      } as unknown as Response;
+        headers: { origin: 'http://localhost:80' },
+      });
 
       const [handler, handlerMocks] = useFunctionMock<Handler>([]);
-
-      const [responseFactory, responseFactoryMocks] = useFunctionMock<ResponseFactory>([
-        { parameters: [204], return: response },
-      ]);
 
       const [container, containerMocks] = useObjectMock<Container>([
         {
@@ -198,62 +171,37 @@ describe('service-factory', () => {
             },
           },
         },
-        {
-          name: 'get',
-          parameters: ['responseFactory'],
-          return: responseFactory,
-        },
       ]);
 
       const corsMiddleware = corsMiddlewareServiceFactory(container);
 
       expect(corsMiddleware).toBeInstanceOf(Function);
 
-      const middlewareResponse = await corsMiddleware(request, handler);
+      const response = await corsMiddleware(serverRequest, handler);
 
-      expect({ ...middlewareResponse, body: undefined }).toMatchInlineSnapshot(`
+      expect(response.status).toBe(204);
+      expect(response.statusText).toBe('No Content');
+      expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
         {
-          "body": undefined,
-          "headers": {
-            "access-control-allow-credentials": [
-              "false",
-            ],
-            "access-control-allow-origin": [
-              "http://localhost:80",
-            ],
-            "access-control-max-age": [
-              "7200",
-            ],
-          },
+          "access-control-allow-credentials": "false",
+          "access-control-allow-origin": "http://localhost:80",
+          "access-control-max-age": "7200",
         }
       `);
 
+      expect(response.body).toBeNull();
+
       expect(handlerMocks.length).toBe(0);
-      expect(responseFactoryMocks.length).toBe(0);
       expect(containerMocks.length).toBe(0);
     });
 
     test('with allowOrigins: createAllowOriginRegex', async () => {
-      const requestBody = new PassThrough();
-
-      const request = {
+      const serverRequest = new ServerRequest('https://example.com/', {
         method: 'OPTIONS',
-        headers: { origin: ['http://localhost:80'] },
-        body: requestBody,
-      } as unknown as ServerRequest;
-
-      const responseBody = new PassThrough();
-
-      const response = {
-        headers: {},
-        body: responseBody,
-      } as unknown as Response;
+        headers: { origin: 'http://localhost:80' },
+      });
 
       const [handler, handlerMocks] = useFunctionMock<Handler>([]);
-
-      const [responseFactory, responseFactoryMocks] = useFunctionMock<ResponseFactory>([
-        { parameters: [204], return: response },
-      ]);
 
       const [container, containerMocks] = useObjectMock<Container>([
         {
@@ -272,62 +220,37 @@ describe('service-factory', () => {
             },
           },
         },
-        {
-          name: 'get',
-          parameters: ['responseFactory'],
-          return: responseFactory,
-        },
       ]);
 
       const corsMiddleware = corsMiddlewareServiceFactory(container);
 
       expect(corsMiddleware).toBeInstanceOf(Function);
 
-      const middlewareResponse = await corsMiddleware(request, handler);
+      const response = await corsMiddleware(serverRequest, handler);
 
-      expect({ ...middlewareResponse, body: undefined }).toMatchInlineSnapshot(`
+      expect(response.status).toBe(204);
+      expect(response.statusText).toBe('No Content');
+      expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
         {
-          "body": undefined,
-          "headers": {
-            "access-control-allow-credentials": [
-              "false",
-            ],
-            "access-control-allow-origin": [
-              "http://localhost:80",
-            ],
-            "access-control-max-age": [
-              "7200",
-            ],
-          },
+          "access-control-allow-credentials": "false",
+          "access-control-allow-origin": "http://localhost:80",
+          "access-control-max-age": "7200",
         }
       `);
 
+      expect(response.body).toBeNull();
+
       expect(handlerMocks.length).toBe(0);
-      expect(responseFactoryMocks.length).toBe(0);
       expect(containerMocks.length).toBe(0);
     });
 
     test('without allowOrigins', async () => {
-      const requestBody = new PassThrough();
-
-      const request = {
+      const serverRequest = new ServerRequest('https://example.com/', {
         method: 'OPTIONS',
-        headers: { origin: ['http://localhost:80'] },
-        body: requestBody,
-      } as unknown as ServerRequest;
-
-      const responseBody = new PassThrough();
-
-      const response = {
-        headers: {},
-        body: responseBody,
-      } as unknown as Response;
+        headers: { origin: 'http://localhost:80' },
+      });
 
       const [handler, handlerMocks] = useFunctionMock<Handler>([]);
-
-      const [responseFactory, responseFactoryMocks] = useFunctionMock<ResponseFactory>([
-        { parameters: [204], return: response },
-      ]);
 
       const [container, containerMocks] = useObjectMock<Container>([
         {
@@ -344,28 +267,21 @@ describe('service-factory', () => {
             },
           },
         },
-        {
-          name: 'get',
-          parameters: ['responseFactory'],
-          return: responseFactory,
-        },
       ]);
 
       const corsMiddleware = corsMiddlewareServiceFactory(container);
 
       expect(corsMiddleware).toBeInstanceOf(Function);
 
-      const middlewareResponse = await corsMiddleware(request, handler);
+      const response = await corsMiddleware(serverRequest, handler);
 
-      expect({ ...middlewareResponse, body: undefined }).toMatchInlineSnapshot(`
-        {
-          "body": undefined,
-          "headers": {},
-        }
-      `);
+      expect(response.status).toBe(204);
+      expect(response.statusText).toBe('No Content');
+      expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot('{}');
+
+      expect(response.body).toBeNull();
 
       expect(handlerMocks.length).toBe(0);
-      expect(responseFactoryMocks.length).toBe(0);
       expect(containerMocks.length).toBe(0);
     });
   });
@@ -416,11 +332,6 @@ describe('service-factory', () => {
 
   test('errorMiddlewareServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
-        return: () => null,
-      },
       {
         name: 'get',
         parameters: ['config'],
@@ -549,11 +460,6 @@ describe('service-factory', () => {
         parameters: ['openApiObject'],
         return: {},
       },
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
-        return: () => undefined,
-      },
     ]);
 
     expect(openApiHandlerServiceFactory(container)).toBeInstanceOf(Function);
@@ -646,50 +552,7 @@ describe('service-factory', () => {
   });
 
   test('pingHandlerServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['responseFactory'],
-        return: () => null,
-      },
-    ]);
-
-    expect(pingHandlerServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks.length).toBe(0);
-  });
-
-  test('requestFactoryServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['uriFactory'],
-        return: () => null,
-      },
-      {
-        name: 'get',
-        parameters: ['streamFactory'],
-        return: () => null,
-      },
-    ]);
-
-    expect(requestFactoryServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks.length).toBe(0);
-  });
-
-  test('responseFactoryServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['streamFactory'],
-        return: () => null,
-      },
-    ]);
-
-    expect(responseFactoryServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks.length).toBe(0);
+    expect(pingHandlerServiceFactory()).toBeInstanceOf(Function);
   });
 
   test('routeMatcherMiddlewareServiceFactory', () => {
@@ -707,8 +570,8 @@ describe('service-factory', () => {
   });
 
   test('routesServiceFactory', async () => {
-    const request = {} as ServerRequest;
-    const response = {} as Response;
+    const serverRequest = new ServerRequest('https://example.com/');
+    const response = new Response();
 
     const dummyHandler = async () => response;
 
@@ -754,7 +617,7 @@ describe('service-factory', () => {
       ]
     `);
 
-    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, request, response);
+    await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, serverRequest, response);
 
     expect(containerMocks.length).toBe(0);
   });
@@ -771,31 +634,5 @@ describe('service-factory', () => {
     expect(routesByNameServiceFactory(container)).toBeInstanceOf(Map);
 
     expect(containerMocks.length).toBe(0);
-  });
-
-  test('serverRequestFactoryServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['requestFactory'],
-        return: () => null,
-      },
-    ]);
-
-    expect(serverRequestFactoryServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks.length).toBe(0);
-  });
-
-  test('streamFactoryServiceFactory', () => {
-    expect(streamFactoryServiceFactory()).toBeInstanceOf(Function);
-  });
-
-  test('streamFromResourceFactoryServiceFactory', () => {
-    expect(streamFromResourceFactoryServiceFactory()).toBeInstanceOf(Function);
-  });
-
-  test('uriFactoryServiceFactory', () => {
-    expect(uriFactoryServiceFactory()).toBeInstanceOf(Function);
   });
 });

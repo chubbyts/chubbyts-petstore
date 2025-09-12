@@ -11,24 +11,23 @@ import {
   createPostRoute,
   createPutRoute,
 } from '@chubbyts/chubbyts-framework/dist/router/route';
-import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
-import type { ResponseFactory } from '@chubbyts/chubbyts-http-types/dist/message-factory';
-import { createCreateHandler } from '@chubbyts/chubbyts-api/dist/handler/create';
-import { createReadHandler } from '@chubbyts/chubbyts-api/dist/handler/read';
-import { createUpdateHandler } from '@chubbyts/chubbyts-api/dist/handler/update';
-import { createDeleteHandler } from '@chubbyts/chubbyts-api/dist/handler/delete';
-import { createListHandler } from '@chubbyts/chubbyts-api/dist/handler/list';
+import { createCreateHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/create';
+import { createReadHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/read';
+import { createUpdateHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/update';
+import { createDeleteHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/delete';
+import { createListHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/list';
 import type {
   FindModelById,
   PersistModel,
   RemoveModel,
   ResolveModelList,
-} from '@chubbyts/chubbyts-api/dist/repository';
+} from '@chubbyts/chubbyts-undici-api/dist/repository';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-api/dist/model';
+import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-undici-api/dist/model';
 import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
 import type { Schema } from '../repository.js';
 import type { InputPetListSchema, InputPetSchema } from './model.js';
@@ -48,7 +47,6 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
     container.get<Decoder>('decoder'),
     inputPetSchema,
     await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
-    container.get<ResponseFactory>('responseFactory'),
     enrichedPetSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
@@ -59,7 +57,6 @@ export const petDeleteHandlerServiceFactory = async (container: Container): Prom
   return createDeleteHandler(
     await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
     await container.get<Promise<RemoveModel<InputPetSchema>>>('petRemoveModel'),
-    container.get<ResponseFactory>('responseFactory'),
   );
 };
 
@@ -95,7 +92,6 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
   return createListHandler(
     inputPetListSchema,
     await container.get<Promise<ResolveModelList<InputPetSchema, InputPetListSchema>>>('petResolveModelList'),
-    container.get<ResponseFactory>('responseFactory'),
     enrichedPetListSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModelList<InputPetSchema, InputPetListSchema>>('petEnrichModelList'),
@@ -109,7 +105,6 @@ export const petPersistModelServiceFactory = async (container: Container): Promi
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createReadHandler(
     await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
-    container.get<ResponseFactory>('responseFactory'),
     enrichedPetSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
@@ -132,7 +127,6 @@ export const petUpdateHandlerServiceFactory = async (container: Container): Prom
     container.get<Decoder>('decoder'),
     inputPetSchema,
     await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
-    container.get<ResponseFactory>('responseFactory'),
     enrichedPetSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),

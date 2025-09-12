@@ -18,34 +18,33 @@
 
 ## Description
 
-An api skeleton using postgres for [chubbyts-framework][8].
+An api skeleton using postgres for [chubbyts-framework][6].
 
 ## Requirements
 
  * node: 18
  * [@asteasolutions/zod-to-openapi][1]: ^8.1.0
- * [@chubbyts/chubbyts-api][2]: ^6.3.0
- * [@chubbyts/chubbyts-decode-encode][3]: ^2.1.0
- * [@chubbyts/chubbyts-dic][4]: ^2.0.2
- * [@chubbyts/chubbyts-dic-config][5]: ^2.0.1
- * [@chubbyts/chubbyts-dic-types][6]: ^2.0.1
- * [@chubbyts/chubbyts-framework][7]: ^2.0.1
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][8]: ^2.0.2
- * [@chubbyts/chubbyts-http][9]: ^2.0.1
- * [@chubbyts/chubbyts-http-cors][10]: ^2.0.1
- * [@chubbyts/chubbyts-http-error][11]: ^3.0.1
- * [@chubbyts/chubbyts-http-node-bridge][12]: ^2.0.1
- * [@chubbyts/chubbyts-http-types][13]: ^3.0.1
- * [@chubbyts/chubbyts-log-types][14]: ^3.0.1
- * [@chubbyts/chubbyts-negotiation][15]: ^4.0.2
- * [@chubbyts/chubbyts-pino-adapter][16]: ^3.0.1
- * [commander][17]: ^14.0.0
- * [drizzle-orm][18]: ^0.44.5
- * [openapi3-ts][19]: ^4.5.0
- * [pg][20]: ^8.16.3
- * [pino][21]: ^9.9.0
- * [uuid][22]: ^11.1.0
- * [zod][23]: ^4.1.5
+ * [@chubbyts/chubbyts-decode-encode][2]: ^2.1.0
+ * [@chubbyts/chubbyts-dic][3]: ^2.0.2
+ * [@chubbyts/chubbyts-dic-config][4]: ^2.0.1
+ * [@chubbyts/chubbyts-dic-types][5]: ^2.0.1
+ * [@chubbyts/chubbyts-framework][6]: ^2.0.1
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^2.0.2
+ * [@chubbyts/chubbyts-http-error][8]: ^3.0.1
+ * [@chubbyts/chubbyts-log-types][9]: ^3.0.1
+ * [@chubbyts/chubbyts-negotiation][10]: ^4.0.2
+ * [@chubbyts/chubbyts-pino-adapter][11]: ^3.0.1
+ * [@chubbyts/chubbyts-undici-api][12]: ^1.0.0
+ * [@chubbyts/chubbyts-undici-cors][13]: ^1.0.0
+ * [@chubbyts/chubbyts-undici-server][14]: ^1.0.0
+ * [@chubbyts/chubbyts-undici-server-node][15]: ^1.0.0
+ * [commander][16]: ^14.0.0
+ * [drizzle-orm][17]: ^0.44.5
+ * [openapi3-ts][18]: ^4.5.0
+ * [pg][19]: ^8.16.3
+ * [pino][20]: ^9.9.5
+ * [uuid][21]: ^13.0.0
+ * [zod][22]: ^4.1.8
 
 ## Environment
 
@@ -190,28 +189,27 @@ docker run -it -e NODE_ENV=production -e POSTGRES_URI="<see docker-compose.yml, 
 2025 Dominik Zogg
 
 [1]: https://www.npmjs.com/package/@asteasolutions/zod-to-openapi
-[2]: https://www.npmjs.com/package/@chubbyts/chubbyts-api
-[3]: https://www.npmjs.com/package/@chubbyts/chubbyts-decode-encode
-[4]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic
-[5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-config
-[6]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
-[7]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
-[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
-[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-http
-[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-cors
-[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
-[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-node-bridge
-[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
-[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[17]: https://www.npmjs.com/package/commander
-[18]: https://www.npmjs.com/package/drizzle-orm
-[19]: https://www.npmjs.com/package/openapi3-ts
-[20]: https://www.npmjs.com/package/pino
-[21]: https://www.npmjs.com/package/pg
-[22]: https://www.npmjs.com/package/uuid
-[23]: https://www.npmjs.com/package/zod
+[2]: https://www.npmjs.com/package/@chubbyts/chubbyts-decode-encode
+[3]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic
+[4]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-config
+[5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
+[6]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
+[7]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
+[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
+[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
+[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
+[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-api
+[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-cors
+[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-server
+[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-server-node
+[16]: https://www.npmjs.com/package/commander
+[17]: https://www.npmjs.com/package/drizzle-orm
+[18]: https://www.npmjs.com/package/openapi3-ts
+[19]: https://www.npmjs.com/package/pino
+[20]: https://www.npmjs.com/package/pg
+[21]: https://www.npmjs.com/package/uuid
+[22]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

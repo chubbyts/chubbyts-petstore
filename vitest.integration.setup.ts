@@ -40,12 +40,6 @@ const startServer = async () => {
   connectionStringWithTestDatabase.path = [testDatabase];
   const postgresUriWithTestDatabase = connectionStringWithTestDatabase.toString();
 
-  console.log({
-    postgresUriWithoutDatabase,
-    postgresUriWithDatabase,
-    postgresUriWithTestDatabase,
-  });
-
   const postgresClient = new Client(postgresUriWithoutDatabase);
   await postgresClient.connect();
   await postgresClient.query(`DROP DATABASE IF EXISTS "${testDatabase}"`);

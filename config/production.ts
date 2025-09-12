@@ -2,7 +2,6 @@ import { createWriteStream, realpathSync } from 'fs';
 import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import type { Method } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.ts';
 import {
   petCreateHandlerServiceFactory,
@@ -39,22 +38,16 @@ import {
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
   pingHandlerServiceFactory,
-  requestFactoryServiceFactory,
-  responseFactoryServiceFactory,
   routeMatcherMiddlewareServiceFactory,
   routesByNameServiceFactory,
   routesServiceFactory,
-  serverRequestFactoryServiceFactory,
-  streamFactoryServiceFactory,
-  streamFromResourceFactoryServiceFactory,
-  uriFactoryServiceFactory,
 } from '../src/service-factory.js';
 
 export type Config = {
   cors: {
     allowCredentials: boolean;
     allowHeaders: Array<string>;
-    allowMethods: Array<Method>;
+    allowMethods: Array<string>;
     allowOrigins: {
       createAllowOriginExact?: Array<string>;
       createAllowOriginRegex?: Array<RegExp>;
@@ -132,15 +125,9 @@ export const configFactory = (env: string): Config => {
         ['petResolveModelList', petResolveModelListServiceFactory],
         ['petUpdateHandler', petUpdateHandlerServiceFactory],
         ['pingHandler', pingHandlerServiceFactory],
-        ['requestFactory', requestFactoryServiceFactory],
-        ['responseFactory', responseFactoryServiceFactory],
         ['routeMatcherMiddleware', routeMatcherMiddlewareServiceFactory],
         ['routes', routesServiceFactory],
         ['routesByName', routesByNameServiceFactory],
-        ['serverRequestFactory', serverRequestFactoryServiceFactory],
-        ['streamFactory', streamFactoryServiceFactory],
-        ['streamFromResourceFactory', streamFromResourceFactoryServiceFactory],
-        ['uriFactory', uriFactoryServiceFactory],
       ]),
       delegators: new Map([
         ['openApiRegistry', [petOpenApiRegistryServiceDelegator]],

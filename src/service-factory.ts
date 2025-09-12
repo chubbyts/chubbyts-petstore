@@ -1,27 +1,11 @@
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import type { Middleware } from '@chubbyts/chubbyts-http-types/dist/middleware';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/lazy-middleware';
 import { createErrorMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/error-middleware';
 import { createRouteMatcherMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/route-matcher-middleware';
-import type {
-  RequestFactory,
-  ResponseFactory,
-  ServerRequestFactory,
-  StreamFactory,
-  UriFactory,
-} from '@chubbyts/chubbyts-http-types/dist/message-factory';
 import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
 import { createLogger } from '@chubbyts/chubbyts-log-types/dist/log';
 import type { Match } from '@chubbyts/chubbyts-framework/dist/router/route-matcher';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import {
-  createRequestFactory,
-  createResponseFactory,
-  createServerRequestFactory,
-  createStreamFactory,
-  createStreamFromResourceFactory,
-  createUriFactory,
-} from '@chubbyts/chubbyts-http/dist/message-factory';
 import { createPinoAdapter } from '@chubbyts/chubbyts-pino-adapter/dist/pino-adapter';
 import {
   createPathToRegexpRouteMatcher,
@@ -33,9 +17,9 @@ import { createRoutesByName } from '@chubbyts/chubbyts-framework/dist/router/rou
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
 import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { createGetRoute } from '@chubbyts/chubbyts-framework/dist/router/route';
-import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/accept-negotiation-middleware';
-import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/content-type-negotiation-middleware';
-import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-api/dist/middleware/error-middleware';
+import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/accept-negotiation-middleware';
+import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/content-type-negotiation-middleware';
+import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/error-middleware';
 import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-negotiator';
 import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
 import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
@@ -51,19 +35,20 @@ import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/enc
 import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
-import { createCorsMiddleware } from '@chubbyts/chubbyts-http-cors/dist/middleware';
+import { createCorsMiddleware } from '@chubbyts/chubbyts-undici-cors/dist/middleware';
 import {
   createAllowOriginExact,
   createAllowOriginRegex,
   createHeadersNegotiator,
   createMethodNegotiator,
   createOriginNegotiator,
-} from '@chubbyts/chubbyts-http-cors/dist/negotiation';
+} from '@chubbyts/chubbyts-undici-cors/dist/negotiation';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
 import type { Config } from '../config/production.js';
 import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
@@ -83,7 +68,6 @@ export const acceptNegotiatorServiceFactory = (container: Container) => {
 
 export const apiErrorMiddlewareServiceFactory = (container: Container) => {
   return createApiErrorMiddleware(
-    container.get<ResponseFactory>('responseFactory'),
     container.get<Encoder>('encoder'),
     undefined,
     container.get<Config>('config').debug,
@@ -107,7 +91,6 @@ export const corsMiddlewareServiceFactory = (container: Container) => {
   const cors = container.get<Config>('config').cors;
 
   return createCorsMiddleware(
-    container.get<ResponseFactory>('responseFactory'),
     createOriginNegotiator([
       ...(cors.allowOrigins.createAllowOriginExact
         ? cors.allowOrigins.createAllowOriginExact.map(createAllowOriginExact)
@@ -147,11 +130,7 @@ export const encoderServiceFactory = (): Encoder => {
 };
 
 export const errorMiddlewareServiceFactory = (container: Container): Middleware => {
-  return createErrorMiddleware(
-    container.get<ResponseFactory>('responseFactory'),
-    container.get<Config>('config').debug,
-    container.get<Logger>('logger'),
-  );
+  return createErrorMiddleware(container.get<Config>('config').debug, container.get<Logger>('logger'));
 };
 
 export const generatePathServiceFactory = (container: Container): GeneratePath => {
@@ -189,10 +168,7 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
 };
 
 export const openApiHandlerServiceFactory = (container: Container) => {
-  return createOpenApiHandler(
-    container.get<OpenAPIComponentObject>('openApiObject'),
-    container.get<ResponseFactory>('responseFactory'),
-  );
+  return createOpenApiHandler(container.get<OpenAPIComponentObject>('openApiObject'));
 };
 
 export const openApiObjectServiceFactory = (container: Container): OpenAPIComponentObject => {
@@ -227,17 +203,7 @@ export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
   return registry;
 };
 
-export const pingHandlerServiceFactory = (container: Container) => {
-  return createPingHandler(container.get<ResponseFactory>('responseFactory'));
-};
-
-export const requestFactoryServiceFactory = (container: Container): RequestFactory => {
-  return createRequestFactory(container.get<UriFactory>('uriFactory'), container.get<StreamFactory>('streamFactory'));
-};
-
-export const responseFactoryServiceFactory = (container: Container): ResponseFactory => {
-  return createResponseFactory(container.get<StreamFactory>('streamFactory'));
-};
+export const pingHandlerServiceFactory = createPingHandler;
 
 export const routeMatcherMiddlewareServiceFactory = (container: Container): Middleware => {
   return createRouteMatcherMiddleware(container.get<Match>('match'));
@@ -263,13 +229,3 @@ export const routesServiceFactory = (container: Container): Array<Route> => {
 export const routesByNameServiceFactory = (container: Container): RoutesByName => {
   return createRoutesByName(container.get<Array<Route>>('routes'));
 };
-
-export const serverRequestFactoryServiceFactory = (container: Container): ServerRequestFactory => {
-  return createServerRequestFactory(container.get<RequestFactory>('requestFactory'));
-};
-
-export const streamFactoryServiceFactory = createStreamFactory;
-
-export const streamFromResourceFactoryServiceFactory = createStreamFromResourceFactory;
-
-export const uriFactoryServiceFactory = createUriFactory;

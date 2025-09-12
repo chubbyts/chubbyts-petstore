@@ -1,26 +1,20 @@
 import { describe, expect, test } from 'vitest';
-import type { ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
 import { createEnrichModelList, createEnrichModel } from '../../src/enrich.js';
 
 describe('createEnrichModel', () => {
   test('without links', async () => {
-    const request = {} as ServerRequest;
-
     const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([]);
 
     const enrichModel = createEnrichModel(generatePath, {});
 
     expect(
-      await enrichModel(
-        {
-          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-          createdAt: new Date('2022-06-12T20:08:24.793Z'),
-          updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-        },
-        { request },
-      ),
+      await enrichModel({
+        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        createdAt: new Date('2022-06-12T20:08:24.793Z'),
+        updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+      }),
     ).toMatchInlineSnapshot(`
       {
         "_links": {},
@@ -34,8 +28,6 @@ describe('createEnrichModel', () => {
   });
 
   test('with all links', async () => {
-    const request = {} as ServerRequest;
-
     const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([
       {
         parameters: [
@@ -73,15 +65,11 @@ describe('createEnrichModel', () => {
     });
 
     expect(
-      await enrichModel(
-        {
-          id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-          createdAt: new Date('2022-06-12T20:08:24.793Z'),
-          updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-        },
-
-        { request },
-      ),
+      await enrichModel({
+        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        createdAt: new Date('2022-06-12T20:08:24.793Z'),
+        updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+      }),
     ).toMatchInlineSnapshot(`
       {
         "_links": {
@@ -116,31 +104,25 @@ describe('createEnrichModel', () => {
 
 describe('createEnrichModelList', () => {
   test('without links', async () => {
-    const request = {} as ServerRequest;
-
     const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([]);
 
     const enrichList = createEnrichModelList(generatePath, {}, {});
 
     expect(
-      await enrichList(
-        {
-          offset: 0,
-          limit: 20,
-          filters: {},
-          sort: {},
-          count: 1,
-          items: [
-            {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-              createdAt: new Date('2022-06-12T20:08:24.793Z'),
-              updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-            },
-          ],
-        },
-
-        { request },
-      ),
+      await enrichList({
+        offset: 0,
+        limit: 20,
+        filters: {},
+        sort: {},
+        count: 1,
+        items: [
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            createdAt: new Date('2022-06-12T20:08:24.793Z'),
+            updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+          },
+        ],
+      }),
     ).toMatchInlineSnapshot(`
       {
         "_links": {},
@@ -164,8 +146,6 @@ describe('createEnrichModelList', () => {
   });
 
   test('with all links', async () => {
-    const request = {} as ServerRequest;
-
     const [generatePath, generatePathMocks] = useFunctionMock<GeneratePath>([
       {
         parameters: [
@@ -213,24 +193,20 @@ describe('createEnrichModelList', () => {
     );
 
     expect(
-      await enrichList(
-        {
-          offset: 0,
-          limit: 20,
-          filters: {},
-          sort: {},
-          count: 1,
-          items: [
-            {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-              createdAt: new Date('2022-06-12T20:08:24.793Z'),
-              updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-            },
-          ],
-        },
-
-        { request },
-      ),
+      await enrichList({
+        offset: 0,
+        limit: 20,
+        filters: {},
+        sort: {},
+        count: 1,
+        items: [
+          {
+            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            createdAt: new Date('2022-06-12T20:08:24.793Z'),
+            updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+          },
+        ],
+      }),
     ).toMatchInlineSnapshot(`
       {
         "_links": {

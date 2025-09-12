@@ -1,6 +1,5 @@
 import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
-import type { Handler } from '@chubbyts/chubbyts-http-types/dist/handler';
-import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/dist/message';
+import type { Response, ServerRequest, Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
 
 export const routeTestingResolveAllLazyMiddlewaresAndHandlers = async (
   routes: Array<Route>,

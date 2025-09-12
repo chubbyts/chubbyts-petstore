@@ -16,7 +16,7 @@ describe('read', () => {
 
     const responseData = await response.text();
 
-    expect(responseData).toMatch(/Allowed accepts/);
+    expect(responseData).toMatch(/Not Acceptable/);
   });
 
   test('not found', async () => {

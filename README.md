@@ -38,7 +38,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-undici-cors][13]: ^1.0.0
  * [@chubbyts/chubbyts-undici-server][14]: ^1.0.0
  * [@chubbyts/chubbyts-undici-server-node][15]: ^1.0.0
- * [commander][16]: ^14.0.0
+ * [commander][16]: ^14.0.1
  * [drizzle-orm][17]: ^0.44.5
  * [openapi3-ts][18]: ^4.5.0
  * [pg][19]: ^8.16.3

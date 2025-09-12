@@ -24,11 +24,11 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       '@chubbyts/chubbyts-framework':
-        specifier: 3.0.0-beta.5
-        version: 3.0.0-beta.5
+        specifier: 3.0.0
+        version: 3.0.0
       '@chubbyts/chubbyts-framework-router-path-to-regexp':
-        specifier: 3.0.0-beta.1
-        version: 3.0.0-beta.1
+        specifier: 3.0.0
+        version: 3.0.0
       '@chubbyts/chubbyts-http-error':
         specifier: ^3.0.1
         version: 3.0.1
@@ -57,8 +57,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       commander:
-        specifier: ^14.0.0
-        version: 14.0.0
+        specifier: ^14.0.1
+        version: 14.0.1
       mongodb:
         specifier: ^6.19.0
         version: 6.19.0
@@ -312,12 +312,12 @@ packages:
     resolution: {integrity: sha512-qIROigRaA4YkVt9a1YezHzlOa0zZXYRenR6JzB+5xVv2WSWGvK/rIAO7zMDFj9rxhEW0JbO4hlWAZ8wLXYpc9g==}
     engines: {node: '>=18'}
 
-  '@chubbyts/chubbyts-framework-router-path-to-regexp@3.0.0-beta.1':
-    resolution: {integrity: sha512-bQpsq5q49EtfsFkpJGXAsvKLCNDRo6lcIyXX7cuNiCI4eIQuN4dlPDGViVU4PF47st6aLSTMaGvP0HngYNk9Iw==}
+  '@chubbyts/chubbyts-framework-router-path-to-regexp@3.0.0':
+    resolution: {integrity: sha512-qD2bYOiFrPNnOFJAefAtwv9kGp+y+9ONtVMEl1tBi/swpHOfrcWm6GOfmdANBFgwkY+zY+fa1/rK7xTX8YjaKg==}
     engines: {node: '>=18'}
 
-  '@chubbyts/chubbyts-framework@3.0.0-beta.5':
-    resolution: {integrity: sha512-0n5Lft06buRgKgq04QkmHkY31y3BspYG97jf/kdEjZd2VOzs+MGihU0U8Pl14FW1X4kR66lxOywnBgqwhrZ2/g==}
+  '@chubbyts/chubbyts-framework@3.0.0':
+    resolution: {integrity: sha512-5JJDQp0sHKQzjH43kn49gFgbUvfc5hT/zr/6c+7oNUUL/HkPzr5MG5acgUXsxPUDSijecu9kbqnH111XjJ+w8Q==}
     engines: {node: '>=20'}
 
   '@chubbyts/chubbyts-function-mock@2.0.2':
@@ -1298,8 +1298,8 @@ packages:
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
-  commander@14.0.0:
-    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
+  commander@14.0.1:
+    resolution: {integrity: sha512-2JkV3gUZUVrbNA+1sjBOYLsMZ5cEEl8GTFP2a4AVz5hvasAMCQ1D2l2le/cX+pV4N6ZU17zjUahLpIXRrnWL8A==}
     engines: {node: '>=20'}
 
   concat-map@0.0.1:
@@ -3022,7 +3022,7 @@ snapshots:
       eslint: 9.35.0
       eslint-import-resolver-typescript: 4.4.4(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint@9.35.0))(eslint@9.35.0)
       eslint-plugin-functional: 9.0.2(eslint@9.35.0)(typescript@5.9.2)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint-import-resolver-typescript@4.4.4(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint@9.35.0))(eslint@9.35.0))(eslint@9.35.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint-import-resolver-typescript@4.4.4)(eslint@9.35.0)
       eslint-plugin-unused-imports: 4.2.0(@typescript-eslint/eslint-plugin@8.43.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint@9.35.0)(typescript@5.9.2))(eslint@9.35.0)
       typescript-eslint: 8.43.0(eslint@9.35.0)(typescript@5.9.2)
     transitivePeerDependencies:
@@ -3034,14 +3034,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@chubbyts/chubbyts-framework-router-path-to-regexp@3.0.0-beta.1':
+  '@chubbyts/chubbyts-framework-router-path-to-regexp@3.0.0':
     dependencies:
-      '@chubbyts/chubbyts-framework': 3.0.0-beta.5
+      '@chubbyts/chubbyts-framework': 3.0.0
       '@chubbyts/chubbyts-http-error': 3.0.1
       '@chubbyts/chubbyts-undici-server': 1.0.0
       path-to-regexp: 8.3.0
 
-  '@chubbyts/chubbyts-framework@3.0.0-beta.5':
+  '@chubbyts/chubbyts-framework@3.0.0':
     dependencies:
       '@chubbyts/chubbyts-dic-types': 2.0.1
       '@chubbyts/chubbyts-http-error': 3.0.1
@@ -3519,7 +3519,7 @@ snapshots:
       '@stryker-mutator/util': 9.1.1
       ajv: 8.17.1
       chalk: 5.4.1
-      commander: 14.0.0
+      commander: 14.0.1
       diff-match-patch: 1.0.5
       emoji-regex: 10.4.0
       execa: 9.6.0
@@ -4000,7 +4000,7 @@ snapshots:
 
   color-name@1.1.4: {}
 
-  commander@14.0.0: {}
+  commander@14.0.1: {}
 
   concat-map@0.0.1: {}
 
@@ -4234,7 +4234,7 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint-import-resolver-typescript@4.4.4(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint@9.35.0))(eslint@9.35.0))(eslint@9.35.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint-import-resolver-typescript@4.4.4)(eslint@9.35.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -4263,7 +4263,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint-import-resolver-typescript@4.4.4(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint@9.35.0))(eslint@9.35.0))(eslint@9.35.0):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.43.0(eslint@9.35.0)(typescript@5.9.2))(eslint-import-resolver-typescript@4.4.4)(eslint@9.35.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9

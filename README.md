@@ -39,7 +39,7 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-undici-cors][14]: ^1.0.0
  * [@chubbyts/chubbyts-undici-server][15]: ^1.0.0
  * [@chubbyts/chubbyts-undici-server-node][16]: ^1.0.0
- * [commander][17]: ^14.0.0
+ * [commander][17]: ^14.0.1
  * [mongodb][18]: ^6.19.0
  * [openapi3-ts][19]: ^4.5.0
  * [pino][20]: ^9.9.5

@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   docker-compose:
@@ -62,7 +62,7 @@ jobs:
       - name: checkout node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: npm install -g corepack@latest \
       - run: corepack enable pnpm
       - run: pnpm install
@@ -84,7 +84,7 @@ jobs:
       - name: checkout node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
       - run: npm install -g corepack@latest \
       - run: corepack enable pnpm
       - run: pnpm install
@@ -93,7 +93,7 @@ jobs:
       - run: pnpm run test --run --coverage --no-cache
       - run: pnpm run test:integration --run --no-cache
         env:
-          MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin'
+          MONGO_URI: "mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin"
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
@@ -103,7 +103,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: sonarcloud.io
-        uses: sonarsource/sonarqube-scan-action@v5.3.1
+        uses: sonarsource/sonarqube-scan-action@v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
       - name: checkout node
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
       - run: npm install -g corepack@latest \
       - run: corepack enable pnpm
       - run: pnpm install

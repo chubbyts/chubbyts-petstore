@@ -1,15 +1,13 @@
-FROM fluent/fluentd:v1.18-1
+FROM fluent/fluentd:v1.19-2
 
-# Use root account to use apk
 USER root
 
-# below RUN includes plugin as examples opensearch is not required
-# you may customize including plugins as you wish
-RUN apk add --no-cache --update --virtual .build-deps \
-    sudo build-base ruby-dev \
-    && sudo gem install fluent-plugin-opensearch \
-    && sudo gem sources --clear-all \
-    && apk del .build-deps \
+RUN apt-get update \
+    && apt-get install -y build-essential ruby-dev \
+    && gem install fluent-plugin-opensearch \
+    && gem sources --clear-all \
+    && apt-get purge -y --auto-remove build-essential ruby-dev \
+    && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem
 
 COPY docker/production/node-fluentd/files /

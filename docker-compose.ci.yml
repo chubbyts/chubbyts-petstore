@@ -24,14 +24,14 @@ services:
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui-ci
     hostname: chubbyts-petstore-swagger-ui-ci
-    image: swaggerapi/swagger-ui:v5.20.1
+    image: swaggerapi/swagger-ui:v5.30.1
     environment:
       BASE_URL: /swagger
       URLS: '[ { url: "/openapi" } ]'
   nginx:
     container_name: chubbyts-petstore-nginx-ci
     hostname: chubbyts-petstore-nginx-ci
-    image: nginx:1.27.5
+    image: nginx:1
     environment:
       SERVER_PORT: '443'
       NODE_SERVER_HOST: 'node'

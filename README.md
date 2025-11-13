@@ -98,21 +98,20 @@ Handler alias Controller, or Controller actions to be more precise.
 
 Models, entities, documents what ever fits your purpose the best.
 
- * [src/model.ts][32]
- * [src/pet/model.ts][33]
+ * [src/pet/model.ts][32]
 
 ### Repository
 
 Repositories get data from storages like databases, opensearch, redis or whereever your models are stored or cached.
 
- * [src/repository.ts][34]
+ * [src/repository.ts][33]
 
 ### ServiceFactory
 
 Service factories are the glue code of the dependeny injection container.
 
- * [src/service-factory.ts][35]
- * [src/pet/service-factory.ts][36]
+ * [src/service-factory.ts][34]
+ * [src/pet/service-factory.ts][35]
 
 ## Deployment
 
@@ -213,8 +212,7 @@ docker run -it -e NODE_ENV=production -e MONGO_URI="<see docker-compose.yml, rep
 
 [30]: src/command.ts
 [31]: src/handler.ts
-[32]: src/model.ts
-[33]: src/pet/model.ts
-[34]: src/repository.ts
-[35]: src/service-factory.ts
-[36]: src/pet/service-factory.ts
+[32]: src/pet/model.ts
+[33]: src/repository.ts
+[34]: src/service-factory.ts
+[35]: src/pet/service-factory.ts

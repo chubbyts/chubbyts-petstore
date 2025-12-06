@@ -31,7 +31,7 @@ COPY docker/development/node/files /
 ARG USER_ID
 ARG GROUP_ID
 
-RUN groupadd -g ${GROUP_ID} node \
+RUN getent group ${GROUP_ID} >/dev/null || groupadd -g ${GROUP_ID} node \
     && useradd -u ${USER_ID} -g ${GROUP_ID} -s /bin/bash -M node \
     && chown -Rf node: /home/node \
     && echo 'node ALL=(ALL) NOPASSWD: ALL' > '/etc/sudoers.d/node'

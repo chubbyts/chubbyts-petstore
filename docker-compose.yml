@@ -18,10 +18,12 @@ services:
       - '1235:1235'
     volumes:
       - ${PWD}:/app
-      - ~/.bash_docker:/home/node/.bash_docker
-      - ~/.gitconfig:/home/node/.gitconfig
-      - ~/.gitignore:/home/node/.gitignore
-      - ~/.zsh_docker:/home/node/.zsh_docker
+      - ~/.bash_docker:/home/php/.bash_docker
+      - ~/.bash_history:/home/php/.bash_history
+      - ~/.gitconfig:/home/php/.gitconfig
+      - ~/.gitignore:/home/php/.gitignore
+      - ~/.zsh_docker:/home/php/.zsh_docker
+      - ~/.zsh_history:/home/php/.zsh_history
       - $SSH_AUTH_SOCK:/ssh-agent
     depends_on:
       - mongo

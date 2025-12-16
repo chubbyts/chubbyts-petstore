@@ -42,12 +42,12 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^8.1.0",
+    "@asteasolutions/zod-to-openapi": "^8.2.0",
     "@chubbyts/chubbyts-decode-encode": "^2.1.1",
     "@chubbyts/chubbyts-dic": "^2.0.2",
     "@chubbyts/chubbyts-dic-config": "^2.0.1",
     "@chubbyts/chubbyts-dic-types": "^2.0.1",
-    "@chubbyts/chubbyts-framework": "3.0.1",
+    "@chubbyts/chubbyts-framework": "3.0.2",
     "@chubbyts/chubbyts-framework-router-path-to-regexp": "3.0.0",
     "@chubbyts/chubbyts-http-error": "^3.0.1",
     "@chubbyts/chubbyts-log-types": "^3.0.1",
@@ -58,30 +58,30 @@
     "@chubbyts/chubbyts-undici-server": "1.0.1",
     "@chubbyts/chubbyts-undici-server-node": "1.0.1",
     "commander": "^14.0.2",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-orm": "^0.45.1",
     "openapi3-ts": "^4.5.0",
     "pg": "^8.16.3",
     "pino": "^10.1.0",
     "uuid": "^13.0.0",
-    "zod": "^4.1.12"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@chubbyts/chubbyts-eslint": "^4.0.10",
     "@chubbyts/chubbyts-function-mock": "^2.0.2",
-    "@stryker-mutator/core": "^9.3.0",
-    "@stryker-mutator/typescript-checker": "^9.3.0",
-    "@stryker-mutator/vitest-runner": "^9.3.0",
-    "@types/node": "^24.10.0",
-    "@types/pg": "^8.15.6",
-    "@vitest/coverage-v8": "^4.0.8",
+    "@stryker-mutator/core": "^9.4.0",
+    "@stryker-mutator/typescript-checker": "^9.4.0",
+    "@stryker-mutator/vitest-runner": "^9.4.0",
+    "@types/node": "^25.0.2",
+    "@types/pg": "^8.16.0",
+    "@vitest/coverage-v8": "^4.0.15",
     "connection-string": "^5.0.0",
     "cross-fetch": "^4.1.0",
-    "drizzle-kit": "^0.31.6",
-    "eslint": "^9.39.1",
-    "prettier": "^3.6.2",
-    "tsx": "^4.20.6",
+    "drizzle-kit": "^0.31.8",
+    "eslint": "^9.39.2",
+    "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.15"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -89,5 +89,5 @@
       "unrs-resolver"
     ]
   },
-  "packageManager": "pnpm@10.21.0+sha512.da3337267e400fdd3d479a6c68079ac6db01d8ca4f67572083e722775a796788a7a9956613749e000fac20d424b594f7a791a5f4e2e13581c5ef947f26968a40"
+  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402"
 }

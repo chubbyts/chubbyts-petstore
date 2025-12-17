@@ -3,13 +3,30 @@ import type {
   InputModelListSchema,
   InputModelSchema,
   Model,
+  Sort,
 } from '@chubbyts/chubbyts-undici-api/dist/model';
 import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-undici-api/dist/repository';
-import type { MongoClient, Sort, WithId } from 'mongodb';
+import type { MongoClient, WithId } from 'mongodb';
 
 const withoutMongoId = <IMS extends InputModelSchema>(model: WithId<Model<IMS>>): Model<IMS> => {
   const { _id, ...rest } = model;
   return rest as Model<IMS>;
+};
+
+const filterUndefinedEntry = <T>(entry: [string, T]): entry is [string, Exclude<T, undefined>] =>
+  entry[1] !== undefined;
+
+export const convertSort = (sort: Record<string, Sort>) =>
+  Object.fromEntries(
+    Object.entries(sort)
+      .filter(filterUndefinedEntry)
+      .map(([key, value]) => [key, value === 'asc' ? 1 : -1]),
+  );
+
+export const aggregationSort = (sort: Record<string, Sort>) => {
+  const $sort = convertSort(sort);
+
+  return Object.keys($sort).length > 0 ? [{ $sort }] : [];
 };
 
 export const createResolveModelList = <IMS extends InputModelSchema, IMLS extends InputModelListSchema>(
@@ -19,17 +36,25 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
   const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
 
   return async (list: InputModelList<IMLS>) => {
-    const cursor = collection.find(list.filters);
-
-    cursor.skip(list.offset);
-    cursor.limit(list.limit);
-
-    cursor.sort(list.sort as Sort);
+    const result = await collection
+      .aggregate<{
+        items: WithId<Model<InputModelSchema>>[];
+        total: { count: number }[];
+      }>([
+        { $match: list.filters },
+        {
+          $facet: {
+            items: [...aggregationSort(list.sort), { $skip: list.offset }, { $limit: list.limit }],
+            total: [{ $count: 'count' }],
+          },
+        },
+      ])
+      .toArray();
 
     return {
       ...list,
-      items: (await cursor.toArray()).map(withoutMongoId),
-      count: await collection.countDocuments(list.filters),
+      items: result[0].items.map(withoutMongoId),
+      count: result[0].total[0].count,
     };
   };
 };

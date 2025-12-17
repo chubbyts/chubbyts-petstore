@@ -1,10 +1,12 @@
 import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-undici-api/dist/model';
 import { describe, expect, test } from 'vitest';
-import type { Collection, Db, FindCursor, MongoClient, WithId } from 'mongodb';
+import type { AggregationCursor, Collection, Db, MongoClient, WithId } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import type { z } from 'zod';
 import {
+  aggregationSort,
+  convertSort,
   createFindModelById,
   createPersistModel,
   createRemoveModel,
@@ -12,6 +14,34 @@ import {
 } from '../../src/repository.js';
 
 describe('repository', () => {
+  test('convertSort', () => {
+    expect(convertSort({ key1: 'asc', key2: 'desc', key3: undefined })).toMatchInlineSnapshot(`
+      {
+        "key1": 1,
+        "key2": -1,
+      }
+    `);
+  });
+
+  describe('aggregationSort', () => {
+    test('without values', () => {
+      expect(aggregationSort({ key1: undefined })).toMatchInlineSnapshot('[]');
+    });
+
+    test('with values', () => {
+      expect(aggregationSort({ key1: 'asc', key2: 'desc', key3: undefined })).toMatchInlineSnapshot(`
+        [
+          {
+            "$sort": {
+              "key1": 1,
+              "key2": -1,
+            },
+          },
+        ]
+      `);
+    });
+  });
+
   test('createResolveModelList', async () => {
     type InputSomeModelSchema = z.ZodObject<{ name: z.ZodString }>;
 
@@ -36,51 +66,34 @@ describe('repository', () => {
       count: 0,
     };
 
-    const [cursor, cursorMocks] = useObjectMock<FindCursor<WithId<SomeModel>>>([
-      {
-        name: 'skip',
-        parameters: [1],
-        returnSelf: true,
-      },
-      {
-        name: 'limit',
-        parameters: [1],
-        returnSelf: true,
-      },
-      {
-        name: 'sort',
-        parameters: [
-          {
-            name: 'desc',
-          },
-        ],
-        returnSelf: true,
-      },
+    const [aggregationCursor, aggregationCursorMocks] = useObjectMock<AggregationCursor>([
       {
         name: 'toArray',
         parameters: [],
-        return: Promise.resolve([modelWithId]),
+        return: Promise.resolve([
+          {
+            items: [modelWithId],
+            total: [{ count: 2 }],
+          },
+        ]),
       },
     ]);
 
     const [collection, collectionMocks] = useObjectMock<Collection>([
       {
-        name: 'find',
+        name: 'aggregate',
         parameters: [
-          {
-            name: 'name1',
-          },
+          [
+            { $match: { name: 'name1' } },
+            {
+              $facet: {
+                items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }],
+                total: [{ $count: 'count' }],
+              },
+            },
+          ],
         ],
-        return: cursor,
-      },
-      {
-        name: 'countDocuments',
-        parameters: [
-          {
-            name: 'name1',
-          },
-        ],
-        return: Promise.resolve(2),
+        return: aggregationCursor,
       },
     ]);
 
@@ -126,7 +139,7 @@ describe('repository', () => {
       }
     `);
 
-    expect(cursorMocks.length).toBe(0);
+    expect(aggregationCursorMocks.length).toBe(0);
     expect(collectionMocks.length).toBe(0);
     expect(dbMocks.length).toBe(0);
     expect(mongoClientMocks.length).toBe(0);

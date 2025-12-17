@@ -35,7 +35,7 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-mongodb][10]: ^2.0.2
  * [@chubbyts/chubbyts-negotiation][11]: ^4.0.2
  * [@chubbyts/chubbyts-pino-adapter][12]: ^3.0.2
- * [@chubbyts/chubbyts-undici-api][13]: ^1.1.0
+ * [@chubbyts/chubbyts-undici-api][13]: ^1.1.1
  * [@chubbyts/chubbyts-undici-cors][14]: ^1.0.0
  * [@chubbyts/chubbyts-undici-server][15]: ^1.0.1
  * [@chubbyts/chubbyts-undici-server-node][16]: ^1.0.1

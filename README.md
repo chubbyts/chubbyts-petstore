@@ -29,12 +29,12 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-dic-config][4]: ^2.0.1
  * [@chubbyts/chubbyts-dic-types][5]: ^2.0.1
  * [@chubbyts/chubbyts-framework][6]: ^3.0.2
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.0.0
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.0.1
  * [@chubbyts/chubbyts-http-error][8]: ^3.0.1
  * [@chubbyts/chubbyts-log-types][9]: ^3.0.1
  * [@chubbyts/chubbyts-negotiation][10]: ^4.0.2
  * [@chubbyts/chubbyts-pino-adapter][11]: ^3.0.1
- * [@chubbyts/chubbyts-undici-api][12]: ^1.1.0
+ * [@chubbyts/chubbyts-undici-api][12]: ^1.1.1
  * [@chubbyts/chubbyts-undici-cors][13]: ^1.0.0
  * [@chubbyts/chubbyts-undici-server][14]: ^1.0.1
  * [@chubbyts/chubbyts-undici-server-node][15]: ^1.0.1
@@ -44,7 +44,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [pg][19]: ^8.16.3
  * [pino][20]: ^10.1.0
  * [uuid][21]: ^13.0.0
- * [zod][22]: ^4.2.1
+ * [zod][22]: ^4.3.4
 
 ## Environment
 

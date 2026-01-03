@@ -48,12 +48,12 @@
     "@chubbyts/chubbyts-dic-config": "^2.0.1",
     "@chubbyts/chubbyts-dic-types": "^2.0.1",
     "@chubbyts/chubbyts-framework": "3.0.2",
-    "@chubbyts/chubbyts-framework-router-path-to-regexp": "3.0.0",
+    "@chubbyts/chubbyts-framework-router-path-to-regexp": "3.0.1",
     "@chubbyts/chubbyts-http-error": "^3.0.1",
     "@chubbyts/chubbyts-log-types": "^3.0.1",
     "@chubbyts/chubbyts-negotiation": "^4.0.2",
     "@chubbyts/chubbyts-pino-adapter": "^3.0.2",
-    "@chubbyts/chubbyts-undici-api": "1.1.0",
+    "@chubbyts/chubbyts-undici-api": "1.1.1",
     "@chubbyts/chubbyts-undici-cors": "1.0.0",
     "@chubbyts/chubbyts-undici-server": "1.0.1",
     "@chubbyts/chubbyts-undici-server-node": "1.0.1",
@@ -63,7 +63,7 @@
     "pg": "^8.16.3",
     "pino": "^10.1.0",
     "uuid": "^13.0.0",
-    "zod": "^4.2.1"
+    "zod": "^4.3.4"
   },
   "devDependencies": {
     "@chubbyts/chubbyts-eslint": "^4.0.10",
@@ -71,9 +71,9 @@
     "@stryker-mutator/core": "^9.4.0",
     "@stryker-mutator/typescript-checker": "^9.4.0",
     "@stryker-mutator/vitest-runner": "^9.4.0",
-    "@types/node": "^25.0.2",
+    "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.16",
     "connection-string": "^5.0.0",
     "cross-fetch": "^4.1.0",
     "drizzle-kit": "^0.31.8",
@@ -81,7 +81,7 @@
     "prettier": "^3.7.4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -89,5 +89,5 @@
       "unrs-resolver"
     ]
   },
-  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402"
+  "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a"
 }

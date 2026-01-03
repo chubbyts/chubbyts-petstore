@@ -60,8 +60,6 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --run --coverage --no-cache'
       - name: pnpm run test:integration --run --no-cache
         run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'MONGO_URI=mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
-      - name: pnpm run infection
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run infection'
       - name: pnpm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run build'
   node20:

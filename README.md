@@ -29,7 +29,7 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-dic-config][4]: ^2.0.1
  * [@chubbyts/chubbyts-dic-types][5]: ^2.0.1
  * [@chubbyts/chubbyts-framework][6]: ^3.0.2
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.0.0
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.0.1
  * [@chubbyts/chubbyts-http-error][8]: ^3.0.1
  * [@chubbyts/chubbyts-log-types][9]: ^3.0.1
  * [@chubbyts/chubbyts-mongodb][10]: ^2.0.2
@@ -44,7 +44,7 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [openapi3-ts][19]: ^4.5.0
  * [pino][20]: ^10.1.0
  * [uuid][21]: ^13.0.0
- * [zod][21]: ^4.2.1
+ * [zod][21]: ^4.3.4
 
 ## Environment
 

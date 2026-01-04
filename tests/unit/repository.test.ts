@@ -42,82 +42,167 @@ describe('repository', () => {
     });
   });
 
-  test('createResolveModelList', async () => {
-    type InputSomeModelSchema = z.ZodObject<{ name: z.ZodString }>;
+  describe('createResolveModelList', () => {
+    test('without data', async () => {
+      type InputSomeModelSchema = z.ZodObject<{ name: z.ZodString }>;
 
-    type SomeModel = Model<InputSomeModelSchema>;
+      const list: ModelList<InputSomeModelSchema, InputModelListSchema> = {
+        offset: 1,
+        limit: 1,
+        filters: { name: 'name1' },
+        sort: { name: 'desc' },
+        items: [],
+        count: 0,
+      };
 
-    const _id = new ObjectId();
-
-    const modelWithId: WithId<SomeModel> = {
-      _id,
-      id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
-      createdAt: new Date('2022-06-12T20:08:24.793Z'),
-      updatedAt: new Date('2022-06-12T20:08:35.208Z'),
-      name: 'name1',
-    };
-
-    const list: ModelList<InputSomeModelSchema, InputModelListSchema> = {
-      offset: 1,
-      limit: 1,
-      filters: { name: 'name1' },
-      sort: { name: 'desc' },
-      items: [],
-      count: 0,
-    };
-
-    const [aggregationCursor, aggregationCursorMocks] = useObjectMock<AggregationCursor>([
-      {
-        name: 'toArray',
-        parameters: [],
-        return: Promise.resolve([
-          {
-            items: [modelWithId],
-            total: [{ count: 2 }],
-          },
-        ]),
-      },
-    ]);
-
-    const [collection, collectionMocks] = useObjectMock<Collection>([
-      {
-        name: 'aggregate',
-        parameters: [
-          [
-            { $match: { name: 'name1' } },
+      const [aggregationCursor, aggregationCursorMocks] = useObjectMock<AggregationCursor>([
+        {
+          name: 'toArray',
+          parameters: [],
+          return: Promise.resolve([
             {
-              $facet: {
-                items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }],
-                total: [{ $count: 'count' }],
-              },
+              items: [],
+              total: [],
             },
+          ]),
+        },
+      ]);
+
+      const [collection, collectionMocks] = useObjectMock<Collection>([
+        {
+          name: 'aggregate',
+          parameters: [
+            [
+              { $match: { name: 'name1' } },
+              {
+                $facet: {
+                  items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }],
+                  total: [{ $count: 'count' }],
+                },
+              },
+            ],
           ],
-        ],
-        return: aggregationCursor,
-      },
-    ]);
+          return: aggregationCursor,
+        },
+      ]);
 
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['collectionName'],
-        return: collection,
-      },
-    ]);
+      const [db, dbMocks] = useObjectMock<Db>([
+        {
+          name: 'collection',
+          parameters: ['collectionName'],
+          return: collection,
+        },
+      ]);
 
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
+      const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+        {
+          name: 'db',
+          parameters: [],
+          return: db,
+        },
+      ]);
 
-    const collectionName = 'collectionName';
+      const collectionName = 'collectionName';
 
-    const resolveModelList = createResolveModelList(mongoClient, collectionName);
+      const resolveModelList = createResolveModelList(mongoClient, collectionName);
 
-    expect(await resolveModelList(list)).toMatchInlineSnapshot(`
+      expect(await resolveModelList(list)).toMatchInlineSnapshot(`
+        {
+          "count": 0,
+          "filters": {
+            "name": "name1",
+          },
+          "items": [],
+          "limit": 1,
+          "offset": 1,
+          "sort": {
+            "name": "desc",
+          },
+        }
+      `);
+
+      expect(aggregationCursorMocks.length).toBe(0);
+      expect(collectionMocks.length).toBe(0);
+      expect(dbMocks.length).toBe(0);
+      expect(mongoClientMocks.length).toBe(0);
+    });
+
+    test('with data', async () => {
+      type InputSomeModelSchema = z.ZodObject<{ name: z.ZodString }>;
+
+      type SomeModel = Model<InputSomeModelSchema>;
+
+      const _id = new ObjectId();
+
+      const modelWithId: WithId<SomeModel> = {
+        _id,
+        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        createdAt: new Date('2022-06-12T20:08:24.793Z'),
+        updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+        name: 'name1',
+      };
+
+      const list: ModelList<InputSomeModelSchema, InputModelListSchema> = {
+        offset: 1,
+        limit: 1,
+        filters: { name: 'name1' },
+        sort: { name: 'desc' },
+        items: [],
+        count: 0,
+      };
+
+      const [aggregationCursor, aggregationCursorMocks] = useObjectMock<AggregationCursor>([
+        {
+          name: 'toArray',
+          parameters: [],
+          return: Promise.resolve([
+            {
+              items: [modelWithId],
+              total: [{ count: 2 }],
+            },
+          ]),
+        },
+      ]);
+
+      const [collection, collectionMocks] = useObjectMock<Collection>([
+        {
+          name: 'aggregate',
+          parameters: [
+            [
+              { $match: { name: 'name1' } },
+              {
+                $facet: {
+                  items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }],
+                  total: [{ $count: 'count' }],
+                },
+              },
+            ],
+          ],
+          return: aggregationCursor,
+        },
+      ]);
+
+      const [db, dbMocks] = useObjectMock<Db>([
+        {
+          name: 'collection',
+          parameters: ['collectionName'],
+          return: collection,
+        },
+      ]);
+
+      const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
+        {
+          name: 'db',
+          parameters: [],
+          return: db,
+        },
+      ]);
+
+      const collectionName = 'collectionName';
+
+      const resolveModelList = createResolveModelList(mongoClient, collectionName);
+
+      expect(await resolveModelList(list)).toMatchInlineSnapshot(`
       {
         "count": 2,
         "filters": {
@@ -139,10 +224,11 @@ describe('repository', () => {
       }
     `);
 
-    expect(aggregationCursorMocks.length).toBe(0);
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
+      expect(aggregationCursorMocks.length).toBe(0);
+      expect(collectionMocks.length).toBe(0);
+      expect(dbMocks.length).toBe(0);
+      expect(mongoClientMocks.length).toBe(0);
+    });
   });
 
   describe('createFindModelById', () => {

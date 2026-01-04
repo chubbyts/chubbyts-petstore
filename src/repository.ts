@@ -54,7 +54,7 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
     return {
       ...list,
       items: result[0].items.map(withoutMongoId),
-      count: result[0].total[0].count,
+      count: result[0].total[0]?.count ?? 0,
     };
   };
 };

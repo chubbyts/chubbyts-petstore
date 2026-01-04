@@ -675,7 +675,7 @@ describe('service-factory', () => {
                                   "type": "object",
                                 },
                                 "createdAt": {
-                                  "format": "date",
+                                  "format": "date-time",
                                   "nullable": true,
                                   "type": "string",
                                 },
@@ -692,7 +692,7 @@ describe('service-factory', () => {
                                   "type": "string",
                                 },
                                 "updatedAt": {
-                                  "format": "date",
+                                  "format": "date-time",
                                   "nullable": true,
                                   "type": "string",
                                 },
@@ -987,7 +987,7 @@ describe('service-factory', () => {
                                   "type": "object",
                                 },
                                 "createdAt": {
-                                  "format": "date",
+                                  "format": "date-time",
                                   "nullable": true,
                                   "type": "string",
                                 },
@@ -1004,7 +1004,7 @@ describe('service-factory', () => {
                                   "type": "string",
                                 },
                                 "updatedAt": {
-                                  "format": "date",
+                                  "format": "date-time",
                                   "nullable": true,
                                   "type": "string",
                                 },
@@ -1203,7 +1203,7 @@ describe('service-factory', () => {
                             "type": "object",
                           },
                           "createdAt": {
-                            "format": "date",
+                            "format": "date-time",
                             "nullable": true,
                             "type": "string",
                           },
@@ -1220,7 +1220,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
-                            "format": "date",
+                            "format": "date-time",
                             "nullable": true,
                             "type": "string",
                           },
@@ -1394,7 +1394,7 @@ describe('service-factory', () => {
                             "type": "object",
                           },
                           "createdAt": {
-                            "format": "date",
+                            "format": "date-time",
                             "nullable": true,
                             "type": "string",
                           },
@@ -1411,7 +1411,7 @@ describe('service-factory', () => {
                             "type": "string",
                           },
                           "updatedAt": {
-                            "format": "date",
+                            "format": "date-time",
                             "nullable": true,
                             "type": "string",
                           },

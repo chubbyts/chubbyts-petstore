@@ -41,6 +41,8 @@ import {
 
 extendZodWithOpenApi(z);
 
+const petCollectionName = 'pets';
+
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createCreateHandler(
     container.get<Decoder>('decoder'),
@@ -84,7 +86,7 @@ export const petEnrichModelListServiceFactory = (
 };
 
 export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> => {
-  return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -98,7 +100,10 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
-  return createPersistModel<InputPetSchema>(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createPersistModel<InputPetSchema>(
+    await container.get<Promise<MongoClient>>('mongoClient'),
+    petCollectionName,
+  );
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -111,13 +116,13 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
-  return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 };
 
 export const petResolveModelListServiceFactory = async (
   container: Container,
 ): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> => {
-  return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), 'pets');
+  return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 };
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {

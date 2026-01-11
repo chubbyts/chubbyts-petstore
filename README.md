@@ -48,11 +48,33 @@ An api skeleton using postgres for [chubbyts-framework][6].
 
 ## Environment
 
-Add the following environment variable to your system, for example within `~/.bashrc`:
+Add the following environment variable to your system, for example within `~/.bashrc` or  `~/.zshrc`:
 
 ```sh
 export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
+```
+
+Make sure all the mount points are given
+
+```sh
+touch ~/.bash_docker
+touch ~/.bash_history
+```
+
+```sh
+touch ~/.gitconfig
+touch ~/.gitignore
+```
+
+```sh
+mkdir -p ~/.ssh
+~/.ssh/github.pub
+```
+
+```sh
+touch ~/.zsh_docker
+touch ~/.zsh_history
 ```
 
 ### Docker

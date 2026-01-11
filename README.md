@@ -42,7 +42,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [drizzle-orm][17]: ^0.45.1
  * [openapi3-ts][18]: ^4.5.0
  * [pg][19]: ^8.16.3
- * [pino][20]: ^10.1.0
+ * [pino][20]: ^10.1.1
  * [uuid][21]: ^13.0.0
  * [zod][22]: ^4.3.5
 

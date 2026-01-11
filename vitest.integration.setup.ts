@@ -80,5 +80,5 @@ export const setup = async () => {
 };
 
 export const teardown = async () => {
-  await httpServer.kill();
+  httpServer.kill();
 };

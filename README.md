@@ -68,11 +68,6 @@ touch ~/.gitignore
 ```
 
 ```sh
-mkdir -p ~/.ssh
-~/.ssh/github.pub
-```
-
-```sh
 touch ~/.zsh_docker
 touch ~/.zsh_history
 ```

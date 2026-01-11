@@ -686,182 +686,50 @@ describe('service-factory', () => {
                             },
                             "type": "object",
                           },
-                          "count": {
+                          "createdAt": {
+                            "format": "date-time",
                             "nullable": true,
-                            "type": "number",
+                            "type": "string",
                           },
-                          "filters": {
-                            "additionalProperties": false,
-                            "default": {},
-                            "properties": {
-                              "name": {
-                                "minLength": 1,
-                                "type": "string",
-                              },
-                            },
-                            "type": "object",
+                          "id": {
+                            "minLength": 1,
+                            "type": "string",
                           },
-                          "items": {
+                          "name": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "tag": {
+                            "minLength": 1,
+                            "type": "string",
+                          },
+                          "updatedAt": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string",
+                          },
+                          "vaccinations": {
                             "items": {
                               "additionalProperties": false,
                               "properties": {
-                                "_embedded": {
-                                  "additionalProperties": {
-                                    "nullable": true,
-                                  },
-                                  "properties": {},
-                                  "type": "object",
-                                },
-                                "_links": {
-                                  "additionalProperties": {
-                                    "anyOf": [
-                                      {
-                                        "allOf": [
-                                          {
-                                            "properties": {
-                                              "href": {
-                                                "type": "string",
-                                              },
-                                              "name": {
-                                                "type": "string",
-                                              },
-                                              "templated": {
-                                                "type": "boolean",
-                                              },
-                                            },
-                                            "required": [
-                                              "href",
-                                            ],
-                                            "type": "object",
-                                          },
-                                          {
-                                            "additionalProperties": {
-                                              "nullable": true,
-                                            },
-                                            "type": "object",
-                                          },
-                                        ],
-                                      },
-                                      {
-                                        "items": {
-                                          "allOf": [
-                                            {
-                                              "properties": {
-                                                "href": {
-                                                  "type": "string",
-                                                },
-                                                "name": {
-                                                  "type": "string",
-                                                },
-                                                "templated": {
-                                                  "type": "boolean",
-                                                },
-                                              },
-                                              "required": [
-                                                "href",
-                                              ],
-                                              "type": "object",
-                                            },
-                                            {
-                                              "additionalProperties": {
-                                                "nullable": true,
-                                              },
-                                              "type": "object",
-                                            },
-                                          ],
-                                        },
-                                        "type": "array",
-                                      },
-                                    ],
-                                  },
-                                  "type": "object",
-                                },
-                                "createdAt": {
-                                  "format": "date-time",
-                                  "nullable": true,
-                                  "type": "string",
-                                },
-                                "id": {
-                                  "minLength": 1,
-                                  "type": "string",
-                                },
                                 "name": {
                                   "minLength": 1,
                                   "type": "string",
                                 },
-                                "tag": {
-                                  "minLength": 1,
-                                  "type": "string",
-                                },
-                                "updatedAt": {
-                                  "format": "date-time",
-                                  "nullable": true,
-                                  "type": "string",
-                                },
-                                "vaccinations": {
-                                  "items": {
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "name": {
-                                        "minLength": 1,
-                                        "type": "string",
-                                      },
-                                    },
-                                    "required": [
-                                      "name",
-                                    ],
-                                    "type": "object",
-                                  },
-                                  "type": "array",
-                                },
                               },
                               "required": [
                                 "name",
-                                "vaccinations",
-                                "id",
-                                "createdAt",
                               ],
                               "type": "object",
                             },
                             "type": "array",
                           },
-                          "limit": {
-                            "default": 20,
-                            "nullable": true,
-                            "type": "number",
-                          },
-                          "offset": {
-                            "default": 0,
-                            "nullable": true,
-                            "type": "number",
-                          },
-                          "sort": {
-                            "additionalProperties": false,
-                            "default": {},
-                            "properties": {
-                              "name": {
-                                "anyOf": [
-                                  {
-                                    "enum": [
-                                      "asc",
-                                    ],
-                                    "type": "string",
-                                  },
-                                  {
-                                    "enum": [
-                                      "desc",
-                                    ],
-                                    "type": "string",
-                                  },
-                                ],
-                              },
-                            },
-                            "type": "object",
-                          },
                         },
                         "required": [
-                          "count",
-                          "items",
+                          "name",
+                          "vaccinations",
+                          "id",
+                          "createdAt",
                         ],
                         "type": "object",
                       },

@@ -183,7 +183,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Pet',
         content: {
           'application/json': {
-            schema: enrichedPetListSchema.openapi({
+            schema: enrichedPetSchema.openapi({
               description: 'Pet',
             }),
           },

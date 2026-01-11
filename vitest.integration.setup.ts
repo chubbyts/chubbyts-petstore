@@ -5,6 +5,7 @@ import { execSync, spawn } from 'child_process';
 import fetch from 'cross-fetch';
 import { Client } from 'pg';
 import { ConnectionString } from 'connection-string';
+import { getRequiredEnv } from './config/production';
 
 const getRandomInt = (min: number, max: number) => {
   const ceiledMin = Math.ceil(min);
@@ -18,50 +19,43 @@ const testServerPort = getRandomInt(49152, 65535);
 const timeout = 20000;
 const iterationTimeout = 500;
 
-const startServer = async () => {
-  const postgresUriWithDatabase = process.env.POSTGRES_URI as string;
-
-  const connectionString = new ConnectionString(postgresUriWithDatabase);
+const resolveDatabaseFromPostgresUri = (postgresUri: string) => {
+  const connectionString = new ConnectionString(postgresUri);
 
   if (connectionString.path?.length !== 1) {
     throw new Error('Cannot parse database name');
   }
 
-  const database = connectionString.path[0];
-  const testDatabase = `${database}_test`;
+  return connectionString.path[0];
+};
 
-  const connectionStringWithoutDatabase = new ConnectionString(postgresUriWithDatabase);
+const resolvePostgresConnectionStringWithDifferentDatabase = (postgresUri: string, database: string | undefined) => {
+  const connectionString = new ConnectionString(postgresUri);
   // eslint-disable-next-line functional/immutable-data
-  connectionStringWithoutDatabase.path = [];
-  const postgresUriWithoutDatabase = connectionStringWithoutDatabase.toString();
+  connectionString.path = database ? [database] : [];
 
-  const connectionStringWithTestDatabase = new ConnectionString(postgresUriWithDatabase);
-  // eslint-disable-next-line functional/immutable-data
-  connectionStringWithTestDatabase.path = [testDatabase];
-  const postgresUriWithTestDatabase = connectionStringWithTestDatabase.toString();
+  return connectionString.toString();
+};
 
+const bootstrapPostgresTestDatabase = async (
+  postgresUriWithoutDatabase: string,
+  testDatabase: string,
+): Promise<void> => {
   const postgresClient = new Client(postgresUriWithoutDatabase);
   await postgresClient.connect();
   await postgresClient.query(`DROP DATABASE IF EXISTS "${testDatabase}"`);
   await postgresClient.query(`CREATE DATABASE "${testDatabase}"`);
 
   execSync('./node_modules/.bin/drizzle-kit push', {
-    env: {
-      ...process.env,
-      NODE_ENV: 'test',
-      POSTGRES_URI: postgresUriWithTestDatabase,
-    },
+    env: process.env,
     stdio: 'inherit',
   });
+};
 
+const startServer = async () => {
   const child = spawn('./node_modules/.bin/tsx', ['bootstrap/index.ts'], {
-    env: {
-      ...process.env,
-      NODE_ENV: 'test',
-      POSTGRES_URI: postgresUriWithTestDatabase,
-      SERVER_HOST: testServerHost,
-      SERVER_PORT: `${testServerPort}`,
-    },
+    env: process.env,
+    //stdio: 'inherit', // helpful for debugging
     detached: true,
   }).once('error', (e) => {
     throw e;
@@ -87,6 +81,23 @@ const startServer = async () => {
 let httpServer: ChildProcessWithoutNullStreams;
 
 export const setup = async () => {
+  const postgresUri = getRequiredEnv('POSTGRES_URI');
+
+  const database = resolveDatabaseFromPostgresUri(postgresUri);
+  const testDatabase = `${database}_test`;
+
+  const postgresUriWithoutDatabase = resolvePostgresConnectionStringWithDifferentDatabase(postgresUri, undefined);
+  const postgresUriWithTestDatabase = resolvePostgresConnectionStringWithDifferentDatabase(postgresUri, testDatabase);
+
+  // eslint-disable-next-line functional/immutable-data
+  process.env.POSTGRES_URI = postgresUriWithTestDatabase;
+  // eslint-disable-next-line functional/immutable-data
+  process.env.SERVER_HOST = testServerHost;
+  // eslint-disable-next-line functional/immutable-data
+  process.env.SERVER_PORT = `${testServerPort}`;
+
+  await bootstrapPostgresTestDatabase(postgresUriWithoutDatabase, testDatabase);
+
   httpServer = await startServer();
 
   // eslint-disable-next-line functional/immutable-data

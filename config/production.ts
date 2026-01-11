@@ -75,7 +75,7 @@ export type Config = {
 
 const rootDir = realpathSync(new URL('..', import.meta.url));
 
-const getRequiredEnv = (key: string): string => {
+export const getRequiredEnv = (key: string): string => {
   const value = process.env[key];
 
   if (value === undefined || value === '') {

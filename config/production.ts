@@ -79,6 +79,16 @@ export type Config = {
 
 const rootDir = realpathSync(new URL('..', import.meta.url));
 
+const getRequiredEnv = (key: string): string => {
+  const value = process.env[key];
+
+  if (value === undefined || value === '') {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+
+  return value;
+};
+
 export const configFactory = (env: string): Config => {
   console.log(`Loading "${env}" config`);
 
@@ -143,7 +153,7 @@ export const configFactory = (env: string): Config => {
       ['log', logDir],
     ]),
     mongodb: {
-      uri: process.env.MONGO_URI as string,
+      uri: getRequiredEnv('MONGO_URI'),
       indexes: {
         pets: [
           {
@@ -187,8 +197,8 @@ export const configFactory = (env: string): Config => {
       },
     },
     server: {
-      host: process.env.SERVER_HOST as string,
-      port: parseInt(process.env.SERVER_PORT as string, 10),
+      host: getRequiredEnv('SERVER_HOST'),
+      port: parseInt(getRequiredEnv('SERVER_PORT'), 10),
     },
   };
 };

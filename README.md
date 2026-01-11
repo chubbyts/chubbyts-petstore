@@ -68,6 +68,11 @@ touch ~/.gitignore
 ```
 
 ```sh
+mkdir -p ~/.local/share/opencode
+[ ! -f ~/.local/share/opencode/auth.json ] && echo '{}' > ~/.local/share/opencode/auth.json
+```
+
+```sh
 touch ~/.zsh_docker
 touch ~/.zsh_history
 ```

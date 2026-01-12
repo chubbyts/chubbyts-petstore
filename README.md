@@ -135,6 +135,49 @@ Service factories are the glue code of the dependeny injection container.
  * [src/service-factory.ts][34]
  * [src/pet/service-factory.ts][35]
 
+## Opensearch
+
+### Policy to delete logstash formatted indicies after 14 days.
+
+```.sh
+curl -XPUT 'https://admin:t9V02zfj!NMj?LugFsOi@localhost:9200/_plugins/_ism/policies/logstash-policy' \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json' \
+    -d '{
+      "policy": {
+        "description": "Logstash",
+        "default_state": "hot",
+        "states": [
+          {
+            "name": "hot",
+            "actions": [],
+            "transitions": [
+              {
+                "state_name": "delete",
+                "conditions": {
+                  "min_index_age": "14d"
+                }
+              }
+            ]
+          },
+          {
+            "name": "delete",
+            "actions": [
+              {
+                "delete": {}
+              }
+            ]
+          }
+        ],
+        "ism_template": {
+          "index_patterns" : ["logstash-*"],
+          "priority": 100
+        }
+      }
+    }' \
+    --insecure
+```
+
 ## Copyright
 
 2026 Dominik Zogg

@@ -1,3 +1,4 @@
+name: chubbyts-petstore
 services:
   node:
     container_name: chubbyts-petstore-node

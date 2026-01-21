@@ -110,7 +110,7 @@ services:
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui
     hostname: chubbyts-petstore-swagger-ui
-    image: swaggerapi/swagger-ui:v5.30.2
+    image: swaggerapi/swagger-ui
     environment:
       BASE_URL: /swagger
       URLS: '[ { url: "/openapi" } ]'

@@ -48,38 +48,38 @@
     "@chubbyts/chubbyts-dic-types": "^2.0.1",
     "@chubbyts/chubbyts-framework": "3.0.2",
     "@chubbyts/chubbyts-framework-router-path-to-regexp": "3.0.1",
-    "@chubbyts/chubbyts-http-error": "^3.0.1",
+    "@chubbyts/chubbyts-http-error": "^3.1.2",
     "@chubbyts/chubbyts-log-types": "^3.0.1",
     "@chubbyts/chubbyts-mongodb": "^2.0.2",
     "@chubbyts/chubbyts-negotiation": "^4.0.2",
     "@chubbyts/chubbyts-pino-adapter": "^3.0.2",
-    "@chubbyts/chubbyts-undici-api": "1.1.1",
+    "@chubbyts/chubbyts-undici-api": "1.2.0",
     "@chubbyts/chubbyts-undici-cors": "1.0.0",
-    "@chubbyts/chubbyts-undici-server": "1.0.1",
-    "@chubbyts/chubbyts-undici-server-node": "1.0.1",
-    "commander": "^14.0.2",
+    "@chubbyts/chubbyts-undici-server": "1.0.2",
+    "@chubbyts/chubbyts-undici-server-node": "1.0.3",
+    "commander": "^14.0.3",
     "mongodb": "^7.0.0",
     "openapi3-ts": "^4.5.0",
-    "pino": "^10.1.1",
+    "pino": "^10.3.0",
     "uuid": "^13.0.0",
-    "zod": "^4.3.5"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@chubbyts/chubbyts-eslint": "^4.0.10",
     "@chubbyts/chubbyts-function-mock": "^2.0.2",
-    "@stryker-mutator/core": "^9.4.0",
-    "@stryker-mutator/typescript-checker": "^9.4.0",
-    "@stryker-mutator/vitest-runner": "^9.4.0",
+    "@stryker-mutator/core": "^9.5.0",
+    "@stryker-mutator/typescript-checker": "^9.5.0",
+    "@stryker-mutator/vitest-runner": "^9.5.0",
     "@types/mongodb-uri": "^0.9.4",
-    "@types/node": "^25.0.6",
-    "@vitest/coverage-v8": "^4.0.16",
+    "@types/node": "^25.2.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "cross-fetch": "^4.1.0",
     "eslint": "^9.39.2",
     "mongodb-uri": "^0.9.7",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -87,5 +87,5 @@
       "unrs-resolver"
     ]
   },
-  "packageManager": "pnpm@10.28.0+sha512.05df71d1421f21399e053fde567cea34d446fa02c76571441bfc1c7956e98e363088982d940465fd34480d4d90a0668bc12362f8aa88000a64e83d0b0e47be48"
+  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
 }

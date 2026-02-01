@@ -28,6 +28,7 @@ import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-undici-api
 import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
+import { v7 } from 'uuid';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
 import { createResolveModelList, createFindModelById, createPersistModel, createRemoveModel } from '../repository.js';
 import type { InputPetListSchema, InputPetSchema } from './model.js';
@@ -51,6 +52,7 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
     enrichedPetSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
+    v7,
   );
 };
 

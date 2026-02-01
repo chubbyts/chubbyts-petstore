@@ -28,6 +28,7 @@ import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-
 import { z } from 'zod';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
+import { v7 } from 'uuid';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
 import type { Schema } from '../repository.js';
 import type { InputPetListSchema, InputPetSchema } from './model.js';
@@ -50,6 +51,7 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
     enrichedPetSchema,
     container.get<Encoder>('encoder'),
     container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
+    v7,
   );
 };
 

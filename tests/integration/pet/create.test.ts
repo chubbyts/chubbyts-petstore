@@ -144,5 +144,7 @@ describe('create', () => {
         },
       },
     });
+
+    expect((responseData as { id: string }).id[14]).toBe('7');
   });
 });

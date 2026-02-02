@@ -136,7 +136,7 @@ describe('repository', () => {
 
       const modelWithId: WithId<SomeModel> = {
         _id,
-        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         updatedAt: new Date('2022-06-12T20:08:35.208Z'),
         name: 'name1',
@@ -211,7 +211,7 @@ describe('repository', () => {
         "items": [
           {
             "createdAt": 2022-06-12T20:08:24.793Z,
-            "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+            "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
             "name": "name1",
             "updatedAt": 2022-06-12T20:08:35.208Z,
           },
@@ -236,7 +236,7 @@ describe('repository', () => {
       type SomeModel = Model<z.ZodObject<{ name: z.ZodString }>>;
 
       const model: SomeModel = {
-        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         updatedAt: new Date('2022-06-12T20:08:35.208Z'),
         name: 'name1',
@@ -249,7 +249,7 @@ describe('repository', () => {
           name: 'findOne',
           parameters: [
             {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
           ],
           return: Promise.resolve({ _id: new ObjectId(), ...model }),
@@ -274,10 +274,10 @@ describe('repository', () => {
 
       const FindModelById = createFindModelById(mongoClient, collectionName);
 
-      expect(await FindModelById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toMatchInlineSnapshot(`
+      expect(await FindModelById('019c201f-6a83-7696-9899-50fbf7b2278d')).toMatchInlineSnapshot(`
       {
         "createdAt": 2022-06-12T20:08:24.793Z,
-        "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+        "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
         "name": "name1",
         "updatedAt": 2022-06-12T20:08:35.208Z,
       }
@@ -296,7 +296,7 @@ describe('repository', () => {
           name: 'findOne',
           parameters: [
             {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
           ],
           return: Promise.resolve(null),
@@ -321,7 +321,7 @@ describe('repository', () => {
 
       const FindModelById = createFindModelById(mongoClient, collectionName);
 
-      expect(await FindModelById('2b6491ac-677e-4b11-98dc-c124ae1c57e9')).toBeUndefined();
+      expect(await FindModelById('019c201f-6a83-7696-9899-50fbf7b2278d')).toBeUndefined();
 
       expect(collectionMocks.length).toBe(0);
       expect(dbMocks.length).toBe(0);
@@ -334,7 +334,7 @@ describe('repository', () => {
       type SomeModel = Model<z.ZodObject<{ name: z.ZodString }>>;
 
       const model: SomeModel = {
-        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         name: 'name1',
       };
@@ -348,7 +348,7 @@ describe('repository', () => {
           name: 'replaceOne',
           parameters: [
             {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
             model,
             { upsert: true },
@@ -365,7 +365,7 @@ describe('repository', () => {
           name: 'findOne',
           parameters: [
             {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
           ],
           return: Promise.resolve({ _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
@@ -393,7 +393,7 @@ describe('repository', () => {
       expect(await persistModel(model)).toMatchInlineSnapshot(`
         {
           "createdAt": 2022-06-12T20:08:24.793Z,
-          "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+          "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
           "name": "name1",
           "updatedAt": 2022-06-12T20:08:35.208Z,
         }
@@ -408,7 +408,7 @@ describe('repository', () => {
       type SomeModel = Model<z.ZodObject<{ name: z.ZodString }>>;
 
       const model: SomeModel = {
-        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         name: 'name1',
       };
@@ -422,7 +422,7 @@ describe('repository', () => {
           name: 'replaceOne',
           parameters: [
             {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
             model,
             { upsert: true },
@@ -439,7 +439,7 @@ describe('repository', () => {
           name: 'findOne',
           parameters: [
             {
-              id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
           ],
           return: Promise.resolve(null),
@@ -469,7 +469,7 @@ describe('repository', () => {
         throw new Error('expect fail');
       } catch (e) {
         expect(e).toMatchInlineSnapshot(
-          '[Error: Failed to persist model with id: 2b6491ac-677e-4b11-98dc-c124ae1c57e9]',
+          '[Error: Failed to persist model with id: 019c201f-6a83-7696-9899-50fbf7b2278d]',
         );
       }
 
@@ -483,7 +483,7 @@ describe('repository', () => {
     type SomeModel = Model<z.ZodObject<{ name: z.ZodString }>>;
 
     const model: SomeModel = {
-      id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+      id: '019c201f-6a83-7696-9899-50fbf7b2278d',
       createdAt: new Date('2022-06-12T20:08:24.793Z'),
       name: 'name1',
     };
@@ -495,7 +495,7 @@ describe('repository', () => {
         name: 'deleteOne',
         parameters: [
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: Promise.resolve({ acknowledged: true, deletedCount: 1 }),

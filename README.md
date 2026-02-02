@@ -99,9 +99,9 @@ pnpm start
 
 * GET https://localhost/api/pets?sort[name]=asc
 * POST https://localhost/api/pets
-* GET https://localhost/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
-* PUT https://localhost/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
-* DELETE https://localhost/api/pets/8ba9661b-ba7f-436b-bd25-c0606f911f7d
+* GET https://localhost/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d
+* PUT https://localhost/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d
+* DELETE https://localhost/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d
 
 ## Structure
 

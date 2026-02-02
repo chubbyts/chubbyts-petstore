@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 
 describe('read', () => {
   test('missing accept', async () => {
-    const response = await fetch(`${process.env.HTTP_URI}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'GET',
       headers: {
         accept: '',
@@ -20,7 +20,7 @@ describe('read', () => {
   });
 
   test('not found', async () => {
-    const response = await fetch(`${process.env.HTTP_URI}/api/pets/babb8c3c-788e-4bd8-aac2-d2b1a098a5c8`, {
+    const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'GET',
       headers: {
         accept: 'application/json',
@@ -36,7 +36,7 @@ describe('read', () => {
     expect(responseData).toMatchInlineSnapshot(`
       {
         "_httpError": "NotFound",
-        "detail": "There is no entry with id "babb8c3c-788e-4bd8-aac2-d2b1a098a5c8"",
+        "detail": "There is no entry with id "019c201f-6a83-7696-9899-50fbf7b2278d"",
         "status": 404,
         "title": "Not Found",
         "type": "https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.5",

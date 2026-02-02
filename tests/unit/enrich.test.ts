@@ -11,7 +11,7 @@ describe('createEnrichModel', () => {
 
     expect(
       await enrichModel({
-        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         updatedAt: new Date('2022-06-12T20:08:35.208Z'),
       }),
@@ -19,7 +19,7 @@ describe('createEnrichModel', () => {
       {
         "_links": {},
         "createdAt": 2022-06-12T20:08:24.793Z,
-        "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+        "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
         "updatedAt": 2022-06-12T20:08:35.208Z,
       }
     `);
@@ -33,7 +33,7 @@ describe('createEnrichModel', () => {
         parameters: [
           'model_read',
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: 'model_read',
@@ -42,7 +42,7 @@ describe('createEnrichModel', () => {
         parameters: [
           'model_update',
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: 'model_update',
@@ -51,7 +51,7 @@ describe('createEnrichModel', () => {
         parameters: [
           'model_delete',
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: 'model_delete',
@@ -66,7 +66,7 @@ describe('createEnrichModel', () => {
 
     expect(
       await enrichModel({
-        id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+        id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         updatedAt: new Date('2022-06-12T20:08:35.208Z'),
       }),
@@ -93,7 +93,7 @@ describe('createEnrichModel', () => {
           },
         },
         "createdAt": 2022-06-12T20:08:24.793Z,
-        "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+        "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
         "updatedAt": 2022-06-12T20:08:35.208Z,
       }
     `);
@@ -117,7 +117,7 @@ describe('createEnrichModelList', () => {
         count: 1,
         items: [
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             createdAt: new Date('2022-06-12T20:08:24.793Z'),
             updatedAt: new Date('2022-06-12T20:08:35.208Z'),
           },
@@ -132,7 +132,7 @@ describe('createEnrichModelList', () => {
           {
             "_links": {},
             "createdAt": 2022-06-12T20:08:24.793Z,
-            "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+            "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
             "updatedAt": 2022-06-12T20:08:35.208Z,
           },
         ],
@@ -151,7 +151,7 @@ describe('createEnrichModelList', () => {
         parameters: [
           'model_read',
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: 'model_read',
@@ -160,7 +160,7 @@ describe('createEnrichModelList', () => {
         parameters: [
           'model_update',
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: 'model_update',
@@ -169,7 +169,7 @@ describe('createEnrichModelList', () => {
         parameters: [
           'model_delete',
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
           },
         ],
         return: 'model_delete',
@@ -201,7 +201,7 @@ describe('createEnrichModelList', () => {
         count: 1,
         items: [
           {
-            id: '2b6491ac-677e-4b11-98dc-c124ae1c57e9',
+            id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             createdAt: new Date('2022-06-12T20:08:24.793Z'),
             updatedAt: new Date('2022-06-12T20:08:35.208Z'),
           },
@@ -242,7 +242,7 @@ describe('createEnrichModelList', () => {
               },
             },
             "createdAt": 2022-06-12T20:08:24.793Z,
-            "id": "2b6491ac-677e-4b11-98dc-c124ae1c57e9",
+            "id": "019c201f-6a83-7696-9899-50fbf7b2278d",
             "updatedAt": 2022-06-12T20:08:35.208Z,
           },
         ],

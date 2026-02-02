@@ -753,7 +753,7 @@ describe('service-factory', () => {
                   "name": "id",
                   "required": true,
                   "schema": {
-                    "example": "7d6722b2-a6b7-4c1f-af62-c1e96697de40",
+                    "example": "019c201f-6a83-7696-9899-50fbf7b2278d",
                     "type": "string",
                   },
                 },
@@ -776,7 +776,7 @@ describe('service-factory', () => {
                   "name": "id",
                   "required": true,
                   "schema": {
-                    "example": "7d6722b2-a6b7-4c1f-af62-c1e96697de40",
+                    "example": "019c201f-6a83-7696-9899-50fbf7b2278d",
                     "type": "string",
                   },
                 },
@@ -925,7 +925,7 @@ describe('service-factory', () => {
                   "name": "id",
                   "required": true,
                   "schema": {
-                    "example": "7d6722b2-a6b7-4c1f-af62-c1e96697de40",
+                    "example": "019c201f-6a83-7696-9899-50fbf7b2278d",
                     "type": "string",
                   },
                 },

@@ -202,7 +202,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     tags: ['Pets'],
     request: {
       params: z.object({
-        id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
+        id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
       }),
     },
     responses: {
@@ -227,7 +227,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     tags: ['Pets'],
     request: {
       params: z.object({
-        id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
+        id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
       }),
       body: {
         description: 'Pet data',
@@ -261,7 +261,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     tags: ['Pets'],
     request: {
       params: z.object({
-        id: z.string().openapi({ example: '7d6722b2-a6b7-4c1f-af62-c1e96697de40' }),
+        id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
       }),
     },
     responses: {

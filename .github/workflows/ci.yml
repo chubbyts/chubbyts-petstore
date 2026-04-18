@@ -63,20 +63,6 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'POSTGRES_URI=postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run build'
-  node20:
-    name: Node 20
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: checkout node
-        uses: useblacksmith/setup-node@v5
-        with:
-          node-version: "20"
-      - run: npm install -g corepack@latest \
-      - run: corepack enable pnpm
-      - run: pnpm install
-      - run: pnpm run test --run
   node22:
     name: Node 22
     runs-on: blacksmith-4vcpu-ubuntu-2404

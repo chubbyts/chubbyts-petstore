@@ -22,25 +22,25 @@ An api skeleton using mongodb for [chubbyts-framework][6].
 
 ## Requirements
 
- * node: 20
- * [@asteasolutions/zod-to-openapi][1]: ^8.4.3
- * [@chubbyts/chubbyts-decode-encode][2]: ^2.1.2
- * [@chubbyts/chubbyts-dic][3]: ^2.0.3
- * [@chubbyts/chubbyts-dic-config][4]: ^2.0.2
- * [@chubbyts/chubbyts-dic-types][5]: ^2.0.2
- * [@chubbyts/chubbyts-framework][6]: ^3.0.3
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.0.2
- * [@chubbyts/chubbyts-http-error][8]: ^3.1.3
- * [@chubbyts/chubbyts-log-types][9]: ^3.0.3
- * [@chubbyts/chubbyts-mongodb][10]: ^2.0.3
- * [@chubbyts/chubbyts-negotiation][11]: ^4.0.3
- * [@chubbyts/chubbyts-pino-adapter][12]: ^3.0.3
- * [@chubbyts/chubbyts-undici-api][13]: ^1.2.1
- * [@chubbyts/chubbyts-undici-cors][14]: ^1.0.1
- * [@chubbyts/chubbyts-undici-server][15]: ^1.0.3
- * [@chubbyts/chubbyts-undici-server-node][16]: ^1.0.4
+ * node: 22
+ * [@asteasolutions/zod-to-openapi][1]: ^8.5.0
+ * [@chubbyts/chubbyts-decode-encode][2]: ^2.2.1
+ * [@chubbyts/chubbyts-dic][3]: ^2.1.1
+ * [@chubbyts/chubbyts-dic-config][4]: ^2.1.1
+ * [@chubbyts/chubbyts-dic-types][5]: ^2.1.1
+ * [@chubbyts/chubbyts-framework][6]: ^3.1.2
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.1.2
+ * [@chubbyts/chubbyts-http-error][8]: ^3.2.1
+ * [@chubbyts/chubbyts-log-types][9]: ^3.1.1
+ * [@chubbyts/chubbyts-mongodb][10]: ^2.1.1
+ * [@chubbyts/chubbyts-negotiation][11]: ^4.1.1
+ * [@chubbyts/chubbyts-pino-adapter][12]: ^3.1.1
+ * [@chubbyts/chubbyts-undici-api][13]: ^1.3.1
+ * [@chubbyts/chubbyts-undici-cors][14]: ^1.1.2
+ * [@chubbyts/chubbyts-undici-server][15]: ^1.1.2
+ * [@chubbyts/chubbyts-undici-server-node][16]: ^1.1.2
  * [commander][17]: ^14.0.3
- * [mongodb][18]: ^7.1.0
+ * [mongodb][18]: ^7.1.1
  * [openapi3-ts][19]: ^4.5.0
  * [pino][20]: ^10.3.1
  * [uuid][21]: ^13.0.0

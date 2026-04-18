@@ -5,3 +5,4 @@ dist
 globalConfig.json
 node_modules
 var
+pnpm-lock.yaml

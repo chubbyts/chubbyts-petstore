@@ -12,9 +12,9 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
       - name: blacksmith docker
-        uses: useblacksmith/setup-docker-builder@v1
+        uses: useblacksmith/setup-docker-builder@v1.7.0
       - name: docker build / start
         env:
           DOCKER_BUILDKIT: 1
@@ -43,9 +43,9 @@ jobs:
           - 27017:27017
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
       - name: blacksmith docker
-        uses: useblacksmith/setup-docker-builder@v1
+        uses: useblacksmith/setup-docker-builder@v1.7.0
       - name: docker build
         env:
           DOCKER_BUILDKIT: 1
@@ -67,9 +67,9 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
       - name: checkout node
-        uses: useblacksmith/setup-node@v5
+        uses: useblacksmith/setup-node@v5.0.4
         with:
           node-version: "22"
       - run: npm install -g corepack@latest \
@@ -89,9 +89,9 @@ jobs:
           - 27017:27017
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
       - name: checkout node
-        uses: useblacksmith/setup-node@v5
+        uses: useblacksmith/setup-node@v5.0.4
         with:
           node-version: "24"
       - run: npm install -g corepack@latest \
@@ -108,11 +108,11 @@ jobs:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
       - run: pnpm run build
       - name: coveralls.io
-        uses: coverallsapp/github-action@main
+        uses: coverallsapp/github-action@v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: sonarcloud.io
-        uses: sonarsource/sonarqube-scan-action@v6.0.0
+        uses: sonarsource/sonarqube-scan-action@v7.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

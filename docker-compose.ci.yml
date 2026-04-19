@@ -16,6 +16,7 @@ services:
     container_name: chubbyts-petstore-mongo-ci
     hostname: chubbyts-petstore-mongo-ci
     image: mongo:8
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
       MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6

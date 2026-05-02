@@ -36,6 +36,7 @@ describe('list', () => {
     expect(responseData).toMatchInlineSnapshot(`
       {
         "_httpError": "BadRequest",
+        "context": "query",
         "invalidParameters": [
           {
             "context": {

@@ -60,7 +60,11 @@ describe('update', () => {
         'content-type': 'application/json',
         accept: 'application/json',
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        name: 'update.test',
+        tag: 'tag2',
+        vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
+      }),
     });
 
     expect(response.status).toBe(404);
@@ -112,6 +116,7 @@ describe('update', () => {
     expect(responseData).toMatchInlineSnapshot(`
       {
         "_httpError": "BadRequest",
+        "context": "body",
         "invalidParameters": [
           {
             "context": {
@@ -158,20 +163,9 @@ describe('update', () => {
         accept: 'application/json',
       },
       body: JSON.stringify({
-        id: createResponseData.id,
-        createdAt: createResponseData.createdAt,
-        updatedAt: createResponseData.updatedAt,
         name: 'update.test',
         tag: 'tag2',
         vaccinations: [{ name: 'vaccination1' }, { name: 'vaccination2' }],
-        _links: {
-          read: {
-            href: '/api/pets',
-            attributes: {
-              method: 'GET',
-            },
-          },
-        },
       }),
     });
 

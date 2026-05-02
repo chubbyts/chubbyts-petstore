@@ -6,7 +6,7 @@ import type {
   Sort,
 } from '@chubbyts/chubbyts-undici-api/dist/model';
 import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-undici-api/dist/repository';
-import type { MongoClient, WithId } from 'mongodb';
+import type { Filter, MongoClient, WithId } from 'mongodb';
 
 const withoutMongoId = <IMS extends InputModelSchema>(model: WithId<Model<IMS>>): Model<IMS> => {
   const { _id, ...rest } = model;
@@ -33,12 +33,12 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
   mongoClient: MongoClient,
   collectionName: string,
 ): ResolveModelList<IMS, IMLS> => {
-  const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
+  const collection = mongoClient.db().collection<Model<IMS>>(collectionName);
 
   return async (list: InputModelList<IMLS>) => {
     const result = await collection
       .aggregate<{
-        items: WithId<Model<InputModelSchema>>[];
+        items: WithId<Model<IMS>>[];
         total: { count: number }[];
       }>([
         { $match: list.filters },
@@ -63,10 +63,10 @@ export const createFindModelById = <IMS extends InputModelSchema>(
   mongoClient: MongoClient,
   collectionName: string,
 ): FindModelById<IMS> => {
-  const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
+  const collection = mongoClient.db().collection<Model<IMS>>(collectionName);
 
   return async (id: string): Promise<Model<IMS> | undefined> => {
-    const modelWithMongoId = (await collection.findOne({ id })) as WithId<Model<IMS>> | null;
+    const modelWithMongoId = await collection.findOne({ id } as Filter<Model<IMS>>);
 
     if (!modelWithMongoId) {
       return undefined;
@@ -80,14 +80,14 @@ export const createPersistModel = <IMS extends InputModelSchema>(
   mongoClient: MongoClient,
   collectionName: string,
 ): PersistModel<IMS> => {
-  const collection = mongoClient.db().collection<Model<InputModelSchema>>(collectionName);
+  const collection = mongoClient.db().collection<Model<IMS>>(collectionName);
 
   return async (model: Model<IMS>) => {
-    const filter = { id: model.id };
+    const filter = { id: model.id } as Filter<Model<IMS>>;
 
     await collection.replaceOne(filter, model, { upsert: true });
 
-    const modelWithMongoId = (await collection.findOne(filter)) as WithId<Model<IMS>> | null;
+    const modelWithMongoId = await collection.findOne(filter);
 
     if (!modelWithMongoId) {
       throw new Error(`Failed to persist model with id: ${model.id}`);

@@ -35,16 +35,16 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-mongodb][10]: ^2.1.1
  * [@chubbyts/chubbyts-negotiation][11]: ^4.1.1
  * [@chubbyts/chubbyts-pino-adapter][12]: ^3.1.1
- * [@chubbyts/chubbyts-undici-api][13]: ^1.3.1
+ * [@chubbyts/chubbyts-undici-api][13]: ^2.0.1
  * [@chubbyts/chubbyts-undici-cors][14]: ^1.1.2
  * [@chubbyts/chubbyts-undici-server][15]: ^1.1.2
  * [@chubbyts/chubbyts-undici-server-node][16]: ^1.1.2
  * [commander][17]: ^14.0.3
- * [mongodb][18]: ^7.1.1
+ * [mongodb][18]: ^7.2.0
  * [openapi3-ts][19]: ^4.5.0
  * [pino][20]: ^10.3.1
- * [uuid][21]: ^13.0.0
- * [zod][21]: ^4.3.6
+ * [uuid][21]: ^14.0.0
+ * [zod][21]: ^4.4.2
 
 ## Environment
 

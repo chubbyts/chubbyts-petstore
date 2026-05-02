@@ -72,6 +72,7 @@ describe('create', () => {
     expect(responseData).toMatchInlineSnapshot(`
       {
         "_httpError": "BadRequest",
+        "context": "body",
         "invalidParameters": [
           {
             "context": {

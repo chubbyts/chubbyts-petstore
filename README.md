@@ -142,7 +142,8 @@ Service factories are the glue code of the dependeny injection container.
 ### Policy to delete logstash formatted indicies after 14 days.
 
 ```.sh
-curl -XPUT 'https://admin:t9V02zfj!NMj?LugFsOi@localhost:9200/_plugins/_ism/policies/logstash-policy' \
+curl -XPUT 'https://localhost:9200/_plugins/_ism/policies/logstash-policy' \
+    -u 'admin:t9V02zfj!NMj?LugFsOi' \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json' \
     -d '{

@@ -181,6 +181,19 @@ curl -XPUT 'https://localhost:9200/_plugins/_ism/policies/logstash-policy' \
     --insecure
 ```
 
+### Dashboard
+
+Before you start, produce at least one error, [produce a 404](https://localhost/api/unknown).
+
+[Create Index Pattern](http://localhost:5601/app/management/opensearch-dashboards/indexPatterns/create)
+
+- Username: admin
+- Password: t9V02zfj!NMj?LugFsOi
+- Index pattern name: logstash-*
+- Time field: @timestamp
+
+[Discover](http://localhost:5601/app/data-explorer/discover)
+
 ## Copyright
 
 2026 Dominik Zogg

@@ -24,27 +24,27 @@ An api skeleton using postgres for [chubbyts-framework][6].
 
  * node: 22
  * [@asteasolutions/zod-to-openapi][1]: ^8.5.0
- * [@chubbyts/chubbyts-decode-encode][2]: ^2.2.1
- * [@chubbyts/chubbyts-dic][3]: ^2.1.1
- * [@chubbyts/chubbyts-dic-config][4]: ^2.1.1
- * [@chubbyts/chubbyts-dic-types][5]: ^2.1.1
- * [@chubbyts/chubbyts-framework][6]: ^3.1.2
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.1.2
- * [@chubbyts/chubbyts-http-error][8]: ^3.2.1
- * [@chubbyts/chubbyts-log-types][9]: ^3.1.1
- * [@chubbyts/chubbyts-negotiation][10]: ^4.1.1
- * [@chubbyts/chubbyts-pino-adapter][11]: ^3.1.1
- * [@chubbyts/chubbyts-undici-api][12]: ^2.0.1
- * [@chubbyts/chubbyts-undici-cors][13]: ^1.1.2
- * [@chubbyts/chubbyts-undici-server][14]: ^1.1.2
- * [@chubbyts/chubbyts-undici-server-node][15]: ^1.1.2
+ * [@chubbyts/chubbyts-decode-encode][2]: ^2.3.0
+ * [@chubbyts/chubbyts-dic][3]: ^2.2.0
+ * [@chubbyts/chubbyts-dic-config][4]: ^2.2.0
+ * [@chubbyts/chubbyts-dic-types][5]: ^2.2.0
+ * [@chubbyts/chubbyts-framework][6]: ^3.1.3
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.1.3
+ * [@chubbyts/chubbyts-http-error][8]: ^3.3.0
+ * [@chubbyts/chubbyts-log-types][9]: ^3.2.0
+ * [@chubbyts/chubbyts-negotiation][10]: ^4.2.0
+ * [@chubbyts/chubbyts-pino-adapter][11]: ^3.2.0
+ * [@chubbyts/chubbyts-undici-api][12]: ^2.0.2
+ * [@chubbyts/chubbyts-undici-cors][13]: ^1.1.3
+ * [@chubbyts/chubbyts-undici-server][14]: ^1.1.3
+ * [@chubbyts/chubbyts-undici-server-node][15]: ^1.1.3
  * [commander][16]: ^14.0.3
  * [drizzle-orm][17]: ^0.45.2
  * [openapi3-ts][18]: ^4.5.0
  * [pg][19]: ^8.20.0
  * [pino][20]: ^10.3.1
  * [uuid][21]: ^14.0.0
- * [zod][22]: ^4.4.2
+ * [zod][22]: ^4.4.3
 
 ## Environment
 

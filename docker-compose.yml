@@ -19,16 +19,22 @@ services:
     ports:
       - '1235:1235'
     volumes:
-      - ${PWD}:/app
-      - ~/.bash_docker:/home/php/.bash_docker
-      - ~/.bash_history:/home/php/.bash_history
-      - ~/.gitconfig:/home/php/.gitconfig
-      - ~/.gitignore:/home/php/.gitignore
+      - ${PWD}/..:/app
+      - $SSH_AUTH_SOCK:/ssh-agent
+      # bash
+      - ~/.bash_docker:/home/node/.bash_docker
+      - ~/.bash_history:/home/node/.bash_history
+      # zsh
+      - ~/.zsh_docker:/home/node/.zsh_docker
+      - ~/.zsh_history:/home/node/.zsh_history
+      # git
+      - ~/.gitconfig:/home/node/.gitconfig
+      - ~/.gitignore:/home/node/.gitignore
+      # npm
+      - ~/.npmrc:/home/node/.npmrc
+      # opencode - coding agent
       - ~/.config/opencode/tui.json:/home/node/.config/opencode/tui.json
       - ~/.local/share/opencode/auth.json:/home/node/.local/share/opencode/auth.json
-      - ~/.zsh_docker:/home/php/.zsh_docker
-      - ~/.zsh_history:/home/php/.zsh_history
-      - $SSH_AUTH_SOCK:/ssh-agent
     depends_on:
       - postgres
   node-fluentd:

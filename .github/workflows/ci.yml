@@ -90,6 +90,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
       - name: checkout node
         uses: useblacksmith/setup-node@v5.0.4
         with:

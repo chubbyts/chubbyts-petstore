@@ -52,7 +52,7 @@ import {
 import type { Config } from '../config/production.js';
 import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
-import { createOpenApiHandler, createPingHandler } from './handler.js';
+import { createOpenApiHandler } from './handler.js';
 
 extendZodWithOpenApi(z);
 
@@ -205,7 +205,7 @@ export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
   return registry;
 };
 
-export const pingHandlerServiceFactory = createPingHandler;
+export { createPingHandler as pingHandlerServiceFactory } from './handler.js';
 
 export const routeMatcherMiddlewareServiceFactory = (container: Container): Middleware => {
   return createRouteMatcherMiddleware(container.get<Match>('match'));

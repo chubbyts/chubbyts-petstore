@@ -56,6 +56,10 @@ RUN source ~/.bashrc \
     && mkdir -p "$HOME/.config/opencode" \
     && mkdir -p "$HOME/.local/share/opencode"
 
+RUN source ~/.bashrc \
+    && npm install -g @earendil-works/pi-coding-agent \
+    && mkdir -p "$HOME/.pi/agent"
+
 WORKDIR /app
 
 CMD trap "exit $?" TERM; while :; do sleep 1; done

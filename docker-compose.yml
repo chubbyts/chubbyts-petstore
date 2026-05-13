@@ -35,6 +35,8 @@ services:
       # opencode - coding agent
       - ~/.config/opencode/tui.json:/home/node/.config/opencode/tui.json
       - ~/.local/share/opencode/auth.json:/home/node/.local/share/opencode/auth.json
+      # pi - coding agent
+      - ~/.pi/agent/auth.json:/home/node/.pi/agent/auth.json
     depends_on:
       - mongo
   node-fluentd:

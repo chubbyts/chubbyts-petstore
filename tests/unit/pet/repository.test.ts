@@ -425,6 +425,95 @@ describe('repository', () => {
       expect(dbMocks.length).toBe(0);
     });
 
+    test('insert without vaccinations', async () => {
+      const pet: Pet = {
+        id: 'petId',
+        createdAt: new Date('2025-08-30T12:08:45.385Z'),
+        name: 'name',
+        vaccinations: [],
+      };
+
+      const [pgSelectBase, pgSelectBaseMocks] = useObjectMock<PgSelectBase<'pets', { count: SQL<number> }, 'partial'>>([
+        {
+          name: 'where',
+          callback: () => pgSelectBase,
+        },
+        { name: 'execute', parameters: [], return: Promise.resolve([{ count: 0 }]) },
+      ]);
+
+      const [pgSelectBuilder, pgSelectBuilderMocks] = useObjectMock<PgSelectBuilder<{ count: SQL<number> }>>([
+        {
+          name: 'from',
+          parameters: [schema.pets],
+          return: pgSelectBase,
+        },
+      ]);
+
+      const [petsPgInsertBase, petsPgInsertBaseMocks] = useObjectMock<
+        PgInsertBase<typeof schema.pets, PgQueryResultHKT, undefined, undefined>
+      >([{ name: 'execute', parameters: [], return: Promise.resolve(undefined) }]);
+
+      const [petsPgInsertBuilder, petsPgInsertBuilderMocks] = useObjectMock<
+        PgInsertBuilder<typeof schema.pets, PgQueryResultHKT>
+      >([
+        {
+          name: 'values',
+          parameters: [
+            [
+              {
+                id: pet.id,
+                createdAt: pet.createdAt,
+                updatedAt: pet.updatedAt ?? null,
+                name: pet.name,
+                tag: pet.tag ?? null,
+              },
+            ],
+          ],
+          return: petsPgInsertBase,
+        },
+      ]);
+
+      const [transaction, transactionMocks] = useObjectMock<
+        PgTransaction<PgQueryResultHKT, Schema, TablesWithRelations>
+      >([
+        {
+          name: 'select',
+          parameters: [{ count: count(schema.pets.id) }],
+          return: pgSelectBuilder,
+        },
+        {
+          name: 'insert',
+          parameters: [schema.pets],
+          return: petsPgInsertBuilder,
+        },
+      ]);
+
+      const [db, dbMocks] = useObjectMock<NodePgDatabase<Schema>>([
+        {
+          name: 'transaction',
+          callback: (callback) => callback(transaction),
+        },
+      ]);
+
+      const persistPet = createPersistPet(db);
+
+      expect(await persistPet(pet)).toMatchInlineSnapshot(`
+        {
+          "createdAt": 2025-08-30T12:08:45.385Z,
+          "id": "petId",
+          "name": "name",
+          "vaccinations": [],
+        }
+      `);
+
+      expect(pgSelectBaseMocks.length).toBe(0);
+      expect(pgSelectBuilderMocks.length).toBe(0);
+      expect(petsPgInsertBaseMocks.length).toBe(0);
+      expect(petsPgInsertBuilderMocks.length).toBe(0);
+      expect(transactionMocks.length).toBe(0);
+      expect(dbMocks.length).toBe(0);
+    });
+
     test('update', async () => {
       const pet: Pet = {
         id: 'petId',

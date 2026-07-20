@@ -36,7 +36,11 @@ services:
       - ~/.claude.json:/home/node/.claude.json
       - ~/.claude/.credentials.json:/home/node/.claude/.credentials.json
       - ~/.claude/settings.json:/home/node/.claude/settings.json
+      # codex - coding agent
+      - ~/.codex/auth.json:/home/node/.codex/auth.json
+      - ~/.codex/config.toml:/home/node/.codex/config.toml
       # opencode - coding agent
+      - ~/.config/opencode/opencode.jsonc:/home/node/.config/opencode/opencode.jsonc
       - ~/.config/opencode/tui.json:/home/node/.config/opencode/tui.json
       - ~/.local/share/opencode/auth.json:/home/node/.local/share/opencode/auth.json
       # pi - coding agent

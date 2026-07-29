@@ -1,4 +1,4 @@
-/* eslint-disable functional/no-let */
+/* oxlint-disable functional/no-let */
 
 import type { ChildProcessWithoutNullStreams } from 'child_process';
 import { execSync, spawn } from 'child_process';
@@ -31,7 +31,7 @@ const resolveDatabaseFromPostgresUri = (postgresUri: string) => {
 
 const resolvePostgresConnectionStringWithDifferentDatabase = (postgresUri: string, database: string | undefined) => {
   const connectionString = new ConnectionString(postgresUri);
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   connectionString.path = database ? [database] : [];
 
   return connectionString.toString();
@@ -89,18 +89,18 @@ export const setup = async () => {
   const postgresUriWithoutDatabase = resolvePostgresConnectionStringWithDifferentDatabase(postgresUri, undefined);
   const postgresUriWithTestDatabase = resolvePostgresConnectionStringWithDifferentDatabase(postgresUri, testDatabase);
 
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.POSTGRES_URI = postgresUriWithTestDatabase;
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.SERVER_HOST = testServerHost;
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.SERVER_PORT = `${testServerPort}`;
 
   await bootstrapPostgresTestDatabase(postgresUriWithoutDatabase, testDatabase);
 
   httpServer = await startServer();
 
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.HTTP_URI = `http://${testServerHost}:${testServerPort}`;
 };
 

@@ -2,7 +2,7 @@ import { createWriteStream, realpathSync } from 'fs';
 import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.ts';
+import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
 import {
   petCreateHandlerServiceFactory,
   petFindModelByIdServiceFactory,

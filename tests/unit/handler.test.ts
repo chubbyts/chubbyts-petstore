@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
 import { ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { createOpenApiHandler, createPingHandler } from '../../src/handler.js';
 
@@ -13,7 +13,7 @@ describe('handler', () => {
 
     expect(response.status).toBe(200);
     expect(response.statusText).toBe('OK');
-    expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
+    expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
       {
         "cache-control": "no-cache, no-store, must-revalidate",
         "content-type": "application/json",
@@ -55,7 +55,7 @@ describe('handler', () => {
 
     expect(response.status).toBe(200);
     expect(response.statusText).toBe('OK');
-    expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
+    expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
       {
         "cache-control": "no-cache, no-store, must-revalidate",
         "content-type": "application/json",

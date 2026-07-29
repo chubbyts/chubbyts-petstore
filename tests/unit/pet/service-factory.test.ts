@@ -218,9 +218,11 @@ describe('service-factory', () => {
   test('petOpenApiRegistryServiceDelegator', async () => {
     const [container, containerMocks] = useObjectMock<Container>([]);
 
-    const factory = () => new OpenAPIRegistry();
-
-    const openApiRegistry = petOpenApiRegistryServiceDelegator(container, 'petOpenApiRegistry', factory);
+    const openApiRegistry = petOpenApiRegistryServiceDelegator(
+      container,
+      'petOpenApiRegistry',
+      () => new OpenAPIRegistry(),
+    );
 
     expect(openApiRegistry).toBeInstanceOf(OpenAPIRegistry);
 

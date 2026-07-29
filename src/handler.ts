@@ -1,5 +1,5 @@
 import { STATUS_CODES } from 'node:http';
-import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
 import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { Response } from '@chubbyts/chubbyts-undici-server/dist/server';
 

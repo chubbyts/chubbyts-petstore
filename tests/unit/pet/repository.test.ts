@@ -61,7 +61,7 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findMany',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // oxlint-disable-next-line @typescript-eslint/no-explicit-any
           callback: () => pgRelationalQuery as any,
         },
       ]);
@@ -152,7 +152,7 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findMany',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // oxlint-disable-next-line @typescript-eslint/no-explicit-any
           callback: () => pgRelationalQuery as any,
         },
       ]);
@@ -219,7 +219,7 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findFirst',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // oxlint-disable-next-line @typescript-eslint/no-explicit-any
           callback: () => pgRelationalQuery as any,
         },
       ]);
@@ -264,7 +264,7 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findFirst',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // oxlint-disable-next-line @typescript-eslint/no-explicit-any
           callback: () => pgRelationalQuery as any,
         },
       ]);

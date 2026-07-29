@@ -181,7 +181,7 @@ describe('service-factory', () => {
 
       expect(response.status).toBe(204);
       expect(response.statusText).toBe('No Content');
-      expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
+      expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
         {
           "access-control-allow-credentials": "false",
           "access-control-allow-origin": "http://localhost:80",
@@ -230,7 +230,7 @@ describe('service-factory', () => {
 
       expect(response.status).toBe(204);
       expect(response.statusText).toBe('No Content');
-      expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot(`
+      expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
         {
           "access-control-allow-credentials": "false",
           "access-control-allow-origin": "http://localhost:80",
@@ -277,7 +277,7 @@ describe('service-factory', () => {
 
       expect(response.status).toBe(204);
       expect(response.statusText).toBe('No Content');
-      expect(Object.fromEntries([...response.headers.entries()])).toMatchInlineSnapshot('{}');
+      expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot('{}');
 
       expect(response.body).toBeNull();
 

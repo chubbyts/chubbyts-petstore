@@ -1,4 +1,4 @@
-/* eslint-disable functional/no-let */
+/* oxlint-disable functional/no-let */
 
 import type { ChildProcessWithoutNullStreams } from 'child_process';
 import { spawn } from 'child_process';
@@ -64,18 +64,18 @@ export const setup = async () => {
   const mongoUriWithoutDatabase = format({ ...mongoConfigWithoutDatabase });
   const mongoUriWithTestDatabase = format({ ...mongoConfigWithoutDatabase, database: testDatabase });
 
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.MONGO_URI = mongoUriWithTestDatabase;
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.SERVER_HOST = testServerHost;
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.SERVER_PORT = `${testServerPort}`;
 
   await bootstrapMongoDbTestDatabase(mongoUriWithoutDatabase, testDatabase);
 
   httpServer = await startServer();
 
-  // eslint-disable-next-line functional/immutable-data
+  // oxlint-disable-next-line functional/immutable-data
   process.env.HTTP_URI = `http://${testServerHost}:${testServerPort}`;
 };
 

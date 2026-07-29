@@ -36,7 +36,7 @@ import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/enc
 import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.ts';
+import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
 import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/accept-negotiation-middleware';
 import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/content-type-negotiation-middleware';
 import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/error-middleware';

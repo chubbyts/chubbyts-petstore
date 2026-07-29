@@ -132,10 +132,10 @@ describe('repository', () => {
 
       type SomeModel = Model<InputSomeModelSchema>;
 
-      const _id = new ObjectId();
+      const objectId = new ObjectId();
 
       const modelWithId: WithId<SomeModel> = {
-        _id,
+        _id: objectId,
         id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         updatedAt: new Date('2022-06-12T20:08:35.208Z'),
@@ -339,7 +339,7 @@ describe('repository', () => {
         name: 'name1',
       };
 
-      const _id = new ObjectId();
+      const objectId = new ObjectId();
 
       const collectionName = 'collectionName';
 
@@ -358,7 +358,7 @@ describe('repository', () => {
             matchedCount: 1,
             modifiedCount: 0,
             upsertedCount: 1,
-            upsertedId: _id,
+            upsertedId: objectId,
           }),
         },
         {
@@ -368,7 +368,7 @@ describe('repository', () => {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
           ],
-          return: Promise.resolve({ _id, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
+          return: Promise.resolve({ _id: objectId, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
         },
       ]);
 
@@ -413,7 +413,7 @@ describe('repository', () => {
         name: 'name1',
       };
 
-      const _id = new ObjectId();
+      const objectId = new ObjectId();
 
       const collectionName = 'collectionName';
 
@@ -432,7 +432,7 @@ describe('repository', () => {
             matchedCount: 1,
             modifiedCount: 0,
             upsertedCount: 1,
-            upsertedId: _id,
+            upsertedId: objectId,
           }),
         },
         {

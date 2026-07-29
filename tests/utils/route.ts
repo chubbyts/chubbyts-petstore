@@ -9,7 +9,7 @@ export const routeTestingResolveAllLazyMiddlewaresAndHandlers = async (
   // all middlewares (wrapped as handler) and handlers of this routesServiceDelegator
   const handlers: Array<Handler> = routes.flatMap((route) => [
     ...route.middlewares.map((middleware) => {
-      return (request: ServerRequest) => middleware(request, async () => response);
+      return (middlewareRequest: ServerRequest) => middleware(middlewareRequest, async () => response);
     }),
     route.handler,
   ]);

@@ -106,12 +106,12 @@ describe('repository', () => {
           }
         `);
 
-      expect(pgSelectBaseMocks.length).toBe(0);
-      expect(pgSelectBuilderMocks.length).toBe(0);
-      expect(pgRelationalQueryMocks.length).toBe(0);
-      expect(petsMock.length).toBe(0);
-      expect(petsVaccinationsMock.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgSelectBaseMocks).toHaveLength(0);
+      expect(pgSelectBuilderMocks).toHaveLength(0);
+      expect(pgRelationalQueryMocks).toHaveLength(0);
+      expect(petsMock).toHaveLength(0);
+      expect(petsVaccinationsMock).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
 
     test('maximal', async () => {
@@ -201,12 +201,12 @@ describe('repository', () => {
           }
         `);
 
-      expect(pgSelectBaseMocks.length).toBe(0);
-      expect(pgSelectBuilderMocks.length).toBe(0);
-      expect(pgRelationalQueryMocks.length).toBe(0);
-      expect(petsMock.length).toBe(0);
-      expect(petsVaccinationsMock.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgSelectBaseMocks).toHaveLength(0);
+      expect(pgSelectBuilderMocks).toHaveLength(0);
+      expect(pgRelationalQueryMocks).toHaveLength(0);
+      expect(petsMock).toHaveLength(0);
+      expect(petsVaccinationsMock).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
   });
 
@@ -236,10 +236,10 @@ describe('repository', () => {
 
       expect(await findPetById('id')).toBeUndefined();
 
-      expect(pgRelationalQueryMocks.length).toBe(0);
-      expect(petsMock.length).toBe(0);
-      expect(petsVaccinationsMock.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgRelationalQueryMocks).toHaveLength(0);
+      expect(petsMock).toHaveLength(0);
+      expect(petsVaccinationsMock).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
 
     test('found', async () => {
@@ -294,10 +294,10 @@ describe('repository', () => {
         }
       `);
 
-      expect(pgRelationalQueryMocks.length).toBe(0);
-      expect(petsMock.length).toBe(0);
-      expect(petsVaccinationsMock.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgRelationalQueryMocks).toHaveLength(0);
+      expect(petsMock).toHaveLength(0);
+      expect(petsVaccinationsMock).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
   });
 
@@ -415,14 +415,14 @@ describe('repository', () => {
         }
       `);
 
-      expect(pgSelectBaseMocks.length).toBe(0);
-      expect(pgSelectBuilderMocks.length).toBe(0);
-      expect(petsPgInsertBaseMocks.length).toBe(0);
-      expect(petsPgInsertBuilderMocks.length).toBe(0);
-      expect(petsVaccinationsPgInsertBaseMocks.length).toBe(0);
-      expect(petsVaccinationsPgInsertBuilderMocks.length).toBe(0);
-      expect(transactionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgSelectBaseMocks).toHaveLength(0);
+      expect(pgSelectBuilderMocks).toHaveLength(0);
+      expect(petsPgInsertBaseMocks).toHaveLength(0);
+      expect(petsPgInsertBuilderMocks).toHaveLength(0);
+      expect(petsVaccinationsPgInsertBaseMocks).toHaveLength(0);
+      expect(petsVaccinationsPgInsertBuilderMocks).toHaveLength(0);
+      expect(transactionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
 
     test('insert without vaccinations', async () => {
@@ -506,12 +506,12 @@ describe('repository', () => {
         }
       `);
 
-      expect(pgSelectBaseMocks.length).toBe(0);
-      expect(pgSelectBuilderMocks.length).toBe(0);
-      expect(petsPgInsertBaseMocks.length).toBe(0);
-      expect(petsPgInsertBuilderMocks.length).toBe(0);
-      expect(transactionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgSelectBaseMocks).toHaveLength(0);
+      expect(pgSelectBuilderMocks).toHaveLength(0);
+      expect(petsPgInsertBaseMocks).toHaveLength(0);
+      expect(petsPgInsertBuilderMocks).toHaveLength(0);
+      expect(transactionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
 
     test('update', async () => {
@@ -651,15 +651,15 @@ describe('repository', () => {
         }
       `);
 
-      expect(pgSelectBaseMocks.length).toBe(0);
-      expect(pgSelectBuilderMocks.length).toBe(0);
-      expect(petsVaccinationsPgDeleteBaseMocks.length).toBe(0);
-      expect(petsPgUpdateBaseMocks.length).toBe(0);
-      expect(petsPgUpdateBuilderMocks.length).toBe(0);
-      expect(petsVaccinationsPgInsertBaseMocks.length).toBe(0);
-      expect(petsVaccinationsPgInsertBuilderMocks.length).toBe(0);
-      expect(transactionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
+      expect(pgSelectBaseMocks).toHaveLength(0);
+      expect(pgSelectBuilderMocks).toHaveLength(0);
+      expect(petsVaccinationsPgDeleteBaseMocks).toHaveLength(0);
+      expect(petsPgUpdateBaseMocks).toHaveLength(0);
+      expect(petsPgUpdateBuilderMocks).toHaveLength(0);
+      expect(petsVaccinationsPgInsertBaseMocks).toHaveLength(0);
+      expect(petsVaccinationsPgInsertBuilderMocks).toHaveLength(0);
+      expect(transactionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
     });
   });
 
@@ -723,9 +723,9 @@ describe('repository', () => {
 
     await removePet(pet);
 
-    expect(petsVaccinationsPgDeleteBaseMocks.length).toBe(0);
-    expect(petsPgDeleteBaseMocks.length).toBe(0);
-    expect(transactionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
+    expect(petsVaccinationsPgDeleteBaseMocks).toHaveLength(0);
+    expect(petsPgDeleteBaseMocks).toHaveLength(0);
+    expect(transactionMocks).toHaveLength(0);
+    expect(dbMocks).toHaveLength(0);
   });
 });

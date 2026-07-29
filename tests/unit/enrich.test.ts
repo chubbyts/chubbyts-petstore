@@ -24,7 +24,7 @@ describe('createEnrichModel', () => {
       }
     `);
 
-    expect(generatePathMocks.length).toBe(0);
+    expect(generatePathMocks).toHaveLength(0);
   });
 
   test('with all links', async () => {
@@ -98,7 +98,7 @@ describe('createEnrichModel', () => {
       }
     `);
 
-    expect(generatePathMocks.length).toBe(0);
+    expect(generatePathMocks).toHaveLength(0);
   });
 });
 
@@ -142,7 +142,7 @@ describe('createEnrichModelList', () => {
       }
     `);
 
-    expect(generatePathMocks.length).toBe(0);
+    expect(generatePathMocks).toHaveLength(0);
   });
 
   test('with all links', async () => {
@@ -252,6 +252,6 @@ describe('createEnrichModelList', () => {
       }
     `);
 
-    expect(generatePathMocks.length).toBe(0);
+    expect(generatePathMocks).toHaveLength(0);
   });
 });

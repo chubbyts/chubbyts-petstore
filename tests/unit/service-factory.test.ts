@@ -188,9 +188,9 @@ describe('service-factory', () => {
       expect(response.statusText).toBe('No Content');
       expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
         {
-          "access-control-allow-credentials": "false",
           "access-control-allow-origin": "http://localhost:80",
           "access-control-max-age": "7200",
+          "vary": "origin",
         }
       `);
 
@@ -237,9 +237,9 @@ describe('service-factory', () => {
       expect(response.statusText).toBe('No Content');
       expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
         {
-          "access-control-allow-credentials": "false",
           "access-control-allow-origin": "http://localhost:80",
           "access-control-max-age": "7200",
+          "vary": "origin",
         }
       `);
 
@@ -282,7 +282,11 @@ describe('service-factory', () => {
 
       expect(response.status).toBe(204);
       expect(response.statusText).toBe('No Content');
-      expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot('{}');
+      expect(Object.fromEntries(response.headers.entries())).toMatchInlineSnapshot(`
+        {
+          "vary": "origin",
+        }
+      `);
 
       expect(response.body).toBeNull();
 

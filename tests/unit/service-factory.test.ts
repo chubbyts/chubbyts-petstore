@@ -48,7 +48,7 @@ describe('service-factory', () => {
 
     expect(acceptNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('acceptNegotiatorServiceFactory', () => {
@@ -62,7 +62,7 @@ describe('service-factory', () => {
 
     expect(acceptNegotiatorServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('apiErrorMiddlewareServiceFactory', () => {
@@ -86,7 +86,7 @@ describe('service-factory', () => {
 
     expect(apiErrorMiddlewareServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('generatePathServiceFactory', () => {
@@ -100,7 +100,7 @@ describe('service-factory', () => {
 
     expect(generatePathServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('cleanDirectoriesCommandServiceFactory', () => {
@@ -119,7 +119,7 @@ describe('service-factory', () => {
 
     expect(cleanDirectoriesCommandServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('contentTypeNegotiationMiddlewareServiceFactory', () => {
@@ -133,7 +133,7 @@ describe('service-factory', () => {
 
     expect(contentTypeNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('contentTypeNegotiatorServiceFactory', () => {
@@ -147,7 +147,7 @@ describe('service-factory', () => {
 
     expect(contentTypeNegotiatorServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   describe('corsMiddlewareServiceFactory', () => {
@@ -196,8 +196,8 @@ describe('service-factory', () => {
 
       expect(response.body).toBeNull();
 
-      expect(handlerMocks.length).toBe(0);
-      expect(containerMocks.length).toBe(0);
+      expect(handlerMocks).toHaveLength(0);
+      expect(containerMocks).toHaveLength(0);
     });
 
     test('with allowOrigins: createAllowOriginRegex', async () => {
@@ -245,8 +245,8 @@ describe('service-factory', () => {
 
       expect(response.body).toBeNull();
 
-      expect(handlerMocks.length).toBe(0);
-      expect(containerMocks.length).toBe(0);
+      expect(handlerMocks).toHaveLength(0);
+      expect(containerMocks).toHaveLength(0);
     });
 
     test('without allowOrigins', async () => {
@@ -290,8 +290,8 @@ describe('service-factory', () => {
 
       expect(response.body).toBeNull();
 
-      expect(handlerMocks.length).toBe(0);
-      expect(containerMocks.length).toBe(0);
+      expect(handlerMocks).toHaveLength(0);
+      expect(containerMocks).toHaveLength(0);
     });
   });
 
@@ -341,7 +341,7 @@ describe('service-factory', () => {
 
     expect(errorMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('loggerServiceFactory', () => {
@@ -386,8 +386,8 @@ describe('service-factory', () => {
 
     logger.info('message', { context: 'context' });
 
-    expect(writeMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
+    expect(writeMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('matchServiceFactory', () => {
@@ -401,7 +401,7 @@ describe('service-factory', () => {
 
     expect(matchServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('middlewaresServiceFactory', async () => {
@@ -444,8 +444,8 @@ describe('service-factory', () => {
       middlewares.map(() => response),
     );
 
-    expect(handlerMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
+    expect(handlerMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('mongoClientServiceFactory', async () => {
@@ -466,7 +466,7 @@ describe('service-factory', () => {
 
     expect(middlewares).toBeInstanceOf(Object);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('openApiHandlerServiceFactory', () => {
@@ -480,7 +480,7 @@ describe('service-factory', () => {
 
     expect(openApiHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('openApiObjectServiceFactory', () => {
@@ -499,7 +499,7 @@ describe('service-factory', () => {
 
     expect(openApiObjectServiceFactory(container)).toBeInstanceOf(Object);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('openApiRegistryServiceFactory', () => {
@@ -582,7 +582,7 @@ describe('service-factory', () => {
 
     expect(routeMatcherMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('routesServiceFactory', async () => {
@@ -635,7 +635,7 @@ describe('service-factory', () => {
 
     await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, serverRequest, response);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('routesByNameServiceFactory', () => {
@@ -649,6 +649,6 @@ describe('service-factory', () => {
 
     expect(routesByNameServiceFactory(container)).toBeInstanceOf(Map);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 });

@@ -121,10 +121,10 @@ describe('repository', () => {
         }
       `);
 
-      expect(aggregationCursorMocks.length).toBe(0);
-      expect(collectionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
-      expect(mongoClientMocks.length).toBe(0);
+      expect(aggregationCursorMocks).toHaveLength(0);
+      expect(collectionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
+      expect(mongoClientMocks).toHaveLength(0);
     });
 
     test('with data', async () => {
@@ -224,10 +224,10 @@ describe('repository', () => {
       }
     `);
 
-      expect(aggregationCursorMocks.length).toBe(0);
-      expect(collectionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
-      expect(mongoClientMocks.length).toBe(0);
+      expect(aggregationCursorMocks).toHaveLength(0);
+      expect(collectionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
+      expect(mongoClientMocks).toHaveLength(0);
     });
   });
 
@@ -283,9 +283,9 @@ describe('repository', () => {
       }
     `);
 
-      expect(collectionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
-      expect(mongoClientMocks.length).toBe(0);
+      expect(collectionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
+      expect(mongoClientMocks).toHaveLength(0);
     });
 
     test('without found model', async () => {
@@ -323,9 +323,9 @@ describe('repository', () => {
 
       expect(await FindModelById('019c201f-6a83-7696-9899-50fbf7b2278d')).toBeUndefined();
 
-      expect(collectionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
-      expect(mongoClientMocks.length).toBe(0);
+      expect(collectionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
+      expect(mongoClientMocks).toHaveLength(0);
     });
   });
 
@@ -399,9 +399,9 @@ describe('repository', () => {
         }
       `);
 
-      expect(collectionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
-      expect(mongoClientMocks.length).toBe(0);
+      expect(collectionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
+      expect(mongoClientMocks).toHaveLength(0);
     });
 
     test('fail', async () => {
@@ -473,9 +473,9 @@ describe('repository', () => {
         );
       }
 
-      expect(collectionMocks.length).toBe(0);
-      expect(dbMocks.length).toBe(0);
-      expect(mongoClientMocks.length).toBe(0);
+      expect(collectionMocks).toHaveLength(0);
+      expect(dbMocks).toHaveLength(0);
+      expect(mongoClientMocks).toHaveLength(0);
     });
   });
 
@@ -522,8 +522,8 @@ describe('repository', () => {
 
     await removemodel(model);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
+    expect(collectionMocks).toHaveLength(0);
+    expect(dbMocks).toHaveLength(0);
+    expect(mongoClientMocks).toHaveLength(0);
   });
 });

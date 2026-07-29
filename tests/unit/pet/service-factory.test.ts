@@ -50,7 +50,7 @@ describe('service-factory', () => {
 
     expect(await petCreateHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petDeleteHandlerServiceFactory', async () => {
@@ -69,7 +69,7 @@ describe('service-factory', () => {
 
     expect(await petDeleteHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petEnrichModelServiceFactory', async () => {
@@ -124,7 +124,7 @@ describe('service-factory', () => {
       }
     `);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petEnrichModelListServiceFactory', async () => {
@@ -200,7 +200,7 @@ describe('service-factory', () => {
       }
     `);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petFindModelByIdServiceFactory', async () => {
@@ -232,10 +232,10 @@ describe('service-factory', () => {
 
     expect(await petFindModelByIdServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
+    expect(collectionMocks).toHaveLength(0);
+    expect(dbMocks).toHaveLength(0);
+    expect(mongoClientMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petListHandlerServiceFactory', async () => {
@@ -259,7 +259,7 @@ describe('service-factory', () => {
 
     expect(await petListHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petPersistModelServiceFactory', async () => {
@@ -291,10 +291,10 @@ describe('service-factory', () => {
 
     expect(await petPersistModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
+    expect(collectionMocks).toHaveLength(0);
+    expect(dbMocks).toHaveLength(0);
+    expect(mongoClientMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petReadHandlerServiceFactory', async () => {
@@ -318,7 +318,7 @@ describe('service-factory', () => {
 
     expect(await petReadHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petRemoveModelServiceFactory', async () => {
@@ -350,10 +350,10 @@ describe('service-factory', () => {
 
     expect(await petRemoveModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
+    expect(collectionMocks).toHaveLength(0);
+    expect(dbMocks).toHaveLength(0);
+    expect(mongoClientMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petResolveModelListServiceFactory', async () => {
@@ -385,10 +385,10 @@ describe('service-factory', () => {
 
     expect(await petResolveModelListServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks.length).toBe(0);
-    expect(dbMocks.length).toBe(0);
-    expect(mongoClientMocks.length).toBe(0);
-    expect(containerMocks.length).toBe(0);
+    expect(collectionMocks).toHaveLength(0);
+    expect(dbMocks).toHaveLength(0);
+    expect(mongoClientMocks).toHaveLength(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petUpdateHandlerServiceFactory', async () => {
@@ -422,7 +422,7 @@ describe('service-factory', () => {
 
     expect(await petUpdateHandlerServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petOpenApiRegistryServiceDelegator', async () => {
@@ -1325,7 +1325,7 @@ describe('service-factory', () => {
       }
     `);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 
   test('petRoutesServiceDelegator', async () => {
@@ -1501,6 +1501,6 @@ describe('service-factory', () => {
 
     await routeTestingResolveAllLazyMiddlewaresAndHandlers(routes, serverRequest, response);
 
-    expect(containerMocks.length).toBe(0);
+    expect(containerMocks).toHaveLength(0);
   });
 });

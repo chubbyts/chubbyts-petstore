@@ -25,7 +25,7 @@ describe('command', () => {
 
       command(['log']);
 
-      expect(loggerMocks.length).toBe(0);
+      expect(loggerMocks).toHaveLength(0);
     });
 
     test('with known directories', () => {
@@ -47,7 +47,7 @@ describe('command', () => {
 
       expect(readdirSync(logDir)).toEqual([]);
 
-      expect(loggerMocks.length).toBe(0);
+      expect(loggerMocks).toHaveLength(0);
     });
   });
 });

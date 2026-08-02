@@ -1,6 +1,6 @@
 # chubbyts-petstore
 
-[![CI](https://github.com/chubbyts/chubbyts-petstore/workflows/CI/badge.svg?branch=master)](https://github.com/chubbyts/chubbyts-petstore/actions?query=workflow%3ACI)
+[![CI](https://github.com/chubbyts/chubbyts-petstore/actions/workflows/ci.yml/badge.svg?branch=mongo)](https://github.com/chubbyts/chubbyts-petstore/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyts/chubbyts-petstore/badge.svg?branch=master)](https://coveralls.io/github/chubbyts/chubbyts-petstore?branch=master)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fchubbyts%2Fchubbyts-petstore%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyts/chubbyts-petstore/master)
 

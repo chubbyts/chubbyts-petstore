@@ -119,7 +119,7 @@ export const createPersistPet = (db: NodePgDatabase<Schema>): PersistModel<Input
         await transaction.update(pets).set(petInsertOrUpdate).where(eq(pets.id, pet.id)).execute();
       }
 
-      if (pet.vaccinations && pet.vaccinations?.length > 0) {
+      if (pet.vaccinations && pet.vaccinations.length > 0) {
         await transaction
           .insert(petsVaccinations)
           .values(

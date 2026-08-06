@@ -18,7 +18,9 @@ import {
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
 } from '../../../src/pet/service-factory';
+import type { Pet, PetList } from '../../../src/pet/model.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../../utils/route.js';
+import { validPet, validPetList } from './model.test.js';
 
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
@@ -70,11 +72,15 @@ describe('service-factory', () => {
   });
 
   test('petEnrichModelServiceFactory', async () => {
+    const request = {} as ServerRequest;
+
+    const pet: Pet = validPet;
+
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
         parameters: ['generatePath'],
-        return: () => {},
+        return: () => '__generated_link',
       },
     ]);
 
@@ -82,21 +88,116 @@ describe('service-factory', () => {
 
     expect(petEnrichModel).toBeInstanceOf(Function);
 
+    expect(await petEnrichModel(pet, { request })).toMatchInlineSnapshot(`
+      {
+        "_links": {
+          "delete": {
+            "attributes": {
+              "method": "DELETE",
+            },
+            "href": "__generated_link",
+          },
+          "read": {
+            "attributes": {
+              "method": "GET",
+            },
+            "href": "__generated_link",
+          },
+          "update": {
+            "attributes": {
+              "method": "PUT",
+            },
+            "href": "__generated_link",
+          },
+        },
+        "createdAt": 2023-04-12T09:12:12.763Z,
+        "id": "test",
+        "name": "name",
+        "tag": "tag",
+        "updatedAt": 2023-04-16T15:05:49.154Z,
+        "vaccinations": [
+          {
+            "name": "name",
+          },
+        ],
+      }
+    `);
+
     expect(containerMocks).toHaveLength(0);
   });
 
   test('petEnrichModelListServiceFactory', async () => {
+    const request = {} as ServerRequest;
+
+    const petList: PetList = validPetList;
+
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
         parameters: ['generatePath'],
-        return: () => {},
+        return: () => '__generated_link',
       },
     ]);
 
     const petEnrichList = petEnrichModelListServiceFactory(container);
 
     expect(petEnrichList).toBeInstanceOf(Function);
+
+    expect(await petEnrichList(petList, { request })).toMatchInlineSnapshot(`
+      {
+        "_links": {
+          "create": {
+            "attributes": {
+              "method": "POST",
+            },
+            "href": "__generated_link",
+          },
+        },
+        "count": 2,
+        "filters": {
+          "name": "name",
+        },
+        "items": [
+          {
+            "_links": {
+              "delete": {
+                "attributes": {
+                  "method": "DELETE",
+                },
+                "href": "__generated_link",
+              },
+              "read": {
+                "attributes": {
+                  "method": "GET",
+                },
+                "href": "__generated_link",
+              },
+              "update": {
+                "attributes": {
+                  "method": "PUT",
+                },
+                "href": "__generated_link",
+              },
+            },
+            "createdAt": 2023-04-12T09:12:12.763Z,
+            "id": "test",
+            "name": "name",
+            "tag": "tag",
+            "updatedAt": 2023-04-16T15:05:49.154Z,
+            "vaccinations": [
+              {
+                "name": "name",
+              },
+            ],
+          },
+        ],
+        "limit": 20,
+        "offset": 0,
+        "sort": {
+          "name": "asc",
+        },
+      }
+    `);
 
     expect(containerMocks).toHaveLength(0);
   });

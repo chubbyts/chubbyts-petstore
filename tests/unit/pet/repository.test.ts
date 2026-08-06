@@ -13,7 +13,7 @@ import type {
   PgUpdateBuilder,
 } from 'drizzle-orm/pg-core';
 import type { SQL } from 'drizzle-orm';
-import { count } from 'drizzle-orm';
+import { and, asc, count, desc, eq } from 'drizzle-orm';
 import type { PgRelationalQuery, RelationalQueryBuilder } from 'drizzle-orm/pg-core/query-builders/query';
 import type { PetQueryResult } from '../../../src/pet/repository.js';
 import {
@@ -61,8 +61,19 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findMany',
+          parameters: [
+            {
+              with: {
+                vaccinations: true,
+              },
+              where: and(eq(schema.pets.name, 'name')),
+              orderBy: [asc(schema.pets.name)],
+              limit: 20,
+              offset: 0,
+            },
+          ],
           // oxlint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: () => pgRelationalQuery as any,
+          return: pgRelationalQuery as any,
         },
       ]);
 
@@ -152,8 +163,19 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findMany',
+          parameters: [
+            {
+              with: {
+                vaccinations: true,
+              },
+              where: and(eq(schema.pets.name, 'name')),
+              orderBy: [desc(schema.pets.name)],
+              limit: 20,
+              offset: 0,
+            },
+          ],
           // oxlint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: () => pgRelationalQuery as any,
+          return: pgRelationalQuery as any,
         },
       ]);
 
@@ -219,8 +241,16 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findFirst',
+          parameters: [
+            {
+              with: {
+                vaccinations: true,
+              },
+              where: eq(schema.pets.id, 'id'),
+            },
+          ],
           // oxlint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: () => pgRelationalQuery as any,
+          return: pgRelationalQuery as any,
         },
       ]);
 
@@ -264,8 +294,16 @@ describe('repository', () => {
       const [pets, petsMock] = useObjectMock<RelationalQueryBuilder<TablesWithRelations, TablesWithRelations['pets']>>([
         {
           name: 'findFirst',
+          parameters: [
+            {
+              with: {
+                vaccinations: true,
+              },
+              where: eq(schema.pets.id, 'id'),
+            },
+          ],
           // oxlint-disable-next-line @typescript-eslint/no-explicit-any
-          callback: () => pgRelationalQuery as any,
+          return: pgRelationalQuery as any,
         },
       ]);
 

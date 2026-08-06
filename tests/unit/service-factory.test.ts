@@ -299,7 +299,11 @@ describe('service-factory', () => {
       },
     ]);
 
-    expect(dbServiceFactory(container)).toBeInstanceOf(Object);
+    const db = dbServiceFactory(container);
+
+    expect(db).toBeInstanceOf(Object);
+    expect(db.query.pets).toBeInstanceOf(Object);
+    expect(db.query.petsVaccinations).toBeInstanceOf(Object);
 
     expect(containerMocks).toHaveLength(0);
   });

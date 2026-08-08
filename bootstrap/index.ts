@@ -26,8 +26,12 @@ const shutdownServer = (server: Server) => {
 
   const app = createApplication(container.get<Array<Middleware>>('middlewares'));
 
-  const nodeRequestToUndiciRequestFactory = createNodeRequestToUndiciRequestFactory();
-  const undiciResponseToNodeResponseEmitter = createUndiciResponseToNodeResponseEmitter();
+  const config = container.get<Config>('config');
+
+  const { port, host, baseUrl, requestBodyTimeoutMs, responseSendTimeoutMs } = config.server;
+
+  const nodeRequestToUndiciRequestFactory = createNodeRequestToUndiciRequestFactory(baseUrl, requestBodyTimeoutMs);
+  const undiciResponseToNodeResponseEmitter = createUndiciResponseToNodeResponseEmitter(responseSendTimeoutMs);
 
   const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
     try {
@@ -46,10 +50,6 @@ const shutdownServer = (server: Server) => {
       res.writeHead(500, { 'content-type': 'text/plain' }).end('Internal Server Error');
     }
   });
-
-  const config = container.get<Config>('config');
-
-  const { port, host } = config.server;
 
   server.listen(port, host, () => {
     console.log(`Listening to ${host}:${port}`);

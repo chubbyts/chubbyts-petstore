@@ -66,7 +66,8 @@ RUN source ~/.bashrc \
 
 RUN source ~/.bashrc \
     && npm install -g @earendil-works/pi-coding-agent \
-    && mkdir -p "$HOME/.pi/agent"
+    && mkdir -p "$HOME/.pi/agent" \
+    && pi install git:github.com/huggingface/pi-llama
 
 WORKDIR /app
 

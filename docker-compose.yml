@@ -16,6 +16,7 @@ services:
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
       SSH_AUTH_SOCK: /ssh-agent
+      LLAMA_BASE_URL: http://host.docker.internal:9931/v1
     ports:
       - '1235:1235'
     volumes:

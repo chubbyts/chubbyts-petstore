@@ -40,6 +40,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-undici-server][14]: ^1.3.0
  * [@chubbyts/chubbyts-undici-server-node][15]: ^1.3.0
  * [commander][16]: ^15.0.0
+ * [drizzle-kit][24]: ^0.31.10
  * [drizzle-orm][17]: ^0.45.2
  * [openapi3-ts][18]: ^4.6.1
  * [pg][19]: ^8.21.0
@@ -393,6 +394,7 @@ Before you start, produce at least one error, [produce a 404](https://localhost/
 [21]: https://www.npmjs.com/package/uuid
 [22]: https://www.npmjs.com/package/zod
 [23]: https://github.com/chubbyts/chubbyts-undici-oidc
+[24]: https://www.npmjs.com/package/drizzle-kit
 
 [30]: src/command.ts
 [31]: src/handler.ts

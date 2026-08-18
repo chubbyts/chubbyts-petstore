@@ -10,8 +10,26 @@ services:
       MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
+      OIDC_ISSUER: 'http://keycloak:8080/realms/petstore'
+      OIDC_AUDIENCE: 'petstore'
     depends_on:
+      - keycloak
       - mongo
+  keycloak:
+    container_name: chubbyts-petstore-keycloak-ci
+    hostname: chubbyts-petstore-keycloak-ci
+    image: quay.io/keycloak/keycloak:26.7
+    command: ['start-dev', '--import-realm']
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: TCUJyCbLtLbBc4eXYYzD9ecm
+      # fixed hostname, so the issuer claim is "http://keycloak:8080/realms/petstore" no matter where the token
+      # gets requested from: the ci job adds "127.0.0.1 keycloak" to /etc/hosts to request tokens from the host
+      KC_HOSTNAME: 'http://keycloak:8080'
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./docker/development/keycloak/import:/opt/keycloak/data/import
   mongo:
     container_name: chubbyts-petstore-mongo-ci
     hostname: chubbyts-petstore-mongo-ci

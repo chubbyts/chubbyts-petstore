@@ -28,6 +28,26 @@ jobs:
         run: curl --insecure https://localhost/ping -vvv
       - name: openapi
         run: curl --insecure https://localhost/openapi -vvv
+      - name: wait for keycloak
+        run: |
+          echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+          while ! curl -sf http://keycloak:8080/realms/petstore/.well-known/openid-configuration > /dev/null; do sleep 1; done
+      - name: pets without token (401)
+        run: |
+          STATUS=$(curl --insecure -s -o /dev/null -w '%{http_code}' https://localhost/api/pets)
+          echo "status: ${STATUS}"
+          test "${STATUS}" = "401"
+      - name: pets with token (200)
+        run: |
+          ACCESS_TOKEN=$(curl -sf http://keycloak:8080/realms/petstore/protocol/openid-connect/token \
+            -d 'grant_type=password' \
+            -d 'client_id=petstore' \
+            -d 'client_secret=5FbFAgTAWyVAWSQtDPqCLZzY' \
+            -d 'username=petstore' \
+            -d 'password=GBanBPatEBRZ7hf7cAxKn8Ptt' | sed -E 's/.*"access_token":"([^"]+)".*/\1/')
+          STATUS=$(curl --insecure -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer ${ACCESS_TOKEN}" https://localhost/api/pets)
+          echo "status: ${STATUS}"
+          test "${STATUS}" = "200"
       - name: docker stop
         run: docker compose -f docker-compose.ci.yml stop
   docker:
@@ -46,6 +66,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: blacksmith docker
         uses: useblacksmith/setup-docker-builder@ac083cc84672d01c60d5e8561d0a939b697de542 # v1.7.0
+      # started as early as possible (and not as a job service, which cannot mount the checked out realm import nor
+      # pass the "start-dev --import-realm" command), so it is up by the time the integration tests run
+      - name: keycloak start
+        run: docker container run -d --name keycloak -p 8080:8080 -v ${GITHUB_WORKSPACE}/docker/development/keycloak/import:/opt/keycloak/data/import -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=TCUJyCbLtLbBc4eXYYzD9ecm -e KC_HOSTNAME=http://keycloak:8080 quay.io/keycloak/keycloak:26.7 start-dev --import-realm
       - name: docker build
         env:
           DOCKER_BUILDKIT: 1
@@ -58,8 +82,10 @@ jobs:
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run lint'
       - name: pnpm run test --run --coverage --no-cache
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run test --run --coverage --no-cache'
+      # "keycloak" resolves to the docker host, where the keycloak container publishes port 8080: the issuer claim
+      # is fixed to http://keycloak:8080 (KC_HOSTNAME) and has to match OIDC_ISSUER
       - name: pnpm run test:integration --run --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app -e 'MONGO_URI=mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app --add-host keycloak:172.17.0.1 -e 'MONGO_URI=mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin' -e 'OIDC_ISSUER=http://keycloak:8080/realms/petstore' -e 'OIDC_AUDIENCE=petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run build'
   node22:
@@ -92,6 +118,13 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+      # started as early as possible (and not as a job service, which cannot mount the checked out realm import nor
+      # pass the "start-dev --import-realm" command), so it is up by the time the integration tests run; the issuer
+      # claim is fixed to http://keycloak:8080 (KC_HOSTNAME), so "keycloak" has to resolve to the host
+      - name: keycloak start
+        run: |
+          echo "127.0.0.1 keycloak" | sudo tee -a /etc/hosts
+          docker container run -d --name keycloak -p 8080:8080 -v ${GITHUB_WORKSPACE}/docker/development/keycloak/import:/opt/keycloak/data/import -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=TCUJyCbLtLbBc4eXYYzD9ecm -e KC_HOSTNAME=http://keycloak:8080 quay.io/keycloak/keycloak:26.7 start-dev --import-realm
       - name: checkout node
         uses: useblacksmith/setup-node@65c6ca86fdeb0ab3d85e78f57e4f6a7e4780b391 # v5.0.4
         with:
@@ -104,6 +137,8 @@ jobs:
       - run: pnpm run test:integration --run --no-cache
         env:
           MONGO_URI: "mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin"
+          OIDC_ISSUER: "http://keycloak:8080/realms/petstore"
+          OIDC_AUDIENCE: "petstore"
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

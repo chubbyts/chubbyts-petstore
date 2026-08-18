@@ -37,6 +37,7 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-pino-adapter][12]: ^3.3.0
  * [@chubbyts/chubbyts-undici-api][13]: ^2.1.0
  * [@chubbyts/chubbyts-undici-cors][14]: ^1.3.0
+ * [@chubbyts/chubbyts-undici-oidc][23]: ^1.0.0-beta.2
  * [@chubbyts/chubbyts-undici-server][15]: ^1.2.0
  * [@chubbyts/chubbyts-undici-server-node][16]: ^1.3.0
  * [commander][17]: ^15.0.0
@@ -222,13 +223,59 @@ pnpm start
 * GET https://localhost/ping
 * GET https://localhost/swagger (https://localhost/openapi)
 
-### Pet
+### Pet (oidc protected)
 
 * GET https://localhost/api/pets?sort[name]=asc
 * POST https://localhost/api/pets
 * GET https://localhost/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d
 * PUT https://localhost/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d
 * DELETE https://localhost/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d
+
+## Oidc (keycloak)
+
+All routes below `/api` are protected by [chubbyts-undici-oidc][23], only `/ping` and `/openapi` are public.
+The keycloak container acts as the identity provider,
+the realm `petstore` gets imported from `docker/development/keycloak/import/petstore-realm.json` on startup
+(delete and recreate the keycloak container to reimport after changes) and contains two users:
+
+* `john.doe` (password: `johndoe1234`): a regular end user, meant to log in via the browser based frontend
+  (`petstore-frontend` client, see below).
+* `petstore` (password: `GBanBPatEBRZ7hf7cAxKn8Ptt`): a technical user for requesting tokens via password grant
+  while testing (see the curl example below).
+
+and two clients:
+
+* `petstore-frontend`: public client for a separate (browser based) frontend codebase, which authenticates against
+  keycloak via authorization code flow + PKCE (S256) and sends the resulting access token as
+  `Authorization: Bearer <token>` header to this api. The cors setup allows the `Authorization` header for
+  localhost origins in development.
+* `petstore` (secret: `5FbFAgTAWyVAWSQtDPqCLZzY`): confidential client for backend integrations and for requesting
+  tokens via password grant while testing.
+
+Both clients use an audience mapper, so that the access token contains `aud: petstore`, which this api requires.
+
+Admin console: http://keycloak:8080 (admin / TCUJyCbLtLbBc4eXYYzD9ecm). Keycloak is configured with the fixed
+hostname `keycloak`, so that the issuer claim is always `http://keycloak:8080/realms/petstore`; requests via
+`http://localhost:8080` get redirected to that hostname. Add `127.0.0.1 keycloak` to `/etc/hosts` on the host to use
+the admin console or to request tokens from the host.
+
+Within the node container:
+
+```sh
+ACCESS_TOKEN=$(curl -s http://keycloak:8080/realms/petstore/protocol/openid-connect/token \
+  -d 'grant_type=password' \
+  -d 'client_id=petstore' \
+  -d 'client_secret=5FbFAgTAWyVAWSQtDPqCLZzY' \
+  -d 'username=petstore' \
+  -d 'password=GBanBPatEBRZ7hf7cAxKn8Ptt' | sed -E 's/.*"access_token":"([^"]+)".*/\1/')
+
+curl -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:1234/api/pets
+```
+
+The integration tests run against keycloak as well (no auth mocking): `vitest.integration.setup.ts` waits for the
+discovery endpoint of `OIDC_ISSUER` to be reachable and `tests/integration/auth.ts` requests tokens via password
+grant with the `petstore` client and user. Within the node container keycloak is reachable as `keycloak`,
+in ci a keycloak container gets started and mapped to that hostname (see `.github/workflows/ci.yml`).
 
 ## Structure
 
@@ -345,6 +392,7 @@ Before you start, produce at least one error, [produce a 404](https://localhost/
 [20]: https://www.npmjs.com/package/pino
 [21]: https://www.npmjs.com/package/uuid
 [22]: https://www.npmjs.com/package/zod
+[23]: https://github.com/chubbyts/chubbyts-undici-oidc
 
 [30]: src/command.ts
 [31]: src/handler.ts

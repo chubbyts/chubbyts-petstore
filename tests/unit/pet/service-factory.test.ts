@@ -769,7 +769,15 @@ describe('service-factory', () => {
                   },
                   "description": "Pets",
                 },
+                "401": {
+                  "description": "Missing or invalid token",
+                },
               },
+              "security": [
+                {
+                  "bearerAuth": [],
+                },
+              ],
               "summary": "List all pets",
               "tags": [
                 "Pets",
@@ -949,7 +957,15 @@ describe('service-factory', () => {
                   },
                   "description": "Pet",
                 },
+                "401": {
+                  "description": "Missing or invalid token",
+                },
               },
+              "security": [
+                {
+                  "bearerAuth": [],
+                },
+              ],
               "summary": "Create a pet",
               "tags": [
                 "Pets",
@@ -974,7 +990,15 @@ describe('service-factory', () => {
                 "204": {
                   "description": "Empty response",
                 },
+                "401": {
+                  "description": "Missing or invalid token",
+                },
               },
+              "security": [
+                {
+                  "bearerAuth": [],
+                },
+              ],
               "summary": "Delete a pet",
               "tags": [
                 "Pets",
@@ -1123,7 +1147,15 @@ describe('service-factory', () => {
                   },
                   "description": "Pet",
                 },
+                "401": {
+                  "description": "Missing or invalid token",
+                },
               },
+              "security": [
+                {
+                  "bearerAuth": [],
+                },
+              ],
               "summary": "Read a pet",
               "tags": [
                 "Pets",
@@ -1314,7 +1346,15 @@ describe('service-factory', () => {
                   },
                   "description": "Pet",
                 },
+                "401": {
+                  "description": "Missing or invalid token",
+                },
               },
+              "security": [
+                {
+                  "bearerAuth": [],
+                },
+              ],
               "summary": "Update a pet",
               "tags": [
                 "Pets",
@@ -1348,6 +1388,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['oidcAuthenticationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['petListHandler'],
         return: dummyHandler,
       },
@@ -1359,6 +1404,11 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['oidcAuthenticationMiddleware'],
         return: dummyMiddleware,
       },
       {
@@ -1383,6 +1433,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['oidcAuthenticationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['petReadHandler'],
         return: dummyHandler,
       },
@@ -1394,6 +1449,11 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['oidcAuthenticationMiddleware'],
         return: dummyMiddleware,
       },
       {
@@ -1418,6 +1478,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['oidcAuthenticationMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['petDeleteHandler'],
         return: dummyHandler,
       },
@@ -1437,6 +1502,7 @@ describe('service-factory', () => {
           "middlewares": [
             [Function],
             [Function],
+            [Function],
           ],
           "name": "pet_list",
           "path": "/api/pets",
@@ -1448,6 +1514,7 @@ describe('service-factory', () => {
           "handler": [Function],
           "method": "POST",
           "middlewares": [
+            [Function],
             [Function],
             [Function],
             [Function],
@@ -1464,6 +1531,7 @@ describe('service-factory', () => {
           "middlewares": [
             [Function],
             [Function],
+            [Function],
           ],
           "name": "pet_read",
           "path": "/api/pets/:id",
@@ -1478,6 +1546,7 @@ describe('service-factory', () => {
             [Function],
             [Function],
             [Function],
+            [Function],
           ],
           "name": "pet_update",
           "path": "/api/pets/:id",
@@ -1489,6 +1558,7 @@ describe('service-factory', () => {
           "handler": [Function],
           "method": "DELETE",
           "middlewares": [
+            [Function],
             [Function],
             [Function],
           ],

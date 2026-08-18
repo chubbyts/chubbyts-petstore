@@ -55,6 +55,7 @@
     "@chubbyts/chubbyts-pino-adapter": "^3.3.0",
     "@chubbyts/chubbyts-undici-api": "^2.1.0",
     "@chubbyts/chubbyts-undici-cors": "^1.3.0",
+    "@chubbyts/chubbyts-undici-oidc": "^1.1.0",
     "@chubbyts/chubbyts-undici-server": "^1.3.0",
     "@chubbyts/chubbyts-undici-server-node": "^1.3.0",
     "commander": "^15.0.0",

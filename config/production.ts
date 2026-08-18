@@ -34,6 +34,7 @@ import {
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
+  oidcAuthenticationMiddlewareServiceFactory,
   openApiHandlerServiceFactory,
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
@@ -61,6 +62,10 @@ export type Config = {
     delegators: Map<string, Array<ConfigDelegator>>;
   };
   directories: Map<string, string>;
+  oidc: {
+    issuer: string;
+    audience: string;
+  };
   openApi: OpenAPIObjectConfig;
   pino: {
     options: LoggerOptions;
@@ -99,10 +104,12 @@ export const configFactory = (env: string): Config => {
   return {
     cors: {
       allowCredentials: false,
-      allowHeaders: ['Accept', 'Content-Type'],
+      allowHeaders: ['Accept', 'Authorization', 'Content-Type'],
       allowMethods: ['DELETE', 'GET', 'POST', 'PUT'],
       allowOrigins: {},
-      exposeHeaders: [],
+      // let a browser based frontend read the bearer challenge, to distinguish a missing (no error) from an invalid,
+      // e.g. expired, token (error="invalid_token"), the concrete reason intentionally does not get reflected
+      exposeHeaders: ['WWW-Authenticate'],
       maxAge: 7200,
     },
     debug: false,
@@ -123,6 +130,7 @@ export const configFactory = (env: string): Config => {
         ['logger', loggerServiceFactory],
         ['match', matchServiceFactory],
         ['middlewares', middlewaresServiceFactory],
+        ['oidcAuthenticationMiddleware', oidcAuthenticationMiddlewareServiceFactory],
         ['openApiHandler', openApiHandlerServiceFactory],
         ['openApiObject', openApiObjectServiceFactory],
         ['openApiRegistry', openApiRegistryServiceFactory],
@@ -151,6 +159,10 @@ export const configFactory = (env: string): Config => {
       ['cache', cacheDir],
       ['log', logDir],
     ]),
+    oidc: {
+      issuer: getRequiredEnv('OIDC_ISSUER'),
+      audience: getRequiredEnv('OIDC_AUDIENCE'),
+    },
     openApi: {
       openapi: '3.0.0',
       info: {

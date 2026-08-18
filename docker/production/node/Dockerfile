@@ -70,6 +70,8 @@ USER root
 COPY --from=build /app-build/dist /app
 COPY --from=build /app-build/package.json /app
 COPY --from=build /app-build/pnpm-lock.yaml /app
+# needed for pnpm settings like minimumReleaseAgeExclude to apply to the prod install as well
+COPY --from=build /app-build/pnpm-workspace.yaml /app
 
 RUN chown -Rf node: /app
 

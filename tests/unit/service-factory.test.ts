@@ -21,6 +21,7 @@ import {
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
+  oidcAuthenticationMiddlewareServiceFactory,
   openApiHandlerServiceFactory,
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
@@ -461,6 +462,30 @@ describe('service-factory', () => {
     expect(containerMocks).toHaveLength(0);
   });
 
+  test('oidcAuthenticationMiddlewareServiceFactory', () => {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['config'],
+        return: {
+          oidc: {
+            issuer: 'http://keycloak:8080/realms/petstore',
+            audience: 'petstore',
+          },
+        },
+      },
+      {
+        name: 'get',
+        parameters: ['logger'],
+        return: {},
+      },
+    ]);
+
+    expect(oidcAuthenticationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(containerMocks).toHaveLength(0);
+  });
+
   test('openApiHandlerServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
@@ -515,6 +540,13 @@ describe('service-factory', () => {
         "components": {
           "parameters": {},
           "schemas": {},
+          "securitySchemes": {
+            "bearerAuth": {
+              "bearerFormat": "JWT",
+              "scheme": "bearer",
+              "type": "http",
+            },
+          },
         },
         "info": {
           "license": {

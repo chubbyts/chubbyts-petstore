@@ -1,11 +1,13 @@
 import fetch from 'cross-fetch';
 import { describe, expect, test } from 'vitest';
+import { getAuthorizationHeader } from '../auth.js';
 
 describe('list', () => {
   test('missing accept', async () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'GET',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: '',
       },
     });
@@ -23,6 +25,7 @@ describe('list', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets?filters[name1]=list.test`, {
       method: 'GET',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: 'application/json',
       },
     });
@@ -60,6 +63,7 @@ describe('list', () => {
     const createResponse1 = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -71,6 +75,7 @@ describe('list', () => {
     const createResponse2 = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -82,6 +87,7 @@ describe('list', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets?filters[name]=list.test&limit=1`, {
       method: 'GET',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: 'application/json',
       },
     });

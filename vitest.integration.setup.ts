@@ -17,6 +17,7 @@ const testServerHost = '127.0.0.1';
 const testServerPort = getRandomInt(49152, 65535);
 
 const timeout = 20000;
+const oidcProviderTimeout = 120000; // keycloak needs a while to boot and import the realm
 const iterationTimeout = 500;
 
 const resolveDatabaseFromPostgresUri = (postgresUri: string) => {
@@ -52,6 +53,30 @@ const bootstrapPostgresTestDatabase = async (
   });
 };
 
+// the tests run against a real oidc provider (keycloak, see docker-compose.yml / .github/workflows/ci.yml)
+const waitForOidcProvider = async (issuer: string): Promise<void> => {
+  const url = `${issuer}/.well-known/openid-configuration`;
+
+  for (let i = oidcProviderTimeout; i > 0; i -= iterationTimeout) {
+    try {
+      const response = await fetch(url);
+
+      if (response.ok) {
+        return;
+      }
+    } catch (e) {
+      if (e.code !== 'ECONNREFUSED' && e.code !== 'ECONNRESET') {
+        throw e;
+      }
+    }
+
+    console.log('wait for oidc provider to be up and running...');
+    await new Promise((resolve) => setTimeout(resolve, iterationTimeout));
+  }
+
+  throw new Error(`Timeout in waiting for oidc provider "${issuer}"`);
+};
+
 const startServer = async () => {
   const child = spawn('./node_modules/.bin/tsx', ['bootstrap/index.ts'], {
     env: process.env,
@@ -82,6 +107,8 @@ let httpServer: ChildProcessWithoutNullStreams;
 
 export const setup = async () => {
   const postgresUri = getRequiredEnv('POSTGRES_URI');
+  const oidcIssuer = getRequiredEnv('OIDC_ISSUER');
+  getRequiredEnv('OIDC_AUDIENCE');
 
   const database = resolveDatabaseFromPostgresUri(postgresUri);
   const testDatabase = `${database}_test`;
@@ -97,6 +124,8 @@ export const setup = async () => {
   process.env.SERVER_PORT = `${testServerPort}`;
 
   await bootstrapPostgresTestDatabase(postgresUriWithoutDatabase, testDatabase);
+
+  await waitForOidcProvider(oidcIssuer);
 
   httpServer = await startServer();
 

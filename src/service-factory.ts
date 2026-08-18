@@ -36,6 +36,9 @@ import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/en
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
 import { createCorsMiddleware } from '@chubbyts/chubbyts-undici-cors/dist/middleware';
+import { createOidcAuthenticationMiddleware } from '@chubbyts/chubbyts-undici-oidc/dist/middleware';
+import { createBearerTokenExtractor, createJwtTokenVerifier } from '@chubbyts/chubbyts-undici-oidc/dist/token';
+import { createOidcConfigurationResolver } from '@chubbyts/chubbyts-undici-oidc/dist/discovery';
 import {
   createAllowOriginExact,
   createAllowOriginRegex,
@@ -167,6 +170,17 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
   return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
 };
 
+export const oidcAuthenticationMiddlewareServiceFactory = (container: Container): Middleware => {
+  const oidc = container.get<Config>('config').oidc;
+
+  return createOidcAuthenticationMiddleware(
+    createBearerTokenExtractor(),
+    createJwtTokenVerifier(createOidcConfigurationResolver(oidc.issuer), { audience: oidc.audience }),
+    'petstore',
+    container.get<Logger>('logger'),
+  );
+};
+
 export const openApiHandlerServiceFactory = (container: Container) => {
   return createOpenApiHandler(container.get<OpenAPIComponentObject>('openApiObject'));
 };
@@ -180,6 +194,12 @@ export const openApiObjectServiceFactory = (container: Container): OpenAPICompon
 
 export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
   const registry = new OpenAPIRegistry();
+
+  registry.registerComponent('securitySchemes', 'bearerAuth', {
+    type: 'http',
+    scheme: 'bearer',
+    bearerFormat: 'JWT',
+  });
 
   registry.registerPath({
     path: '/ping',

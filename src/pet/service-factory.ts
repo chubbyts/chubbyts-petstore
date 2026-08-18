@@ -150,6 +150,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     summary: 'List all pets',
     operationId: 'listPets',
     tags: ['Pets'],
+    security: [{ bearerAuth: [] }],
     request: {
       query: inputPetListOpenApiSchema.strip(),
     },
@@ -164,6 +165,9 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
           },
         },
       },
+      401: {
+        description: 'Missing or invalid token',
+      },
     },
   });
 
@@ -173,6 +177,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     summary: 'Create a pet',
     operationId: 'createPet',
     tags: ['Pets'],
+    security: [{ bearerAuth: [] }],
     request: {
       body: {
         description: 'Pet data',
@@ -195,6 +200,9 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
           },
         },
       },
+      401: {
+        description: 'Missing or invalid token',
+      },
     },
   });
 
@@ -204,6 +212,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     summary: 'Read a pet',
     operationId: 'readPet',
     tags: ['Pets'],
+    security: [{ bearerAuth: [] }],
     request: {
       params: z.object({
         id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
@@ -220,6 +229,9 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
           },
         },
       },
+      401: {
+        description: 'Missing or invalid token',
+      },
     },
   });
 
@@ -229,6 +241,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     summary: 'Update a pet',
     operationId: 'updatePet',
     tags: ['Pets'],
+    security: [{ bearerAuth: [] }],
     request: {
       params: z.object({
         id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
@@ -254,6 +267,9 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
           },
         },
       },
+      401: {
+        description: 'Missing or invalid token',
+      },
     },
   });
 
@@ -263,6 +279,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     summary: 'Delete a pet',
     operationId: 'deletePet',
     tags: ['Pets'],
+    security: [{ bearerAuth: [] }],
     request: {
       params: z.object({
         id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
@@ -271,6 +288,9 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       204: {
         description: 'Empty response',
+      },
+      401: {
+        description: 'Missing or invalid token',
       },
     },
   });
@@ -320,7 +340,7 @@ export const petRoutesServiceDelegator = (
             handler: h('petDeleteHandler'),
           }),
         ],
-        middlewares: [m('acceptNegotiationMiddleware'), m('apiErrorMiddleware')],
+        middlewares: [m('acceptNegotiationMiddleware'), m('apiErrorMiddleware'), m('oidcAuthenticationMiddleware')],
       }),
     ),
   ];

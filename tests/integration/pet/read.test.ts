@@ -1,11 +1,13 @@
 import fetch from 'cross-fetch';
 import { describe, expect, test } from 'vitest';
+import { getAuthorizationHeader } from '../auth.js';
 
 describe('read', () => {
   test('missing accept', async () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'GET',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: '',
       },
     });
@@ -23,6 +25,7 @@ describe('read', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'GET',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: 'application/json',
       },
     });
@@ -48,6 +51,7 @@ describe('read', () => {
     const createResponse = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -61,6 +65,7 @@ describe('read', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/${createResponseData.id}`, {
       method: 'GET',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: 'application/json',
       },
     });

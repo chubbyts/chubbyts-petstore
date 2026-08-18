@@ -1,11 +1,13 @@
 import fetch from 'cross-fetch';
 import { describe, expect, test } from 'vitest';
+import { getAuthorizationHeader } from '../auth.js';
 
 describe('update', () => {
   test('missing accept', async () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'PUT',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: '',
       },
@@ -25,6 +27,7 @@ describe('update', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'PUT',
       headers: {
+        ...(await getAuthorizationHeader()),
         accept: 'application/json',
       },
       body: JSON.stringify({}),
@@ -57,6 +60,7 @@ describe('update', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/019c201f-6a83-7696-9899-50fbf7b2278d`, {
       method: 'PUT',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -88,6 +92,7 @@ describe('update', () => {
     const createResponse = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -101,6 +106,7 @@ describe('update', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/${createResponseData.id}`, {
       method: 'PUT',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -146,6 +152,7 @@ describe('update', () => {
     const createResponse = await fetch(`${process.env.HTTP_URI}/api/pets`, {
       method: 'POST',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },
@@ -159,6 +166,7 @@ describe('update', () => {
     const response = await fetch(`${process.env.HTTP_URI}/api/pets/${createResponseData.id}`, {
       method: 'PUT',
       headers: {
+        ...(await getAuthorizationHeader()),
         'content-type': 'application/json',
         accept: 'application/json',
       },

@@ -42,6 +42,9 @@ import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-undic
 import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/error-middleware';
 import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { createCorsMiddleware } from '@chubbyts/chubbyts-undici-cors/dist/middleware';
+import { createOidcAuthenticationMiddleware } from '@chubbyts/chubbyts-undici-oidc/dist/middleware';
+import { createBearerTokenExtractor, createJwtTokenVerifier } from '@chubbyts/chubbyts-undici-oidc/dist/token';
+import { createOidcConfigurationResolver } from '@chubbyts/chubbyts-undici-oidc/dist/discovery';
 import {
   createAllowOriginExact,
   createAllowOriginRegex,
@@ -169,6 +172,17 @@ export const mongoClientServiceFactory = async (container: Container): Promise<M
   return mongoClient;
 };
 
+export const oidcAuthenticationMiddlewareServiceFactory = (container: Container): Middleware => {
+  const oidc = container.get<Config>('config').oidc;
+
+  return createOidcAuthenticationMiddleware(
+    createBearerTokenExtractor(),
+    createJwtTokenVerifier(createOidcConfigurationResolver(oidc.issuer), { audience: oidc.audience }),
+    'petstore',
+    container.get<Logger>('logger'),
+  );
+};
+
 export const openApiHandlerServiceFactory = (container: Container) => {
   return createOpenApiHandler(container.get<OpenAPIComponentObject>('openApiObject'));
 };
@@ -182,6 +196,12 @@ export const openApiObjectServiceFactory = (container: Container): OpenAPICompon
 
 export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
   const registry = new OpenAPIRegistry();
+
+  registry.registerComponent('securitySchemes', 'bearerAuth', {
+    type: 'http',
+    scheme: 'bearer',
+    bearerFormat: 'JWT',
+  });
 
   registry.registerPath({
     path: '/ping',

@@ -7,11 +7,9 @@ import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { Response, ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
 import {
   acceptNegotiationMiddlewareServiceFactory,
-  acceptNegotiatorServiceFactory,
   apiErrorMiddlewareServiceFactory,
   cleanDirectoriesCommandServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
-  contentTypeNegotiatorServiceFactory,
   dbServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
@@ -39,20 +37,6 @@ describe('service-factory', () => {
     ]);
 
     expect(acceptNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks).toHaveLength(0);
-  });
-
-  test('acceptNegotiatorServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['encoder'],
-        return: { contentTypes: ['application/json'] },
-      },
-    ]);
-
-    expect(acceptNegotiatorServiceFactory(container)).toBeInstanceOf(Object);
 
     expect(containerMocks).toHaveLength(0);
   });
@@ -124,20 +108,6 @@ describe('service-factory', () => {
     ]);
 
     expect(contentTypeNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks).toHaveLength(0);
-  });
-
-  test('contentTypeNegotiatorServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['decoder'],
-        return: { contentTypes: ['application/json'] },
-      },
-    ]);
-
-    expect(contentTypeNegotiatorServiceFactory(container)).toBeInstanceOf(Object);
 
     expect(containerMocks).toHaveLength(0);
   });

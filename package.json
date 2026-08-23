@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
-    "@chubbyts/chubbyts-decode-encode": "^2.4.1",
+    "@chubbyts/chubbyts-decode-encode": "^2.5.1",
     "@chubbyts/chubbyts-dic": "^2.3.0",
     "@chubbyts/chubbyts-dic-config": "^2.3.0",
     "@chubbyts/chubbyts-dic-types": "^2.3.0",

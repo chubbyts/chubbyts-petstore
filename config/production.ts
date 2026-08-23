@@ -3,6 +3,8 @@ import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
+import type { CorsConfig } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
+import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
 import { oidcAuthenticationMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
 import {
@@ -27,7 +29,6 @@ import {
   cleanDirectoriesCommandServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
   contentTypeNegotiatorServiceFactory,
-  corsMiddlewareServiceFactory,
   decoderServiceFactory,
   dbServiceFactory,
   encoderServiceFactory,
@@ -47,18 +48,8 @@ import {
 
 export type Config = {
   chubbyts: {
+    cors: CorsConfig;
     oidc: OidcConfig;
-  };
-  cors: {
-    allowCredentials: boolean;
-    allowHeaders: Array<string>;
-    allowMethods: Array<string>;
-    allowOrigins: {
-      createAllowOriginExact?: Array<string>;
-      createAllowOriginRegex?: Array<RegExp>;
-    };
-    exposeHeaders: Array<string>;
-    maxAge: number;
   };
   debug: boolean;
   dependencies: {
@@ -103,21 +94,21 @@ export const configFactory = (env: string): Config => {
 
   return {
     chubbyts: {
+      cors: {
+        allowCredentials: false,
+        allowHeaders: ['Accept', 'Authorization', 'Content-Type'],
+        allowMethods: ['DELETE', 'GET', 'POST', 'PUT'],
+        allowOrigins: {},
+        // let a browser based frontend read the bearer challenge, to distinguish a missing (no error) from an invalid,
+        // e.g. expired, token (error="invalid_token"), the concrete reason intentionally does not get reflected
+        exposeHeaders: ['WWW-Authenticate'],
+        maxAge: 7200,
+      },
       oidc: {
         issuer: getRequiredEnv('OIDC_ISSUER'),
         audience: getRequiredEnv('OIDC_AUDIENCE'),
         realm: 'petstore',
       },
-    },
-    cors: {
-      allowCredentials: false,
-      allowHeaders: ['Accept', 'Authorization', 'Content-Type'],
-      allowMethods: ['DELETE', 'GET', 'POST', 'PUT'],
-      allowOrigins: {},
-      // let a browser based frontend read the bearer challenge, to distinguish a missing (no error) from an invalid,
-      // e.g. expired, token (error="invalid_token"), the concrete reason intentionally does not get reflected
-      exposeHeaders: ['WWW-Authenticate'],
-      maxAge: 7200,
     },
     debug: false,
     dependencies: {
@@ -128,7 +119,7 @@ export const configFactory = (env: string): Config => {
         ['cleanDirectoriesCommand', cleanDirectoriesCommandServiceFactory],
         ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory],
         ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory],
-        ['corsMiddleware', corsMiddlewareServiceFactory],
+        ['corsMiddleware', corsMiddlewareServiceFactory()],
         ['decoder', decoderServiceFactory],
         ['db', dbServiceFactory],
         ['encoder', encoderServiceFactory],

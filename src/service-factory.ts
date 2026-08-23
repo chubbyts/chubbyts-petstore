@@ -35,14 +35,6 @@ import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/enc
 import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
 import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
 import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
-import { createCorsMiddleware } from '@chubbyts/chubbyts-undici-cors/dist/middleware';
-import {
-  createAllowOriginExact,
-  createAllowOriginRegex,
-  createHeadersNegotiator,
-  createMethodNegotiator,
-  createOriginNegotiator,
-} from '@chubbyts/chubbyts-undici-cors/dist/negotiation';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
@@ -85,26 +77,6 @@ export const contentTypeNegotiationMiddlewareServiceFactory = (container: Contai
 
 export const contentTypeNegotiatorServiceFactory = (container: Container): Negotiator => {
   return createContentTypeNegotiator(container.get<Decoder>('decoder').contentTypes);
-};
-
-export const corsMiddlewareServiceFactory = (container: Container) => {
-  const cors = container.get<Config>('config').cors;
-
-  return createCorsMiddleware(
-    createOriginNegotiator([
-      ...(cors.allowOrigins.createAllowOriginExact
-        ? cors.allowOrigins.createAllowOriginExact.map(createAllowOriginExact)
-        : []),
-      ...(cors.allowOrigins.createAllowOriginRegex
-        ? cors.allowOrigins.createAllowOriginRegex.map(createAllowOriginRegex)
-        : []),
-    ]),
-    createMethodNegotiator(cors.allowMethods),
-    createHeadersNegotiator(cors.allowHeaders),
-    cors.exposeHeaders,
-    cors.allowCredentials,
-    cors.maxAge,
-  );
 };
 
 export const dbServiceFactory = (container: Container): NodePgDatabase<Schema> => {

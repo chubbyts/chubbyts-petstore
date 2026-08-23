@@ -24,17 +24,7 @@ import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/acce
 import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
 import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
-import { createDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
-import { createJsonTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/json-type-decoder';
-import { createJsonxTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/jsonx-type-decoder';
-import { createUrlEncodedTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/url-encoded-type-decoder';
-import { createYamlTypeDecoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/yaml-type-decoder';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
-import { createEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
-import { createJsonTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/json-type-encoder';
-import { createJsonxTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/jsonx-type-encoder';
-import { createUrlEncodedTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/url-encoded-type-encoder';
-import { createYamlTypeEncoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/yaml-type-encoder';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
@@ -81,24 +71,6 @@ export const contentTypeNegotiatorServiceFactory = (container: Container): Negot
 
 export const dbServiceFactory = (container: Container): NodePgDatabase<Schema> => {
   return drizzle(container.get<Config>('config').postgres, { schema });
-};
-
-export const decoderServiceFactory = (): Decoder => {
-  return createDecoder([
-    createJsonTypeDecoder(),
-    createJsonxTypeDecoder(),
-    createUrlEncodedTypeDecoder(),
-    createYamlTypeDecoder(),
-  ]);
-};
-
-export const encoderServiceFactory = (): Encoder => {
-  return createEncoder([
-    createJsonTypeEncoder(),
-    createJsonxTypeEncoder(),
-    createUrlEncodedTypeEncoder(),
-    createYamlTypeEncoder(),
-  ]);
 };
 
 export const errorMiddlewareServiceFactory = (container: Container): Middleware => {

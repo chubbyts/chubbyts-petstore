@@ -13,8 +13,6 @@ import {
   contentTypeNegotiationMiddlewareServiceFactory,
   contentTypeNegotiatorServiceFactory,
   dbServiceFactory,
-  decoderServiceFactory,
-  encoderServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
   loggerServiceFactory,
@@ -160,36 +158,6 @@ describe('service-factory', () => {
     expect(db.query.petsVaccinations).toBeInstanceOf(Object);
 
     expect(containerMocks).toHaveLength(0);
-  });
-
-  test('decoderServiceFactory', () => {
-    const decoder = decoderServiceFactory();
-
-    expect(decoder).toBeInstanceOf(Object);
-
-    expect(decoder.contentTypes).toMatchInlineSnapshot(`
-      [
-        "application/json",
-        "application/jsonx+xml",
-        "application/x-www-form-urlencoded",
-        "application/x-yaml",
-      ]
-    `);
-  });
-
-  test('encoderServiceFactory', () => {
-    const encoder = encoderServiceFactory();
-
-    expect(encoder).toBeInstanceOf(Object);
-
-    expect(encoder.contentTypes).toMatchInlineSnapshot(`
-      [
-        "application/json",
-        "application/jsonx+xml",
-        "application/x-www-form-urlencoded",
-        "application/x-yaml",
-      ]
-    `);
   });
 
   test('errorMiddlewareServiceFactory', () => {

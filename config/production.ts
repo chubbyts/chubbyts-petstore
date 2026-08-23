@@ -3,6 +3,7 @@ import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
+import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
 import type { CorsConfig } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
@@ -29,9 +30,7 @@ import {
   cleanDirectoriesCommandServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
   contentTypeNegotiatorServiceFactory,
-  decoderServiceFactory,
   dbServiceFactory,
-  encoderServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
   loggerServiceFactory,
@@ -120,9 +119,9 @@ export const configFactory = (env: string): Config => {
         ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory],
         ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory],
         ['corsMiddleware', corsMiddlewareServiceFactory()],
-        ['decoder', decoderServiceFactory],
         ['db', dbServiceFactory],
-        ['encoder', encoderServiceFactory],
+        ['decoder', decoderServiceFactory()],
+        ['encoder', encoderServiceFactory()],
         ['errorMiddleware', errorMiddlewareServiceFactory],
         ['generatePath', generatePathServiceFactory],
         ['logger', loggerServiceFactory],

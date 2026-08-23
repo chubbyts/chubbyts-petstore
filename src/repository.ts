@@ -6,12 +6,7 @@ import type {
   Sort,
 } from '@chubbyts/chubbyts-undici-api/dist/model';
 import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-undici-api/dist/repository';
-import type { Filter, MongoClient, WithId } from 'mongodb';
-
-const withoutMongoId = <IMS extends InputModelSchema>(model: WithId<Model<IMS>>): Model<IMS> => {
-  const { _id, ...rest } = model;
-  return rest as Model<IMS>;
-};
+import type { MongoClient } from 'mongodb';
 
 const filterUndefinedEntry = <T>(entry: [string, T]): entry is [string, Exclude<T, undefined>] =>
   entry[1] !== undefined;
@@ -33,18 +28,23 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
   mongoClient: MongoClient,
   collectionName: string,
 ): ResolveModelList<IMS, IMLS> => {
-  const collection = mongoClient.db().collection<Model<IMS>>(collectionName);
+  const collection = mongoClient.db().collection(collectionName);
 
   return async (list: InputModelList<IMLS>) => {
     const result = await collection
       .aggregate<{
-        items: WithId<Model<IMS>>[];
+        items: Model<IMS>[];
         total: { count: number }[];
       }>([
         { $match: list.filters },
         {
           $facet: {
-            items: [...aggregationSort(list.sort), { $skip: list.offset }, { $limit: list.limit }],
+            items: [
+              ...aggregationSort(list.sort),
+              { $skip: list.offset },
+              { $limit: list.limit },
+              { $project: { _id: 0 } },
+            ],
             total: [{ $count: 'count' }],
           },
         },
@@ -53,7 +53,7 @@ export const createResolveModelList = <IMS extends InputModelSchema, IMLS extend
 
     return {
       ...list,
-      items: result[0].items.map(withoutMongoId),
+      items: result[0].items,
       count: result[0].total[0]?.count ?? 0,
     };
   };
@@ -63,16 +63,12 @@ export const createFindModelById = <IMS extends InputModelSchema>(
   mongoClient: MongoClient,
   collectionName: string,
 ): FindModelById<IMS> => {
-  const collection = mongoClient.db().collection<Model<IMS>>(collectionName);
+  const collection = mongoClient.db().collection(collectionName);
 
   return async (id: string): Promise<Model<IMS> | undefined> => {
-    const modelWithMongoId = await collection.findOne({ id } as Filter<Model<IMS>>);
+    const model = await collection.findOne<Model<IMS>>({ id }, { projection: { _id: 0 } });
 
-    if (!modelWithMongoId) {
-      return undefined;
-    }
-
-    return withoutMongoId<IMS>(modelWithMongoId);
+    return model ?? undefined;
   };
 };
 
@@ -80,20 +76,20 @@ export const createPersistModel = <IMS extends InputModelSchema>(
   mongoClient: MongoClient,
   collectionName: string,
 ): PersistModel<IMS> => {
-  const collection = mongoClient.db().collection<Model<IMS>>(collectionName);
+  const collection = mongoClient.db().collection(collectionName);
 
   return async (model: Model<IMS>) => {
-    const filter = { id: model.id } as Filter<Model<IMS>>;
+    const filter = { id: model.id };
 
     await collection.replaceOne(filter, model, { upsert: true });
 
-    const modelWithMongoId = await collection.findOne(filter);
+    const persistedModel = await collection.findOne<Model<IMS>>(filter, { projection: { _id: 0 } });
 
-    if (!modelWithMongoId) {
+    if (!persistedModel) {
       throw new Error(`Failed to persist model with id: ${model.id}`);
     }
 
-    return withoutMongoId<IMS>(modelWithMongoId);
+    return persistedModel;
   };
 };
 

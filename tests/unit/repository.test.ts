@@ -1,6 +1,6 @@
 import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-undici-api/dist/model';
 import { describe, expect, test } from 'vitest';
-import type { AggregationCursor, Collection, Db, MongoClient, WithId } from 'mongodb';
+import type { AggregationCursor, Collection, Db, MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import type { z } from 'zod';
@@ -76,7 +76,7 @@ describe('repository', () => {
               { $match: { name: 'name1' } },
               {
                 $facet: {
-                  items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }],
+                  items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }, { $project: { _id: 0 } }],
                   total: [{ $count: 'count' }],
                 },
               },
@@ -132,10 +132,7 @@ describe('repository', () => {
 
       type SomeModel = Model<InputSomeModelSchema>;
 
-      const objectId = new ObjectId();
-
-      const modelWithId: WithId<SomeModel> = {
-        _id: objectId,
+      const model: SomeModel = {
         id: '019c201f-6a83-7696-9899-50fbf7b2278d',
         createdAt: new Date('2022-06-12T20:08:24.793Z'),
         updatedAt: new Date('2022-06-12T20:08:35.208Z'),
@@ -157,7 +154,7 @@ describe('repository', () => {
           parameters: [],
           return: Promise.resolve([
             {
-              items: [modelWithId],
+              items: [model],
               total: [{ count: 2 }],
             },
           ]),
@@ -172,7 +169,7 @@ describe('repository', () => {
               { $match: { name: 'name1' } },
               {
                 $facet: {
-                  items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }],
+                  items: [{ $sort: { name: -1 } }, { $skip: 1 }, { $limit: 1 }, { $project: { _id: 0 } }],
                   total: [{ $count: 'count' }],
                 },
               },
@@ -251,8 +248,9 @@ describe('repository', () => {
             {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
+            { projection: { _id: 0 } },
           ],
-          return: Promise.resolve({ _id: new ObjectId(), ...model }),
+          return: Promise.resolve(model),
         },
       ]);
 
@@ -298,6 +296,7 @@ describe('repository', () => {
             {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
+            { projection: { _id: 0 } },
           ],
           return: Promise.resolve(null),
         },
@@ -367,8 +366,9 @@ describe('repository', () => {
             {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
+            { projection: { _id: 0 } },
           ],
-          return: Promise.resolve({ _id: objectId, updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
+          return: Promise.resolve({ updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
         },
       ]);
 
@@ -441,6 +441,7 @@ describe('repository', () => {
             {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
+            { projection: { _id: 0 } },
           ],
           return: Promise.resolve(null),
         },

@@ -33,6 +33,8 @@ services:
       # git
       - ~/.gitconfig:/home/node/.gitconfig
       - ~/.gitignore:/home/node/.gitignore
+      # ssh
+      - ~/.ssh/github.pub:/home/node/.ssh/github.pub
       # npm
       - ~/.npmrc:/home/node/.npmrc
       # claude - coding agent

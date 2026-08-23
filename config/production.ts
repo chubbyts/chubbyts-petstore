@@ -5,9 +5,10 @@ import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-conf
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
 import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
 import {
-  acceptNegotiatorServiceFactory,
-  contentTypeNegotiatorServiceFactory,
-} from '@chubbyts/chubbyts-negotiation/dist/service-factory';
+  acceptNegotiationMiddlewareServiceFactory,
+  contentTypeNegotiationMiddlewareServiceFactory,
+  errorMiddlewareServiceFactory as apiErrorMiddlewareServiceFactory,
+} from '@chubbyts/chubbyts-undici-api/dist/service-factory';
 import type { CorsConfig } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
@@ -28,10 +29,7 @@ import {
   petOpenApiRegistryServiceDelegator,
 } from '../src/pet/service-factory.js';
 import {
-  acceptNegotiationMiddlewareServiceFactory,
-  apiErrorMiddlewareServiceFactory,
   cleanDirectoriesCommandServiceFactory,
-  contentTypeNegotiationMiddlewareServiceFactory,
   dbServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
@@ -114,12 +112,10 @@ export const configFactory = (env: string): Config => {
     debug: false,
     dependencies: {
       factories: new Map<string, ConfigFactory>([
-        ['acceptNegotiationMiddleware', acceptNegotiationMiddlewareServiceFactory],
-        ['acceptNegotiator', acceptNegotiatorServiceFactory()],
-        ['apiErrorMiddleware', apiErrorMiddlewareServiceFactory],
+        ['acceptNegotiationMiddleware', acceptNegotiationMiddlewareServiceFactory()],
+        ['apiErrorMiddleware', apiErrorMiddlewareServiceFactory()],
         ['cleanDirectoriesCommand', cleanDirectoriesCommandServiceFactory],
-        ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory],
-        ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory()],
+        ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory()],
         ['corsMiddleware', corsMiddlewareServiceFactory()],
         ['db', dbServiceFactory],
         ['decoder', decoderServiceFactory()],

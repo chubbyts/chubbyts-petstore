@@ -51,7 +51,7 @@
     "@chubbyts/chubbyts-http-error": "^3.4.1",
     "@chubbyts/chubbyts-log-types": "^3.3.0",
     "@chubbyts/chubbyts-mongodb": "^2.3.0",
-    "@chubbyts/chubbyts-negotiation": "^4.4.0",
+    "@chubbyts/chubbyts-negotiation": "^4.5.1",
     "@chubbyts/chubbyts-pino-adapter": "^3.3.0",
     "@chubbyts/chubbyts-undici-api": "^2.1.0",
     "@chubbyts/chubbyts-undici-cors": "^1.4.0",

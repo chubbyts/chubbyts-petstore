@@ -36,7 +36,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-pino-adapter][11]: ^3.3.0
  * [@chubbyts/chubbyts-undici-api][12]: ^2.1.0
  * [@chubbyts/chubbyts-undici-cors][13]: ^1.3.0
- * [@chubbyts/chubbyts-undici-oidc][23]: ^1.1.0
+ * [@chubbyts/chubbyts-undici-oidc][23]: ^1.2.0
  * [@chubbyts/chubbyts-undici-server][14]: ^1.3.0
  * [@chubbyts/chubbyts-undici-server-node][15]: ^1.3.0
  * [commander][16]: ^15.0.0

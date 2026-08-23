@@ -3,6 +3,8 @@ import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
+import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
+import { oidcAuthenticationMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
 import {
   petCreateHandlerServiceFactory,
   petFindModelByIdServiceFactory,
@@ -34,7 +36,6 @@ import {
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
-  oidcAuthenticationMiddlewareServiceFactory,
   openApiHandlerServiceFactory,
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
@@ -45,6 +46,9 @@ import {
 } from '../src/service-factory.js';
 
 export type Config = {
+  chubbyts: {
+    oidc: OidcConfig;
+  };
   cors: {
     allowCredentials: boolean;
     allowHeaders: Array<string>;
@@ -62,10 +66,6 @@ export type Config = {
     delegators: Map<string, Array<ConfigDelegator>>;
   };
   directories: Map<string, string>;
-  oidc: {
-    issuer: string;
-    audience: string;
-  };
   openApi: OpenAPIObjectConfig;
   pino: {
     options: LoggerOptions;
@@ -102,6 +102,13 @@ export const configFactory = (env: string): Config => {
   const logStream = createWriteStream(logDir + '/application.log', { flags: 'a' });
 
   return {
+    chubbyts: {
+      oidc: {
+        issuer: getRequiredEnv('OIDC_ISSUER'),
+        audience: getRequiredEnv('OIDC_AUDIENCE'),
+        realm: 'petstore',
+      },
+    },
     cors: {
       allowCredentials: false,
       allowHeaders: ['Accept', 'Authorization', 'Content-Type'],
@@ -130,7 +137,7 @@ export const configFactory = (env: string): Config => {
         ['logger', loggerServiceFactory],
         ['match', matchServiceFactory],
         ['middlewares', middlewaresServiceFactory],
-        ['oidcAuthenticationMiddleware', oidcAuthenticationMiddlewareServiceFactory],
+        ['oidcAuthenticationMiddleware', oidcAuthenticationMiddlewareServiceFactory()],
         ['openApiHandler', openApiHandlerServiceFactory],
         ['openApiObject', openApiObjectServiceFactory],
         ['openApiRegistry', openApiRegistryServiceFactory],
@@ -159,10 +166,6 @@ export const configFactory = (env: string): Config => {
       ['cache', cacheDir],
       ['log', logDir],
     ]),
-    oidc: {
-      issuer: getRequiredEnv('OIDC_ISSUER'),
-      audience: getRequiredEnv('OIDC_AUDIENCE'),
-    },
     openApi: {
       openapi: '3.0.0',
       info: {

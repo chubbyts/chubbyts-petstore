@@ -18,10 +18,7 @@ import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/laz
 import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { createGetRoute } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { MongoClient } from 'mongodb';
-import { createAcceptNegotiator } from '@chubbyts/chubbyts-negotiation/dist/accept-negotiator';
-import { createContentTypeNegotiator } from '@chubbyts/chubbyts-negotiation/dist/content-type-negotiator';
 import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
 import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
@@ -42,10 +39,6 @@ export const acceptNegotiationMiddlewareServiceFactory = (container: Container) 
   return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
 };
 
-export const acceptNegotiatorServiceFactory = (container: Container) => {
-  return createAcceptNegotiator(container.get<Encoder>('encoder').contentTypes);
-};
-
 export const apiErrorMiddlewareServiceFactory = (container: Container) => {
   return createApiErrorMiddleware(
     container.get<Encoder>('encoder'),
@@ -61,10 +54,6 @@ export const cleanDirectoriesCommandServiceFactory = (container: Container): Cle
 
 export const contentTypeNegotiationMiddlewareServiceFactory = (container: Container): Middleware => {
   return createContentTypeNegotiationMiddleware(container.get<Negotiator>('contentTypeNegotiator'));
-};
-
-export const contentTypeNegotiatorServiceFactory = (container: Container): Negotiator => {
-  return createContentTypeNegotiator(container.get<Decoder>('decoder').contentTypes);
 };
 
 export const errorMiddlewareServiceFactory = (container: Container): Middleware => {

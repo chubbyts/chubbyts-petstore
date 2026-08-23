@@ -5,6 +5,10 @@ import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-conf
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
 import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
+import {
+  acceptNegotiatorServiceFactory,
+  contentTypeNegotiatorServiceFactory,
+} from '@chubbyts/chubbyts-negotiation/dist/service-factory';
 import type { CorsConfig } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
@@ -26,11 +30,9 @@ import {
 } from '../src/pet/service-factory.js';
 import {
   acceptNegotiationMiddlewareServiceFactory,
-  acceptNegotiatorServiceFactory,
   apiErrorMiddlewareServiceFactory,
   cleanDirectoriesCommandServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
-  contentTypeNegotiatorServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
   loggerServiceFactory,
@@ -117,11 +119,11 @@ export const configFactory = (env: string): Config => {
     dependencies: {
       factories: new Map<string, ConfigFactory>([
         ['acceptNegotiationMiddleware', acceptNegotiationMiddlewareServiceFactory],
-        ['acceptNegotiator', acceptNegotiatorServiceFactory],
+        ['acceptNegotiator', acceptNegotiatorServiceFactory()],
         ['apiErrorMiddleware', apiErrorMiddlewareServiceFactory],
         ['cleanDirectoriesCommand', cleanDirectoriesCommandServiceFactory],
         ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory],
-        ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory],
+        ['contentTypeNegotiator', contentTypeNegotiatorServiceFactory()],
         ['corsMiddleware', corsMiddlewareServiceFactory()],
         ['decoder', decoderServiceFactory()],
         ['encoder', encoderServiceFactory()],

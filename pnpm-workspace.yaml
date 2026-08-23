@@ -8,6 +8,7 @@ minimumReleaseAgeExclude:
   - '@chubbyts/chubbyts-dic-config-factory@1.0.0'
   - '@chubbyts/chubbyts-decode-encode@2.5.1'
   - '@chubbyts/chubbyts-negotiation@4.5.1'
+  - '@chubbyts/chubbyts-undici-api@2.2.0'
 packageExtensions:
   '@stryker-mutator/core':
     dependencies:

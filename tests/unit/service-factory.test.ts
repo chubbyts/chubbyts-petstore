@@ -7,10 +7,7 @@ import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-
 import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { ServerRequest, Response } from '@chubbyts/chubbyts-undici-server/dist/server';
 import {
-  acceptNegotiationMiddlewareServiceFactory,
-  apiErrorMiddlewareServiceFactory,
   cleanDirectoriesCommandServiceFactory,
-  contentTypeNegotiationMiddlewareServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
   loggerServiceFactory,
@@ -32,44 +29,6 @@ import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route
 MongoClient.connect = async () => ({}) as MongoClient;
 
 describe('service-factory', () => {
-  test('acceptNegotiationMiddlewareServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['acceptNegotiator'],
-        return: {},
-      },
-    ]);
-
-    expect(acceptNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks).toHaveLength(0);
-  });
-
-  test('apiErrorMiddlewareServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['encoder'],
-        return: {},
-      },
-      {
-        name: 'get',
-        parameters: ['config'],
-        return: { debug: true },
-      },
-      {
-        name: 'get',
-        parameters: ['logger'],
-        return: {},
-      },
-    ]);
-
-    expect(apiErrorMiddlewareServiceFactory(container)).toBeInstanceOf(Object);
-
-    expect(containerMocks).toHaveLength(0);
-  });
-
   test('generatePathServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
@@ -99,20 +58,6 @@ describe('service-factory', () => {
     ]);
 
     expect(cleanDirectoriesCommandServiceFactory(container)).toBeInstanceOf(Function);
-
-    expect(containerMocks).toHaveLength(0);
-  });
-
-  test('contentTypeNegotiationMiddlewareServiceFactory', () => {
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['contentTypeNegotiator'],
-        return: {},
-      },
-    ]);
-
-    expect(contentTypeNegotiationMiddlewareServiceFactory(container)).toBeInstanceOf(Function);
 
     expect(containerMocks).toHaveLength(0);
   });

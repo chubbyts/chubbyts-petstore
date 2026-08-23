@@ -18,15 +18,10 @@ import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/laz
 import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { createGetRoute } from '@chubbyts/chubbyts-framework/dist/router/route';
 import { MongoClient } from 'mongodb';
-import type { Negotiator } from '@chubbyts/chubbyts-negotiation/dist/negotiation';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
 import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
-import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/accept-negotiation-middleware';
-import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/content-type-negotiation-middleware';
-import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/error-middleware';
 import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
 import type { Config } from '../config/production.js';
 import { createCleanDirectoriesCommand } from './command.js';
@@ -35,25 +30,8 @@ import { createOpenApiHandler } from './handler.js';
 
 extendZodWithOpenApi(z);
 
-export const acceptNegotiationMiddlewareServiceFactory = (container: Container) => {
-  return createAcceptNegotiationMiddleware(container.get<Negotiator>('acceptNegotiator'));
-};
-
-export const apiErrorMiddlewareServiceFactory = (container: Container) => {
-  return createApiErrorMiddleware(
-    container.get<Encoder>('encoder'),
-    undefined,
-    container.get<Config>('config').debug,
-    container.get<Logger>('logger'),
-  );
-};
-
 export const cleanDirectoriesCommandServiceFactory = (container: Container): CleanDirectoriesCommand => {
   return createCleanDirectoriesCommand(container.get<Config>('config').directories, container.get<Logger>('logger'));
-};
-
-export const contentTypeNegotiationMiddlewareServiceFactory = (container: Container): Middleware => {
-  return createContentTypeNegotiationMiddleware(container.get<Negotiator>('contentTypeNegotiator'));
 };
 
 export const errorMiddlewareServiceFactory = (container: Container): Middleware => {

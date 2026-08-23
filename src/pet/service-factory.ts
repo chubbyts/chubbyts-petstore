@@ -25,7 +25,7 @@ import type {
 } from '@chubbyts/chubbyts-undici-api/dist/repository';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
 import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-undici-api/dist/model';
-import { extendZodWithOpenApi, type OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi, type OpenAPIRegistry, type RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
 import { v7 } from 'uuid';
@@ -144,13 +144,48 @@ export const petUpdateHandlerServiceFactory = async (container: Container): Prom
 export const petOpenApiRegistryServiceDelegator = (_container: Container, _name: string, factory: () => unknown) => {
   const registry = factory() as OpenAPIRegistry;
 
-  registry.registerPath({
+  const petRequestParams = z.object({
+    id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
+  });
+
+  const petRequestBody = {
+    description: 'Pet data',
+    content: {
+      'application/json': {
+        schema: inputPetSchema,
+      },
+    },
+    required: true,
+  };
+
+  const petResponse = {
+    description: 'Pet',
+    content: {
+      'application/json': {
+        schema: enrichedPetSchema.openapi({
+          description: 'Pet',
+        }),
+      },
+    },
+  };
+
+  const unauthorizedResponse = {
+    description: 'Missing or invalid token',
+  };
+
+  const registerPetPath = (routeConfig: Omit<RouteConfig, 'tags' | 'security'>) => {
+    registry.registerPath({
+      ...routeConfig,
+      tags: ['Pets'],
+      security: [{ bearerAuth: [] }],
+    });
+  };
+
+  registerPetPath({
     path: '/api/pets',
     method: 'get',
     summary: 'List all pets',
     operationId: 'listPets',
-    tags: ['Pets'],
-    security: [{ bearerAuth: [] }],
     request: {
       query: inputPetListOpenApiSchema.strip(),
     },
@@ -165,133 +200,66 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
           },
         },
       },
-      401: {
-        description: 'Missing or invalid token',
-      },
+      401: unauthorizedResponse,
     },
   });
 
-  registry.registerPath({
+  registerPetPath({
     path: '/api/pets',
     method: 'post',
     summary: 'Create a pet',
     operationId: 'createPet',
-    tags: ['Pets'],
-    security: [{ bearerAuth: [] }],
     request: {
-      body: {
-        description: 'Pet data',
-        content: {
-          'application/json': {
-            schema: inputPetSchema,
-          },
-        },
-        required: true,
-      },
+      body: petRequestBody,
     },
     responses: {
-      201: {
-        description: 'Pet',
-        content: {
-          'application/json': {
-            schema: enrichedPetSchema.openapi({
-              description: 'Pet',
-            }),
-          },
-        },
-      },
-      401: {
-        description: 'Missing or invalid token',
-      },
+      201: petResponse,
+      401: unauthorizedResponse,
     },
   });
 
-  registry.registerPath({
+  registerPetPath({
     path: '/api/pets/{id}',
     method: 'get',
     summary: 'Read a pet',
     operationId: 'readPet',
-    tags: ['Pets'],
-    security: [{ bearerAuth: [] }],
     request: {
-      params: z.object({
-        id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
-      }),
+      params: petRequestParams,
     },
     responses: {
-      200: {
-        description: 'Pet',
-        content: {
-          'application/json': {
-            schema: enrichedPetSchema.openapi({
-              description: 'Pet',
-            }),
-          },
-        },
-      },
-      401: {
-        description: 'Missing or invalid token',
-      },
+      200: petResponse,
+      401: unauthorizedResponse,
     },
   });
 
-  registry.registerPath({
+  registerPetPath({
     path: '/api/pets/{id}',
     method: 'put',
     summary: 'Update a pet',
     operationId: 'updatePet',
-    tags: ['Pets'],
-    security: [{ bearerAuth: [] }],
     request: {
-      params: z.object({
-        id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
-      }),
-      body: {
-        description: 'Pet data',
-        content: {
-          'application/json': {
-            schema: inputPetSchema,
-          },
-        },
-        required: true,
-      },
+      params: petRequestParams,
+      body: petRequestBody,
     },
     responses: {
-      200: {
-        description: 'Pet',
-        content: {
-          'application/json': {
-            schema: enrichedPetSchema.openapi({
-              description: 'Pet',
-            }),
-          },
-        },
-      },
-      401: {
-        description: 'Missing or invalid token',
-      },
+      200: petResponse,
+      401: unauthorizedResponse,
     },
   });
 
-  registry.registerPath({
+  registerPetPath({
     path: '/api/pets/{id}',
     method: 'delete',
     summary: 'Delete a pet',
     operationId: 'deletePet',
-    tags: ['Pets'],
-    security: [{ bearerAuth: [] }],
     request: {
-      params: z.object({
-        id: z.string().openapi({ example: '019c201f-6a83-7696-9899-50fbf7b2278d' }),
-      }),
+      params: petRequestParams,
     },
     responses: {
       204: {
         description: 'Empty response',
       },
-      401: {
-        description: 'Missing or invalid token',
-      },
+      401: unauthorizedResponse,
     },
   });
 

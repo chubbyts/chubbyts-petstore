@@ -24,7 +24,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
 
  * node: 22
  * [@asteasolutions/zod-to-openapi][1]: ^9.1.0
- * [@chubbyts/chubbyts-decode-encode][2]: ^2.5.0
+ * [@chubbyts/chubbyts-decode-encode][2]: ^2.5.1
  * [@chubbyts/chubbyts-dic][3]: ^2.3.0
  * [@chubbyts/chubbyts-dic-config][4]: ^2.3.0
  * [@chubbyts/chubbyts-dic-types][5]: ^2.3.0
@@ -32,7 +32,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.2.1
  * [@chubbyts/chubbyts-http-error][8]: ^3.4.1
  * [@chubbyts/chubbyts-log-types][9]: ^3.3.0
- * [@chubbyts/chubbyts-negotiation][10]: ^4.4.0
+ * [@chubbyts/chubbyts-negotiation][10]: ^4.5.1
  * [@chubbyts/chubbyts-pino-adapter][11]: ^3.3.0
  * [@chubbyts/chubbyts-undici-api][12]: ^2.1.0
  * [@chubbyts/chubbyts-undici-cors][13]: ^1.4.0

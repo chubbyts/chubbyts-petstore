@@ -6,9 +6,12 @@ export const configFactory = (env: string): Config => {
 
   return {
     ...config,
-    cors: {
-      ...config.cors,
-      allowOrigins: { createAllowOriginRegex: [/^https?:\/\/(localhost|127\.\d+.\d+.\d+)(:\d+)?$/] },
+    chubbyts: {
+      ...config.chubbyts,
+      cors: {
+        ...config.chubbyts.cors,
+        allowOrigins: { createAllowOriginRegex: [/^https?:\/\/(localhost|127\.\d+.\d+.\d+)(:\d+)?$/] },
+      },
     },
     debug: true,
     pino: {

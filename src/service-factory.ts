@@ -41,14 +41,6 @@ import { createAcceptNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api
 import { createContentTypeNegotiationMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/content-type-negotiation-middleware';
 import { createErrorMiddleware as createApiErrorMiddleware } from '@chubbyts/chubbyts-undici-api/dist/middleware/error-middleware';
 import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
-import { createCorsMiddleware } from '@chubbyts/chubbyts-undici-cors/dist/middleware';
-import {
-  createAllowOriginExact,
-  createAllowOriginRegex,
-  createHeadersNegotiator,
-  createMethodNegotiator,
-  createOriginNegotiator,
-} from '@chubbyts/chubbyts-undici-cors/dist/negotiation';
 import type { Config } from '../config/production.js';
 import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
@@ -83,26 +75,6 @@ export const contentTypeNegotiationMiddlewareServiceFactory = (container: Contai
 
 export const contentTypeNegotiatorServiceFactory = (container: Container): Negotiator => {
   return createContentTypeNegotiator(container.get<Decoder>('decoder').contentTypes);
-};
-
-export const corsMiddlewareServiceFactory = (container: Container) => {
-  const cors = container.get<Config>('config').cors;
-
-  return createCorsMiddleware(
-    createOriginNegotiator([
-      ...(cors.allowOrigins.createAllowOriginExact
-        ? cors.allowOrigins.createAllowOriginExact.map(createAllowOriginExact)
-        : []),
-      ...(cors.allowOrigins.createAllowOriginRegex
-        ? cors.allowOrigins.createAllowOriginRegex.map(createAllowOriginRegex)
-        : []),
-    ]),
-    createMethodNegotiator(cors.allowMethods),
-    createHeadersNegotiator(cors.allowHeaders),
-    cors.exposeHeaders,
-    cors.allowCredentials,
-    cors.maxAge,
-  );
 };
 
 export const decoderServiceFactory = (): Decoder => {

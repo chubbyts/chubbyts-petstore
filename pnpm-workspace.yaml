@@ -3,6 +3,7 @@ allowBuilds:
   unrs-resolver: true
 # can be removed once 1.1.0 is older than pnpm's default minimumReleaseAge
 minimumReleaseAgeExclude:
+  - '@chubbyts/chubbyts-undici-cors@1.4.0'
   - '@chubbyts/chubbyts-undici-oidc@1.2.0'
   - '@chubbyts/chubbyts-dic-config-factory@1.0.0'
 packageExtensions:

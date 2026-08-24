@@ -1,14 +1,6 @@
 allowBuilds:
   esbuild: true
   unrs-resolver: true
-# can be removed once 1.1.0 is older than pnpm's default minimumReleaseAge
-minimumReleaseAgeExclude:
-  - '@chubbyts/chubbyts-undici-cors@1.4.0'
-  - '@chubbyts/chubbyts-undici-oidc@1.2.0'
-  - '@chubbyts/chubbyts-dic-config-factory@1.0.0'
-  - '@chubbyts/chubbyts-decode-encode@2.5.1'
-  - '@chubbyts/chubbyts-negotiation@4.5.1'
-  - '@chubbyts/chubbyts-undici-api@2.2.0'
 packageExtensions:
   '@stryker-mutator/core':
     dependencies:

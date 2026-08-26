@@ -198,7 +198,8 @@ export const configFactory = (env: string): Config => {
       stream: {
         write: (msg: string): void => {
           logStream.write(msg);
-          console.log(msg);
+          // pino terminates every line itself, console.log would add a second newline
+          process.stdout.write(msg);
         },
       },
     },

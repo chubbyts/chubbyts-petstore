@@ -472,8 +472,9 @@ describe('service-factory', () => {
                   "required": false,
                   "schema": {
                     "default": 0,
+                    "minimum": 0,
                     "nullable": true,
-                    "type": "number",
+                    "type": "integer",
                   },
                 },
                 {
@@ -482,8 +483,9 @@ describe('service-factory', () => {
                   "required": false,
                   "schema": {
                     "default": 20,
-                    "nullable": true,
-                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 1,
+                    "type": "integer",
                   },
                 },
                 {
@@ -728,13 +730,15 @@ describe('service-factory', () => {
                           },
                           "limit": {
                             "default": 20,
-                            "nullable": true,
-                            "type": "number",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "type": "integer",
                           },
                           "offset": {
                             "default": 0,
+                            "minimum": 0,
                             "nullable": true,
-                            "type": "number",
+                            "type": "integer",
                           },
                           "sort": {
                             "additionalProperties": false,

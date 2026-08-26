@@ -1,7 +1,6 @@
 import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-undici-api/dist/model';
 import { describe, expect, test } from 'vitest';
 import type { AggregationCursor, Collection, Db, MongoClient } from 'mongodb';
-import { ObjectId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import type { z } from 'zod';
 import {
@@ -338,35 +337,17 @@ describe('repository', () => {
         name: 'name1',
       };
 
-      const objectId = new ObjectId();
-
       const collectionName = 'collectionName';
 
       const [collection, collectionMocks] = useObjectMock<Collection>([
         {
-          name: 'replaceOne',
+          name: 'findOneAndReplace',
           parameters: [
             {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
             model,
-            { upsert: true },
-          ],
-          return: Promise.resolve({
-            acknowledged: true,
-            matchedCount: 1,
-            modifiedCount: 0,
-            upsertedCount: 1,
-            upsertedId: objectId,
-          }),
-        },
-        {
-          name: 'findOne',
-          parameters: [
-            {
-              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
-            },
-            { projection: { _id: 0 } },
+            { upsert: true, returnDocument: 'after', projection: { _id: 0 } },
           ],
           return: Promise.resolve({ updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
         },
@@ -413,35 +394,17 @@ describe('repository', () => {
         name: 'name1',
       };
 
-      const objectId = new ObjectId();
-
       const collectionName = 'collectionName';
 
       const [collection, collectionMocks] = useObjectMock<Collection>([
         {
-          name: 'replaceOne',
+          name: 'findOneAndReplace',
           parameters: [
             {
               id: '019c201f-6a83-7696-9899-50fbf7b2278d',
             },
             model,
-            { upsert: true },
-          ],
-          return: Promise.resolve({
-            acknowledged: true,
-            matchedCount: 1,
-            modifiedCount: 0,
-            upsertedCount: 1,
-            upsertedId: objectId,
-          }),
-        },
-        {
-          name: 'findOne',
-          parameters: [
-            {
-              id: '019c201f-6a83-7696-9899-50fbf7b2278d',
-            },
-            { projection: { _id: 0 } },
+            { upsert: true, returnDocument: 'after', projection: { _id: 0 } },
           ],
           return: Promise.resolve(null),
         },

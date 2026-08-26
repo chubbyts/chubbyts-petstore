@@ -79,11 +79,11 @@ export const createPersistModel = <IMS extends InputModelSchema>(
   const collection = mongoClient.db().collection(collectionName);
 
   return async (model: Model<IMS>) => {
-    const filter = { id: model.id };
-
-    await collection.replaceOne(filter, model, { upsert: true });
-
-    const persistedModel = await collection.findOne<Model<IMS>>(filter, { projection: { _id: 0 } });
+    const persistedModel = (await collection.findOneAndReplace({ id: model.id }, model, {
+      upsert: true,
+      returnDocument: 'after',
+      projection: { _id: 0 },
+    })) as Model<IMS> | null;
 
     if (!persistedModel) {
       throw new Error(`Failed to persist model with id: ${model.id}`);

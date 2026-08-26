@@ -26,8 +26,8 @@
     "lint": "oxlint bin bootstrap config src tests *.ts",
     "start:debug": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm db:push && pnpm run develop:debug",
     "start": "pnpm install && pnpm run lint-fix && pnpm run cs-fix && pnpm db:push && pnpm run develop",
-    "test:integration": "vitest --config vitest.integration.config.js",
-    "test": "vitest --config vitest.config.js"
+    "test:integration": "vitest --config vitest.integration.config.ts",
+    "test": "vitest --config vitest.config.ts"
   },
   "prettier": {
     "printWidth": 120,

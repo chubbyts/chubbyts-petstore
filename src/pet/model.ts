@@ -21,6 +21,7 @@ import {
   createModelListSchema,
   createEnrichedModelSchema,
 } from '@chubbyts/chubbyts-undici-api/dist/model';
+import { createFlatQuerySchema } from '../openapi.js';
 
 extendZodWithOpenApi(z);
 
@@ -76,13 +77,6 @@ export const enrichedPetListSchema: EnrichedPetListSchema = createEnrichedModelL
 
 export type EnrichedPetList = EnrichedModelList<InputPetSchema, InputPetListSchema>;
 
-export const inputPetListOpenApiSchema = z
-  .object({
-    offset: numberSchema.default(0),
-    limit: numberSchema.default(20),
-    'filters[name]': z.string().optional(),
-    'sort[name]': z.enum(['asc', 'desc']).optional(),
-  })
-  .strict();
+export const inputPetListOpenApiSchema = createFlatQuerySchema(inputPetListSchema);
 
 export type InputPetListOpenApi = z.infer<typeof inputPetListOpenApiSchema>;

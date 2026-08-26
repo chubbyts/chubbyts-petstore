@@ -39,8 +39,8 @@ export type InputPet = InputModel<InputPetSchema>;
 
 export const inputPetListSchema = z
   .object({
-    offset: numberSchema.default(0),
-    limit: numberSchema.default(20),
+    offset: numberSchema.int().min(0).default(0),
+    limit: numberSchema.int().min(1).max(100).default(20),
     filters: z.object({ name: stringSchema.optional() }).strict().default({}),
     sort: z.object({ name: sortSchema }).strict().default({}),
   })

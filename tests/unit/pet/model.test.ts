@@ -161,6 +161,14 @@ describe('inputPetListSchema', () => {
     `);
     }
   });
+
+  test('invalid pagination bounds', () => {
+    expect(() => inputPetListSchema.parse({ ...validInputPetList, offset: -1 })).toThrow(/Too small/);
+    expect(() => inputPetListSchema.parse({ ...validInputPetList, offset: 1.5 })).toThrow(/expected int/);
+    expect(() => inputPetListSchema.parse({ ...validInputPetList, limit: 0 })).toThrow(/Too small/);
+    expect(() => inputPetListSchema.parse({ ...validInputPetList, limit: 101 })).toThrow(/Too big/);
+    expect(inputPetListSchema.parse({ ...validInputPetList, limit: 100 }).limit).toBe(100);
+  });
 });
 
 export const validPetList: PetList = {

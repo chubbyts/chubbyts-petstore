@@ -491,6 +491,7 @@ describe('service-factory', () => {
                   "name": "filters[name]",
                   "required": false,
                   "schema": {
+                    "minLength": 1,
                     "type": "string",
                   },
                 },

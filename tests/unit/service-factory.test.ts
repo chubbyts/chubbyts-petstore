@@ -155,6 +155,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['trustedProxyMiddleware'],
+        return: async () => response,
+      },
+      {
+        name: 'get',
         parameters: ['corsMiddleware'],
         return: async () => response,
       },
@@ -171,6 +176,7 @@ describe('service-factory', () => {
 
     expect(middlewares).toMatchInlineSnapshot(`
       [
+        [Function],
         [Function],
         [Function],
         [Function],

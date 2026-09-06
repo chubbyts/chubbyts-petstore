@@ -69,7 +69,9 @@ export const matchServiceFactory = (container: Container): Match => {
 export const middlewaresServiceFactory = (container: Container): Array<Middleware> => {
   const m = (name: string) => createLazyMiddleware(container, name);
 
-  return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
+  // the trusted proxy middleware must run before the router (a route placeholder could otherwise set the
+  // remoteAddress attribute it anchors its trust at) and before anything reading the clientIp attribute
+  return [m('errorMiddleware'), m('trustedProxyMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
 };
 
 export const mongoClientServiceFactory = async (container: Container): Promise<MongoClient> => {

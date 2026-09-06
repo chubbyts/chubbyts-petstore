@@ -30,14 +30,16 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-dic-types][5]: ^2.3.0
  * [@chubbyts/chubbyts-framework][6]: ^3.2.2
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.2.1
- * [@chubbyts/chubbyts-http-error][8]: ^3.4.1
+ * [@chubbyts/chubbyts-http-error][8]: ^3.5.0
  * [@chubbyts/chubbyts-log-types][9]: ^3.3.0
  * [@chubbyts/chubbyts-mongodb][10]: ^2.3.0
  * [@chubbyts/chubbyts-negotiation][11]: ^4.5.1
  * [@chubbyts/chubbyts-pino-adapter][12]: ^3.3.0
- * [@chubbyts/chubbyts-undici-api][13]: ^2.1.0
+ * [@chubbyts/chubbyts-undici-api][13]: ^2.3.0
  * [@chubbyts/chubbyts-undici-cors][14]: ^1.4.0
  * [@chubbyts/chubbyts-undici-oidc][23]: ^1.2.0
+ * [@chubbyts/chubbyts-undici-rate-limit][24]: ^1.2.0
+ * [@chubbyts/chubbyts-undici-trusted-proxy][25]: ^1.2.0
  * [@chubbyts/chubbyts-undici-server][15]: ^1.2.0
  * [@chubbyts/chubbyts-undici-server-node][16]: ^1.3.0
  * [commander][17]: ^15.0.0
@@ -109,7 +111,7 @@ pnpm start
 * GET https://localhost/ping
 * GET https://localhost/swagger (https://localhost/openapi)
 
-### Pet (oidc protected)
+### Pet (oidc protected, rate limited)
 
 * GET https://localhost/api/pets?sort[name]=asc
 * POST https://localhost/api/pets
@@ -162,6 +164,31 @@ The integration tests run against keycloak as well (no auth mocking): `vitest.in
 discovery endpoint of `OIDC_ISSUER` to be reachable and `tests/integration/auth.ts` requests tokens via password
 grant with the `petstore` client and user. Within the node container keycloak is reachable as `keycloak`,
 in ci a keycloak container gets started and mapped to that hostname (see `.github/workflows/ci.yml`).
+
+## Rate limit
+
+All routes below `/api` are rate limited by [chubbyts-undici-rate-limit][24]: 100 requests per 60 seconds per client
+ip (`config.chubbyts.rateLimit`, counted in memory, so per process). Every response carries the `ratelimit-limit`,
+`ratelimit-remaining` and `ratelimit-reset` (seconds) headers, once the limit is exceeded the api responds with a
+`429 Too Many Requests` problem json (plus the `retry-after` header) until the limit resets. The cors setup exposes
+these headers, so that a browser based frontend can back off before running into the limit.
+
+The client ip gets resolved by [chubbyts-undici-trusted-proxy][25] out of the `x-forwarded-for` header set by the
+proxies in front of the api (nginx within docker, a load balancer, ...): their ips / cidrs are configured comma
+separated within the `TRUSTED_PROXIES` environment variable (`config.chubbyts.trustedProxy`), the header entries
+within these ranges get skipped and the first other one is the client ip. A connection from outside of these ranges
+counts as the client itself and its headers get ignored, which is why the integration tests (which connect directly)
+work with the same setting. Keep the ranges as narrow as possible: a client within a trusted range could pick its own
+ip via `x-forwarded-for` and thereby its own limit. A request without resolvable client ip (a misconfiguration) fails
+instead of passing unlimited.
+
+Within the node container (after requesting an `ACCESS_TOKEN`, see above):
+
+```sh
+for i in $(seq 1 101); do
+  curl -s -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:1234/api/pets
+done
+```
 
 ## Structure
 
@@ -279,6 +306,8 @@ Before you start, produce at least one error, [produce a 404](https://localhost/
 [21]: https://www.npmjs.com/package/uuid
 [22]: https://www.npmjs.com/package/zod
 [23]: https://github.com/chubbyts/chubbyts-undici-oidc
+[24]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-rate-limit
+[25]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-trusted-proxy
 
 [30]: src/command.ts
 [31]: src/handler.ts

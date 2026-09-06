@@ -19,6 +19,8 @@ services:
       LLAMA_BASE_URL: http://host.docker.internal:9931/v1
       OIDC_ISSUER: 'http://keycloak:8080/realms/petstore'
       OIDC_AUDIENCE: 'petstore'
+      # the private ranges: the node container is only reachable through the nginx container within the docker network
+      TRUSTED_PROXIES: '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
     ports:
       - '1235:1235'
     volumes:

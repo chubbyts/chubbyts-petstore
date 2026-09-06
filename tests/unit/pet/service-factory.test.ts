@@ -777,6 +777,9 @@ describe('service-factory', () => {
                 "401": {
                   "description": "Missing or invalid token",
                 },
+                "429": {
+                  "description": "Rate limit exceeded, see the ratelimit-* and retry-after headers",
+                },
               },
               "security": [
                 {
@@ -965,6 +968,9 @@ describe('service-factory', () => {
                 "401": {
                   "description": "Missing or invalid token",
                 },
+                "429": {
+                  "description": "Rate limit exceeded, see the ratelimit-* and retry-after headers",
+                },
               },
               "security": [
                 {
@@ -997,6 +1003,9 @@ describe('service-factory', () => {
                 },
                 "401": {
                   "description": "Missing or invalid token",
+                },
+                "429": {
+                  "description": "Rate limit exceeded, see the ratelimit-* and retry-after headers",
                 },
               },
               "security": [
@@ -1154,6 +1163,9 @@ describe('service-factory', () => {
                 },
                 "401": {
                   "description": "Missing or invalid token",
+                },
+                "429": {
+                  "description": "Rate limit exceeded, see the ratelimit-* and retry-after headers",
                 },
               },
               "security": [
@@ -1354,6 +1366,9 @@ describe('service-factory', () => {
                 "401": {
                   "description": "Missing or invalid token",
                 },
+                "429": {
+                  "description": "Rate limit exceeded, see the ratelimit-* and retry-after headers",
+                },
               },
               "security": [
                 {
@@ -1393,6 +1408,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['rateLimitMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['oidcAuthenticationMiddleware'],
         return: dummyMiddleware,
       },
@@ -1409,6 +1429,11 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['rateLimitMiddleware'],
         return: dummyMiddleware,
       },
       {
@@ -1438,6 +1463,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['rateLimitMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['oidcAuthenticationMiddleware'],
         return: dummyMiddleware,
       },
@@ -1454,6 +1484,11 @@ describe('service-factory', () => {
       {
         name: 'get',
         parameters: ['apiErrorMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
+        parameters: ['rateLimitMiddleware'],
         return: dummyMiddleware,
       },
       {
@@ -1483,6 +1518,11 @@ describe('service-factory', () => {
       },
       {
         name: 'get',
+        parameters: ['rateLimitMiddleware'],
+        return: dummyMiddleware,
+      },
+      {
+        name: 'get',
         parameters: ['oidcAuthenticationMiddleware'],
         return: dummyMiddleware,
       },
@@ -1508,6 +1548,7 @@ describe('service-factory', () => {
             [Function],
             [Function],
             [Function],
+            [Function],
           ],
           "name": "pet_list",
           "path": "/api/pets",
@@ -1519,6 +1560,7 @@ describe('service-factory', () => {
           "handler": [Function],
           "method": "POST",
           "middlewares": [
+            [Function],
             [Function],
             [Function],
             [Function],
@@ -1537,6 +1579,7 @@ describe('service-factory', () => {
             [Function],
             [Function],
             [Function],
+            [Function],
           ],
           "name": "pet_read",
           "path": "/api/pets/:id",
@@ -1552,6 +1595,7 @@ describe('service-factory', () => {
             [Function],
             [Function],
             [Function],
+            [Function],
           ],
           "name": "pet_update",
           "path": "/api/pets/:id",
@@ -1563,6 +1607,7 @@ describe('service-factory', () => {
           "handler": [Function],
           "method": "DELETE",
           "middlewares": [
+            [Function],
             [Function],
             [Function],
             [Function],

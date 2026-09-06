@@ -12,6 +12,8 @@ services:
       SERVER_PORT: '1234'
       OIDC_ISSUER: 'http://keycloak:8080/realms/petstore'
       OIDC_AUDIENCE: 'petstore'
+      # the private ranges: the node container is only reachable through the nginx container within the docker network
+      TRUSTED_PROXIES: '10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
     depends_on:
       - keycloak
       - mongo

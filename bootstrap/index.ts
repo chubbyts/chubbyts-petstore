@@ -6,6 +6,7 @@ import {
   createUndiciResponseToNodeResponseEmitter,
 } from '@chubbyts/chubbyts-undici-server-node/dist/node';
 import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
+import { ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
 import type { Config } from '../config/production.js';
 import { containerFactory } from '../bootstrap/container.js';
 
@@ -35,7 +36,13 @@ const shutdownServer = (server: Server) => {
 
   const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
     try {
-      undiciResponseToNodeResponseEmitter(await app(nodeRequestToUndiciRequestFactory(req)), res);
+      // the trusted proxy middleware anchors its trust at the address of the connection, which the node adapter does
+      // not provide: pass it as remoteAddress attribute (undefined, e.g. on an already closed socket, resolves nothing)
+      const serverRequest = new ServerRequest(nodeRequestToUndiciRequestFactory(req), {
+        attributes: { remoteAddress: req.socket.remoteAddress },
+      });
+
+      undiciResponseToNodeResponseEmitter(await app(serverRequest), res);
     } catch (error) {
       console.error(`Failed to handle request: ${error}`);
 

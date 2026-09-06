@@ -173,6 +173,10 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     description: 'Missing or invalid token',
   };
 
+  const tooManyRequestsResponse = {
+    description: 'Rate limit exceeded, see the ratelimit-* and retry-after headers',
+  };
+
   const registerPetPath = (routeConfig: Omit<RouteConfig, 'tags' | 'security'>) => {
     registry.registerPath({
       ...routeConfig,
@@ -201,6 +205,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         },
       },
       401: unauthorizedResponse,
+      429: tooManyRequestsResponse,
     },
   });
 
@@ -215,6 +220,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       201: petResponse,
       401: unauthorizedResponse,
+      429: tooManyRequestsResponse,
     },
   });
 
@@ -229,6 +235,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       200: petResponse,
       401: unauthorizedResponse,
+      429: tooManyRequestsResponse,
     },
   });
 
@@ -244,6 +251,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
     responses: {
       200: petResponse,
       401: unauthorizedResponse,
+      429: tooManyRequestsResponse,
     },
   });
 
@@ -260,6 +268,7 @@ export const petOpenApiRegistryServiceDelegator = (_container: Container, _name:
         description: 'Empty response',
       },
       401: unauthorizedResponse,
+      429: tooManyRequestsResponse,
     },
   });
 
@@ -308,7 +317,14 @@ export const petRoutesServiceDelegator = (
             handler: h('petDeleteHandler'),
           }),
         ],
-        middlewares: [m('acceptNegotiationMiddleware'), m('apiErrorMiddleware'), m('oidcAuthenticationMiddleware')],
+        // the rate limit runs behind the api error middleware (which turns its 429 into problem json) and before the
+        // authentication, so that the token verification does not get consumed by a client over the limit
+        middlewares: [
+          m('acceptNegotiationMiddleware'),
+          m('apiErrorMiddleware'),
+          m('rateLimitMiddleware'),
+          m('oidcAuthenticationMiddleware'),
+        ],
       }),
     ),
   ];

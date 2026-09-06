@@ -1,6 +1,8 @@
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@chubbyts/chubbyts-undici-trusted-proxy@1.2.0'
 packageExtensions:
   '@stryker-mutator/core':
     dependencies:

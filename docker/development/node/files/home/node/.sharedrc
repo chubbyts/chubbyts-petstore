@@ -16,3 +16,45 @@ alias cp='cp -i'
 alias ln='ln -i'
 alias mv='mv -i'
 alias rm='rm -i'
+
+# Reset per-harness state to the image baseline, keeping only what docker-compose.yml bind-mounts
+# (plus, for pi, the packages baked into the image by the Dockerfile).
+
+claude-reset() {
+    find ~/.claude -mindepth 1 -maxdepth 1 \
+        ! -name '.credentials.json' \
+        ! -name 'settings.json' \
+        -exec rm -rf -- {} +
+}
+
+codex-reset() {
+    find ~/.codex -mindepth 1 -maxdepth 1 \
+        ! -name 'auth.json' \
+        ! -name 'config.toml' \
+        -exec rm -rf -- {} +
+}
+
+opencode-reset() {
+    find ~/.config/opencode -mindepth 1 -maxdepth 1 \
+        ! -name 'opencode.jsonc' \
+        ! -name 'tui.json' \
+        -exec rm -rf -- {} +
+    find ~/.local/share/opencode -mindepth 1 -maxdepth 1 \
+        ! -name 'auth.json' \
+        -exec rm -rf -- {} +
+}
+
+pi-reset() {
+    find ~/.pi/agent -mindepth 1 -maxdepth 1 \
+        ! -name 'auth.json' \
+        ! -name 'git' \
+        ! -name 'settings.json' \
+        -exec rm -rf -- {} +
+}
+
+harness-reset() {
+    claude-reset
+    codex-reset
+    opencode-reset
+    pi-reset
+}

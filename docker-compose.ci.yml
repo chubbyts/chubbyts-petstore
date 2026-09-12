@@ -13,8 +13,13 @@ services:
       OIDC_ISSUER: 'http://keycloak:8080/realms/petstore'
       OIDC_AUDIENCE: 'petstore'
     depends_on:
-      - keycloak
-      - postgres
+      keycloak:
+        condition: service_started
+      # the schema gets pushed on container start (see docker/production/node/Dockerfile), which needs postgres to
+      # accept connections already: a fresh postgres container initializes its data directory first and refuses tcp
+      # connections meanwhile
+      postgres:
+        condition: service_healthy
   keycloak:
     container_name: chubbyts-petstore-keycloak-ci
     hostname: chubbyts-petstore-keycloak-ci
@@ -39,6 +44,13 @@ services:
       POSTGRES_DB: petstore
       POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
       POSTGRES_USER: petstore
+    # -h localhost forces tcp: while the data directory gets initialized a temporary server listens on the unix socket
+    # only, which pg_isready would otherwise report as ready
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h localhost -U petstore -d petstore']
+      interval: 1s
+      timeout: 5s
+      retries: 60
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui-ci
     hostname: chubbyts-petstore-swagger-ui-ci

@@ -13,8 +13,13 @@ services:
       OIDC_ISSUER: 'http://keycloak:8080/realms/petstore'
       OIDC_AUDIENCE: 'petstore'
     depends_on:
-      - keycloak
-      - mongo
+      keycloak:
+        condition: service_started
+      # the app connects and upserts its indexes on the first request (see src/service-factory.ts), which needs mongo
+      # to accept connections already: a fresh mongo container creates the root user first and refuses connections
+      # on its non-loopback address meanwhile
+      mongo:
+        condition: service_healthy
   keycloak:
     container_name: chubbyts-petstore-keycloak-ci
     hostname: chubbyts-petstore-keycloak-ci
@@ -37,6 +42,13 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: petstore
       MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+    # --host "$(hostname)" forces the non-loopback address: while the root user gets created a temporary server
+    # listens on 127.0.0.1 only, which a ping against localhost would otherwise report as ready
+    healthcheck:
+      test: ['CMD-SHELL', 'mongosh --host "$(hostname)" --quiet --eval "db.adminCommand(''ping'')"']
+      interval: 1s
+      timeout: 5s
+      retries: 60
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui-ci
     hostname: chubbyts-petstore-swagger-ui-ci

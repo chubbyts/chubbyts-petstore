@@ -14,6 +14,10 @@ import type { CorsConfig } from '@chubbyts/chubbyts-undici-cors/dist/service-fac
 import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
 import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
 import { oidcAuthenticationMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
+import type { RateLimitConfig } from '@chubbyts/chubbyts-undici-rate-limit/dist/service-factory';
+import { rateLimitMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-rate-limit/dist/service-factory';
+import type { TrustedProxyConfig } from '@chubbyts/chubbyts-undici-trusted-proxy/dist/service-factory';
+import { trustedProxyMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-trusted-proxy/dist/service-factory';
 import {
   petCreateHandlerServiceFactory,
   petFindModelByIdServiceFactory,
@@ -50,6 +54,8 @@ export type Config = {
   chubbyts: {
     cors: CorsConfig;
     oidc: OidcConfig;
+    rateLimit: RateLimitConfig;
+    trustedProxy: TrustedProxyConfig;
   };
   debug: boolean;
   dependencies: {
@@ -103,14 +109,27 @@ export const configFactory = (env: string): Config => {
         allowMethods: ['DELETE', 'GET', 'POST', 'PUT'],
         allowOrigins: {},
         // let a browser based frontend read the bearer challenge, to distinguish a missing (no error) from an invalid,
-        // e.g. expired, token (error="invalid_token"), the concrete reason intentionally does not get reflected
-        exposeHeaders: ['WWW-Authenticate'],
+        // e.g. expired, token (error="invalid_token"), the concrete reason intentionally does not get reflected,
+        // and the rate limit headers, to back off before running into a 429
+        exposeHeaders: ['WWW-Authenticate', 'RateLimit-Limit', 'RateLimit-Remaining', 'RateLimit-Reset', 'Retry-After'],
         maxAge: 7200,
       },
       oidc: {
         issuer: getRequiredEnv('OIDC_ISSUER'),
         audience: getRequiredEnv('OIDC_AUDIENCE'),
         realm: 'petstore',
+      },
+      rateLimit: {
+        // per client ip (the clientIp attribute set by the trusted proxy middleware), no fallback: a request without
+        // client ip is a misconfiguration (see TRUSTED_PROXIES) and fails instead of passing unlimited
+        keys: [{ attribute: 'clientIp' }],
+        points: 100,
+        duration: 60,
+      },
+      trustedProxy: {
+        // the ips / cidrs of the proxies (nginx within docker, a load balancer, ...), the x-forwarded-for entries within
+        // these ranges get skipped, a connection from outside of them counts as the client itself
+        trustedProxies: getRequiredEnv('TRUSTED_PROXIES').split(','),
       },
     },
     debug: false,
@@ -145,9 +164,11 @@ export const configFactory = (env: string): Config => {
         ['petResolveModelList', petResolveModelListServiceFactory],
         ['petUpdateHandler', petUpdateHandlerServiceFactory],
         ['pingHandler', pingHandlerServiceFactory],
+        ['rateLimitMiddleware', rateLimitMiddlewareServiceFactory()],
         ['routeMatcherMiddleware', routeMatcherMiddlewareServiceFactory],
         ['routes', routesServiceFactory],
         ['routesByName', routesByNameServiceFactory],
+        ['trustedProxyMiddleware', trustedProxyMiddlewareServiceFactory()],
       ]),
       delegators: new Map([
         ['openApiRegistry', [petOpenApiRegistryServiceDelegator]],

@@ -83,6 +83,7 @@ export const setup = async () => {
   const mongoUri = getRequiredEnv('MONGO_URI');
   const oidcIssuer = getRequiredEnv('OIDC_ISSUER');
   getRequiredEnv('OIDC_AUDIENCE');
+  getRequiredEnv('TRUSTED_PROXIES');
 
   const { database, ...mongoConfigWithoutDatabase } = parse(mongoUri);
 

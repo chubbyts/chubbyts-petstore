@@ -95,7 +95,7 @@ jobs:
       # "keycloak" resolves to the docker host, where the keycloak container publishes port 8080: the issuer claim
       # is fixed to http://keycloak:8080 (KC_HOSTNAME) and has to match OIDC_ISSUER
       - name: pnpm run test:integration --run --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app --add-host keycloak:172.17.0.1 -e 'MONGO_URI=mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin' -e 'OIDC_ISSUER=http://keycloak:8080/realms/petstore' -e 'OIDC_AUDIENCE=petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app --add-host keycloak:172.17.0.1 -e 'MONGO_URI=mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin' -e 'OIDC_ISSUER=http://keycloak:8080/realms/petstore' -e 'OIDC_AUDIENCE=petstore' -e 'TRUSTED_PROXIES=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run build'
   node22:
@@ -152,6 +152,7 @@ jobs:
           MONGO_URI: "mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin"
           OIDC_ISSUER: "http://keycloak:8080/realms/petstore"
           OIDC_AUDIENCE: "petstore"
+          TRUSTED_PROXIES: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
       - run: pnpm run infection
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

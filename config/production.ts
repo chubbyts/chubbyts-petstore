@@ -8,11 +8,11 @@ import {
   acceptNegotiationMiddlewareServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
   errorMiddlewareServiceFactory as apiErrorMiddlewareServiceFactory,
-} from '@chubbyts/chubbyts-undici-api/dist/service-factory';
-import type { CorsConfig } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
-import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-cors/dist/service-factory';
-import type { OidcConfig } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
-import { oidcAuthenticationMiddlewareServiceFactory } from '@chubbyts/chubbyts-undici-oidc/dist/service-factory';
+} from '@chubbyts/chubbyts-http-api/service-factory';
+import type { CorsConfig } from '@chubbyts/chubbyts-http-cors/service-factory';
+import { corsMiddlewareServiceFactory } from '@chubbyts/chubbyts-http-cors/service-factory';
+import type { OidcConfig } from '@chubbyts/chubbyts-http-oidc/service-factory';
+import { oidcAuthenticationMiddlewareServiceFactory } from '@chubbyts/chubbyts-http-oidc/service-factory';
 import {
   petCreateHandlerServiceFactory,
   petFindModelByIdServiceFactory,
@@ -29,6 +29,7 @@ import {
   petOpenApiRegistryServiceDelegator,
 } from '../src/pet/service-factory.js';
 import {
+  bodyFactoryServiceFactory,
   cleanDirectoriesCommandServiceFactory,
   dbServiceFactory,
   errorMiddlewareServiceFactory,
@@ -40,9 +41,16 @@ import {
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
   pingHandlerServiceFactory,
+  requestFactoryServiceFactory,
+  responseFactoryServiceFactory,
+  responseHelpersServiceFactory,
   routeMatcherMiddlewareServiceFactory,
   routesByNameServiceFactory,
   routesServiceFactory,
+  serverRequestFactoryServiceFactory,
+  serverRequestHelpersServiceFactory,
+  streamFactoryServiceFactory,
+  uriFactoryServiceFactory,
 } from '../src/service-factory.js';
 
 export type Config = {
@@ -114,6 +122,7 @@ export const configFactory = (env: string): Config => {
       factories: new Map<string, ConfigFactory>([
         ['acceptNegotiationMiddleware', acceptNegotiationMiddlewareServiceFactory()],
         ['apiErrorMiddleware', apiErrorMiddlewareServiceFactory()],
+        ['bodyFactory', bodyFactoryServiceFactory],
         ['cleanDirectoriesCommand', cleanDirectoriesCommandServiceFactory],
         ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory()],
         ['corsMiddleware', corsMiddlewareServiceFactory()],
@@ -141,9 +150,16 @@ export const configFactory = (env: string): Config => {
         ['petResolveModelList', petResolveModelListServiceFactory],
         ['petUpdateHandler', petUpdateHandlerServiceFactory],
         ['pingHandler', pingHandlerServiceFactory],
+        ['requestFactory', requestFactoryServiceFactory],
+        ['responseFactory', responseFactoryServiceFactory],
+        ['responseHelpers', responseHelpersServiceFactory],
         ['routeMatcherMiddleware', routeMatcherMiddlewareServiceFactory],
         ['routes', routesServiceFactory],
         ['routesByName', routesByNameServiceFactory],
+        ['serverRequestFactory', serverRequestFactoryServiceFactory],
+        ['serverRequestHelpers', serverRequestHelpersServiceFactory],
+        ['streamFactory', streamFactoryServiceFactory],
+        ['uriFactory', uriFactoryServiceFactory],
       ]),
       delegators: new Map([
         ['openApiRegistry', [petOpenApiRegistryServiceDelegator]],

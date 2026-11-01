@@ -1,10 +1,10 @@
-import type { InputModelList, Model, ModelList } from '@chubbyts/chubbyts-undici-api/dist/model';
+import type { InputModelList, Model, ModelList } from '@chubbyts/chubbyts-http-api/model';
 import type {
   FindModelById,
   PersistModel,
   RemoveModel,
   ResolveModelList,
-} from '@chubbyts/chubbyts-undici-api/dist/repository';
+} from '@chubbyts/chubbyts-http-api/repository';
 import { type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { BuildQueryResult } from 'drizzle-orm';
 import { and, asc, count, desc, eq } from 'drizzle-orm';

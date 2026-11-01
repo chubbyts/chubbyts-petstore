@@ -3,9 +3,10 @@ import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
-import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
-import { Response, ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
+import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
+import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import {
+  bodyFactoryServiceFactory,
   cleanDirectoriesCommandServiceFactory,
   dbServiceFactory,
   errorMiddlewareServiceFactory,
@@ -17,13 +18,24 @@ import {
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
   pingHandlerServiceFactory,
+  requestFactoryServiceFactory,
+  responseFactoryServiceFactory,
+  responseHelpersServiceFactory,
   routeMatcherMiddlewareServiceFactory,
   routesByNameServiceFactory,
   routesServiceFactory,
+  serverRequestFactoryServiceFactory,
+  serverRequestHelpersServiceFactory,
+  streamFactoryServiceFactory,
+  uriFactoryServiceFactory,
 } from '../../src/service-factory.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route.js';
 
 describe('service-factory', () => {
+  test('bodyFactoryServiceFactory', () => {
+    expect(bodyFactoryServiceFactory()).toBeInstanceOf(Function);
+  });
+
   test('generatePathServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
@@ -77,6 +89,16 @@ describe('service-factory', () => {
 
   test('errorMiddlewareServiceFactory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => null,
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: () => null,
+      },
       {
         name: 'get',
         parameters: ['config'],
@@ -205,6 +227,16 @@ describe('service-factory', () => {
         parameters: ['openApiObject'],
         return: {},
       },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => null,
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: () => null,
+      },
     ]);
 
     expect(openApiHandlerServiceFactory(container)).toBeInstanceOf(Function);
@@ -304,7 +336,59 @@ describe('service-factory', () => {
   });
 
   test('pingHandlerServiceFactory', () => {
-    expect(pingHandlerServiceFactory()).toBeInstanceOf(Function);
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: () => null,
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: () => null,
+      },
+    ]);
+
+    expect(pingHandlerServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(containerMocks).toHaveLength(0);
+  });
+
+  test('requestFactoryServiceFactory', () => {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['uriFactory'],
+        return: () => null,
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: () => null,
+      },
+    ]);
+
+    expect(requestFactoryServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(containerMocks).toHaveLength(0);
+  });
+
+  test('responseFactoryServiceFactory', () => {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: () => null,
+      },
+    ]);
+
+    expect(responseFactoryServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(containerMocks).toHaveLength(0);
+  });
+
+  test('responseHelpersServiceFactory', () => {
+    expect(responseHelpersServiceFactory()).toBeInstanceOf(Object);
   });
 
   test('routeMatcherMiddlewareServiceFactory', () => {
@@ -322,8 +406,8 @@ describe('service-factory', () => {
   });
 
   test('routesServiceFactory', async () => {
-    const serverRequest = new ServerRequest('https://example.com/');
-    const response = new Response();
+    const serverRequest = {} as ServerRequest;
+    const response = {} as Response;
 
     const dummyHandler = async () => response;
 
@@ -386,5 +470,43 @@ describe('service-factory', () => {
     expect(routesByNameServiceFactory(container)).toBeInstanceOf(Map);
 
     expect(containerMocks).toHaveLength(0);
+  });
+
+  test('serverRequestFactoryServiceFactory', () => {
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['requestFactory'],
+        return: () => null,
+      },
+    ]);
+
+    expect(serverRequestFactoryServiceFactory(container)).toBeInstanceOf(Function);
+
+    expect(containerMocks).toHaveLength(0);
+  });
+
+  test('serverRequestHelpersServiceFactory', () => {
+    expect(serverRequestHelpersServiceFactory()).toBeInstanceOf(Object);
+  });
+
+  test('streamFactoryServiceFactory', () => {
+    const bodyFactory = {};
+
+    const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: bodyFactory,
+      },
+    ]);
+
+    expect(streamFactoryServiceFactory(container)).toBe(bodyFactory);
+
+    expect(containerMocks).toHaveLength(0);
+  });
+
+  test('uriFactoryServiceFactory', () => {
+    expect(uriFactoryServiceFactory()).toBeInstanceOf(Function);
   });
 });

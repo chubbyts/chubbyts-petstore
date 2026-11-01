@@ -1,33 +1,35 @@
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
-import { createLazyHandler } from '@chubbyts/chubbyts-framework/dist/handler/lazy-handler';
-import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/dist/middleware/lazy-middleware';
-import { createGroup, getRoutes } from '@chubbyts/chubbyts-framework/dist/router/group';
-import type { Route } from '@chubbyts/chubbyts-framework/dist/router/route';
+import { createLazyHandler } from '@chubbyts/chubbyts-framework/handler/lazy-handler';
+import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/middleware/lazy-middleware';
+import { createGroup, getRoutes } from '@chubbyts/chubbyts-framework/router/group';
+import type { Route } from '@chubbyts/chubbyts-framework/router/route';
 import {
   createDeleteRoute,
   createGetRoute,
   createPostRoute,
   createPutRoute,
-} from '@chubbyts/chubbyts-framework/dist/router/route';
-import { createCreateHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/create';
-import { createReadHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/read';
-import { createUpdateHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/update';
-import { createDeleteHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/delete';
-import { createListHandler } from '@chubbyts/chubbyts-undici-api/dist/handler/list';
+} from '@chubbyts/chubbyts-framework/router/route';
+import { createCreateHandler } from '@chubbyts/chubbyts-http-api/handler/create';
+import { createReadHandler } from '@chubbyts/chubbyts-http-api/handler/read';
+import { createUpdateHandler } from '@chubbyts/chubbyts-http-api/handler/update';
+import { createDeleteHandler } from '@chubbyts/chubbyts-http-api/handler/delete';
+import { createListHandler } from '@chubbyts/chubbyts-http-api/handler/list';
 import type {
   FindModelById,
   PersistModel,
   RemoveModel,
   ResolveModelList,
-} from '@chubbyts/chubbyts-undici-api/dist/repository';
-import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
-import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-undici-api/dist/model';
+} from '@chubbyts/chubbyts-http-api/repository';
+import type { GeneratePath } from '@chubbyts/chubbyts-framework/router/url-generator';
+import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-http-api/model';
 import { extendZodWithOpenApi, type OpenAPIRegistry, type RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import type { Handler } from '@chubbyts/chubbyts-undici-server/dist/server';
+import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
+import type { BodyFactory, ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ResponseHelpers, ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import { v7 } from 'uuid';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
 import type { Schema } from '../repository.js';
@@ -44,22 +46,29 @@ import { createFindPetById, createPersistPet, createRemovePet, createResolvePetL
 extendZodWithOpenApi(z);
 
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createCreateHandler(
-    container.get<Decoder>('decoder'),
-    inputPetSchema,
-    await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
-    enrichedPetSchema,
-    container.get<Encoder>('encoder'),
-    container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
-    v7,
-  );
+  return createCreateHandler({
+    serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
+    responseFactory: container.get<ResponseFactory>('responseFactory'),
+    responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
+    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    decoder: container.get<Decoder>('decoder'),
+    inputModelSchema: inputPetSchema,
+    persistModel: await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
+    enrichedModelSchema: enrichedPetSchema,
+    encoder: container.get<Encoder>('encoder'),
+    enrichModel: container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
+    uuid: v7,
+  });
 };
 
 export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createDeleteHandler(
-    await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
-    await container.get<Promise<RemoveModel<InputPetSchema>>>('petRemoveModel'),
-  );
+  return createDeleteHandler({
+    serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
+    responseFactory: container.get<ResponseFactory>('responseFactory'),
+    responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
+    findModelById: await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
+    removeModel: await container.get<Promise<RemoveModel<InputPetSchema>>>('petRemoveModel'),
+  });
 };
 
 export const petEnrichModelServiceFactory = (container: Container): EnrichModel<InputPetSchema> => {
@@ -91,13 +100,18 @@ export const petFindModelByIdServiceFactory = async (container: Container): Prom
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createListHandler(
-    inputPetListSchema,
-    await container.get<Promise<ResolveModelList<InputPetSchema, InputPetListSchema>>>('petResolveModelList'),
-    enrichedPetListSchema,
-    container.get<Encoder>('encoder'),
-    container.get<EnrichModelList<InputPetSchema, InputPetListSchema>>('petEnrichModelList'),
-  );
+  return createListHandler({
+    serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
+    responseFactory: container.get<ResponseFactory>('responseFactory'),
+    responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
+    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    inputModelListSchema: inputPetListSchema,
+    resolveModelList:
+      await container.get<Promise<ResolveModelList<InputPetSchema, InputPetListSchema>>>('petResolveModelList'),
+    enrichedModelListSchema: enrichedPetListSchema,
+    encoder: container.get<Encoder>('encoder'),
+    enrichModelList: container.get<EnrichModelList<InputPetSchema, InputPetListSchema>>('petEnrichModelList'),
+  });
 };
 
 export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
@@ -105,12 +119,16 @@ export const petPersistModelServiceFactory = async (container: Container): Promi
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createReadHandler(
-    await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
-    enrichedPetSchema,
-    container.get<Encoder>('encoder'),
-    container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
-  );
+  return createReadHandler({
+    serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
+    responseFactory: container.get<ResponseFactory>('responseFactory'),
+    responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
+    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    findModelById: await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
+    enrichedModelSchema: enrichedPetSchema,
+    encoder: container.get<Encoder>('encoder'),
+    enrichModel: container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
+  });
 };
 
 export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
@@ -124,15 +142,19 @@ export const petResolveModelListServiceFactory = async (
 };
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createUpdateHandler(
-    await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
-    container.get<Decoder>('decoder'),
-    inputPetSchema,
-    await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
-    enrichedPetSchema,
-    container.get<Encoder>('encoder'),
-    container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
-  );
+  return createUpdateHandler({
+    serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
+    responseFactory: container.get<ResponseFactory>('responseFactory'),
+    responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
+    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    findModelById: await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
+    decoder: container.get<Decoder>('decoder'),
+    inputModelSchema: inputPetSchema,
+    persistModel: await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
+    enrichedModelSchema: enrichedPetSchema,
+    encoder: container.get<Encoder>('encoder'),
+    enrichModel: container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
+  });
 };
 
 // delegator's

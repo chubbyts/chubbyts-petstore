@@ -2,7 +2,7 @@ import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-open
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { describe, expect, test } from 'vitest';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
-import { Response, ServerRequest } from '@chubbyts/chubbyts-undici-server/dist/server';
+import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import {
   petCreateHandlerServiceFactory,
   petDeleteHandlerServiceFactory,
@@ -17,7 +17,7 @@ import {
   petResolveModelListServiceFactory,
   petRoutesServiceDelegator,
   petUpdateHandlerServiceFactory,
-} from '../../../src/pet/service-factory';
+} from '../../../src/pet/service-factory.js';
 import type { Pet, PetList } from '../../../src/pet/model.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../../utils/route.js';
 import { validPet, validPetList } from './model.test.js';
@@ -25,6 +25,26 @@ import { validPet, validPetList } from './model.test.js';
 describe('service-factory', () => {
   test('petCreateHandlerServiceFactory', async () => {
     const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['serverRequestHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: {},
+      },
       {
         name: 'get',
         parameters: ['decoder'],
@@ -54,6 +74,21 @@ describe('service-factory', () => {
 
   test('petDeleteHandlerServiceFactory', async () => {
     const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['serverRequestHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseHelpers'],
+        return: {},
+      },
       {
         name: 'get',
         parameters: ['petFindModelById'],
@@ -214,6 +249,26 @@ describe('service-factory', () => {
     const [container, containerMocks] = useObjectMock<Container>([
       {
         name: 'get',
+        parameters: ['serverRequestHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: {},
+      },
+      {
+        name: 'get',
         parameters: ['petResolveModelList'],
         return: () => undefined,
       },
@@ -244,6 +299,26 @@ describe('service-factory', () => {
 
   test('petReadHandlerServiceFactory', async () => {
     const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['serverRequestHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: {},
+      },
       {
         name: 'get',
         parameters: ['petFindModelById'],
@@ -284,6 +359,26 @@ describe('service-factory', () => {
 
   test('petUpdateHandlerServiceFactory', async () => {
     const [container, containerMocks] = useObjectMock<Container>([
+      {
+        name: 'get',
+        parameters: ['serverRequestHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseFactory'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['responseHelpers'],
+        return: {},
+      },
+      {
+        name: 'get',
+        parameters: ['bodyFactory'],
+        return: {},
+      },
       {
         name: 'get',
         parameters: ['petFindModelById'],
@@ -1265,8 +1360,8 @@ describe('service-factory', () => {
   });
 
   test('petRoutesServiceDelegator', async () => {
-    const serverRequest = new ServerRequest('https://example.com/');
-    const response = new Response();
+    const serverRequest = {} as ServerRequest;
+    const response = {} as Response;
 
     const dummyHandler = async () => response;
     const dummyMiddleware = async () => response;

@@ -5,7 +5,7 @@ import { execSync, spawn } from 'child_process';
 import fetch from 'cross-fetch';
 import { Client } from 'pg';
 import { ConnectionString } from 'connection-string';
-import { getRequiredEnv } from './config/production';
+import { getRequiredEnv } from './config/production.js';
 
 const getRandomInt = (min: number, max: number) => {
   const ceiledMin = Math.ceil(min);
@@ -65,7 +65,9 @@ const waitForOidcProvider = async (issuer: string): Promise<void> => {
         return;
       }
     } catch (e) {
-      if (e.code !== 'ECONNREFUSED' && e.code !== 'ECONNRESET') {
+      const { code } = e as NodeJS.ErrnoException;
+
+      if (code !== 'ECONNREFUSED' && code !== 'ECONNRESET') {
         throw e;
       }
     }
@@ -91,7 +93,7 @@ const startServer = async () => {
       await fetch(`http://${testServerHost}:${testServerPort}`);
       return child;
     } catch (e) {
-      if (e.code === 'ECONNREFUSED') {
+      if ((e as NodeJS.ErrnoException).code === 'ECONNREFUSED') {
         console.log('wait for test server to be up and running...');
         await new Promise((resolve) => setTimeout(resolve, iterationTimeout));
       } else {

@@ -4,8 +4,8 @@ import type {
   InputModelSchema,
   Model,
   Sort,
-} from '@chubbyts/chubbyts-undici-api/dist/model';
-import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-undici-api/dist/repository';
+} from '@chubbyts/chubbyts-http-api/model';
+import type { FindModelById, PersistModel, ResolveModelList } from '@chubbyts/chubbyts-http-api/repository';
 import type { MongoClient } from 'mongodb';
 
 const filterUndefinedEntry = <T>(entry: [string, T]): entry is [string, Exclude<T, undefined>] =>

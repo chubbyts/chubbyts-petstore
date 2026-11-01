@@ -1,6 +1,6 @@
-import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-undici-api/dist/model';
+import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-http-api/model';
 import { describe, expect, test } from 'vitest';
-import type { AggregationCursor, Collection, Db, MongoClient } from 'mongodb';
+import type { AggregationCursor, Collection, Db, Document, MongoClient, WithId } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
 import type { z } from 'zod';
 import {
@@ -348,8 +348,11 @@ describe('repository', () => {
             },
             model,
             { upsert: true, returnDocument: 'after', projection: { _id: 0 } },
-          ],
-          return: Promise.resolve({ updatedAt: new Date('2022-06-12T20:08:35.208Z'), ...model }),
+          ] as unknown as Parameters<Collection['findOneAndReplace']>,
+          return: Promise.resolve({
+            updatedAt: new Date('2022-06-12T20:08:35.208Z'),
+            ...model,
+          } as unknown as WithId<Document>),
         },
       ]);
 
@@ -405,7 +408,7 @@ describe('repository', () => {
             },
             model,
             { upsert: true, returnDocument: 'after', projection: { _id: 0 } },
-          ],
+          ] as unknown as Parameters<Collection['findOneAndReplace']>,
           return: Promise.resolve(null),
         },
       ]);

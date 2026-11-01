@@ -28,24 +28,24 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-dic][3]: ^2.3.1
  * [@chubbyts/chubbyts-dic-config][4]: ^2.3.1
  * [@chubbyts/chubbyts-dic-types][5]: ^2.3.1
- * [@chubbyts/chubbyts-framework][6]: ^3.5.1
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^3.4.1
- * [@chubbyts/chubbyts-http-error][8]: ^3.5.1
- * [@chubbyts/chubbyts-log-types][9]: ^3.3.1
- * [@chubbyts/chubbyts-mongodb][10]: ^2.3.1
- * [@chubbyts/chubbyts-negotiation][11]: ^4.5.1
- * [@chubbyts/chubbyts-pino-adapter][12]: ^3.3.1
- * [@chubbyts/chubbyts-undici-api][13]: ^2.4.2
- * [@chubbyts/chubbyts-undici-cors][14]: ^1.4.1
- * [@chubbyts/chubbyts-undici-oidc][23]: ^1.3.2
- * [@chubbyts/chubbyts-undici-server][15]: ^1.3.1
- * [@chubbyts/chubbyts-undici-server-node][16]: ^1.3.1
- * [commander][17]: ^15.0.0
- * [mongodb][18]: ^7.7.0
- * [openapi3-ts][19]: ^4.6.2
- * [pino][20]: ^10.4.0
- * [uuid][21]: ^14.0.3
- * [zod][21]: ^4.6.7
+ * [@chubbyts/chubbyts-framework][6]: ^4.0.2
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^4.0.0
+ * [@chubbyts/chubbyts-http][8]: ^3.1.0
+ * [@chubbyts/chubbyts-http-api][9]: ^1.0.0
+ * [@chubbyts/chubbyts-http-cors][10]: ^3.0.0
+ * [@chubbyts/chubbyts-http-error][11]: ^3.5.1
+ * [@chubbyts/chubbyts-http-node][12]: ^1.0.0
+ * [@chubbyts/chubbyts-http-oidc][13]: ^1.0.0
+ * [@chubbyts/chubbyts-http-types][14]: ^4.1.0
+ * [@chubbyts/chubbyts-log-types][15]: ^3.3.1
+ * [@chubbyts/chubbyts-mongodb][16]: ^2.3.1
+ * [@chubbyts/chubbyts-pino-adapter][17]: ^3.3.1
+ * [commander][18]: ^15.0.0
+ * [mongodb][19]: ^7.7.0
+ * [openapi3-ts][20]: ^4.6.2
+ * [pino][21]: ^10.4.0
+ * [uuid][22]: ^14.0.3
+ * [zod][23]: ^4.6.7
 
 ## Environment
 
@@ -119,7 +119,7 @@ pnpm start
 
 ## Oidc (keycloak)
 
-All routes below `/api` are protected by [chubbyts-undici-oidc][23], only `/ping` and `/openapi` are public.
+All routes below `/api` are protected by [chubbyts-http-oidc][13], only `/ping` and `/openapi` are public.
 The keycloak container acts as the identity provider,
 the realm `petstore` gets imported from `docker/development/keycloak/import/petstore-realm.json` on startup
 (delete and recreate the keycloak container to reimport after changes) and contains two users:
@@ -263,22 +263,22 @@ Before you start, produce at least one error, [produce a 404](https://localhost/
 [5]: https://www.npmjs.com/package/@chubbyts/chubbyts-dic-types
 [6]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework
 [7]: https://www.npmjs.com/package/@chubbyts/chubbyts-framework-router-path-to-regexp
-[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
-[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
-[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-negotiation
-[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-api
-[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-cors
-[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-server
-[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-undici-server-node
-[17]: https://www.npmjs.com/package/commander
-[18]: https://www.npmjs.com/package/mongodb
-[19]: https://www.npmjs.com/package/openapi3-ts
-[20]: https://www.npmjs.com/package/pino
-[21]: https://www.npmjs.com/package/uuid
-[22]: https://www.npmjs.com/package/zod
-[23]: https://github.com/chubbyts/chubbyts-undici-oidc
+[8]: https://www.npmjs.com/package/@chubbyts/chubbyts-http
+[9]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-api
+[10]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-cors
+[11]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-error
+[12]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-node
+[13]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-oidc
+[14]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
+[15]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
+[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
+[17]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[18]: https://www.npmjs.com/package/commander
+[19]: https://www.npmjs.com/package/mongodb
+[20]: https://www.npmjs.com/package/openapi3-ts
+[21]: https://www.npmjs.com/package/pino
+[22]: https://www.npmjs.com/package/uuid
+[23]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

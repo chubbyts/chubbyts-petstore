@@ -1,11 +1,13 @@
-import type { IncomingMessage, Server, ServerResponse } from 'http';
-import { createServer } from 'http';
-import { createApplication } from '@chubbyts/chubbyts-framework/dist/application';
+import type { IncomingMessage, Server, ServerResponse } from 'node:http';
+import { createServer } from 'node:http';
+import { createApplication } from '@chubbyts/chubbyts-framework/application';
 import {
-  createNodeRequestToUndiciRequestFactory,
-  createUndiciResponseToNodeResponseEmitter,
-} from '@chubbyts/chubbyts-undici-server-node/dist/node';
-import type { Middleware } from '@chubbyts/chubbyts-undici-server/dist/server';
+  createNodeRequestToServerRequestFactory,
+  createResponseToNodeResponseEmitter,
+} from '@chubbyts/chubbyts-http-node/node';
+import type { ServerRequestFactory, UriFactory } from '@chubbyts/chubbyts-http-types/message-factory';
+import type { ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
+import type { Middleware } from '@chubbyts/chubbyts-http-types/middleware';
 import type { Config } from '../config/production.js';
 import { containerFactory } from '../bootstrap/container.js';
 
@@ -30,12 +32,20 @@ const shutdownServer = (server: Server) => {
 
   const { port, host, baseUrl, requestBodyTimeoutMs, responseSendTimeoutMs } = config.server;
 
-  const nodeRequestToUndiciRequestFactory = createNodeRequestToUndiciRequestFactory(baseUrl, requestBodyTimeoutMs);
-  const undiciResponseToNodeResponseEmitter = createUndiciResponseToNodeResponseEmitter(responseSendTimeoutMs);
+  const nodeRequestToServerRequestFactory = createNodeRequestToServerRequestFactory(
+    container.get<UriFactory>('uriFactory'),
+    container.get<ServerRequestFactory>('serverRequestFactory'),
+    container.get<ServerRequestHelpers>('serverRequestHelpers'),
+    baseUrl,
+    requestBodyTimeoutMs,
+  );
+  const responseToNodeResponseEmitter = createResponseToNodeResponseEmitter(responseSendTimeoutMs);
 
   const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
     try {
-      undiciResponseToNodeResponseEmitter(await app(nodeRequestToUndiciRequestFactory(req)), res);
+      const serverRequest = nodeRequestToServerRequestFactory(req, res);
+      const response = await app(serverRequest);
+      responseToNodeResponseEmitter(response, res);
     } catch (error) {
       console.error(`Failed to handle request: ${error}`);
 

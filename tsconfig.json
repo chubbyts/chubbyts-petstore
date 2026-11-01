@@ -7,7 +7,7 @@
         "outDir": "./dist",
         "skipLibCheck": true,
         "strict": true,
-        "target": "esnext"
+        "target": "ES2024"
     },
     "include": [
         "bin",

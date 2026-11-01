@@ -1,11 +1,5 @@
-import type {
-  InputModelListSchema,
-  InputModelSchema,
-  Model,
-  Link,
-  ModelList,
-} from '@chubbyts/chubbyts-undici-api/dist/model';
-import type { GeneratePath } from '@chubbyts/chubbyts-framework/dist/router/url-generator';
+import type { InputModelListSchema, InputModelSchema, Model, Link, ModelList } from '@chubbyts/chubbyts-http-api/model';
+import type { GeneratePath } from '@chubbyts/chubbyts-framework/router/url-generator';
 
 type ModelLinks = {
   read?: string;

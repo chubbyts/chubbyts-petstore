@@ -28,7 +28,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-dic][3]: ^2.3.1
  * [@chubbyts/chubbyts-dic-config][4]: ^2.3.1
  * [@chubbyts/chubbyts-dic-types][5]: ^2.3.1
- * [@chubbyts/chubbyts-framework][6]: ^4.0.2
+ * [@chubbyts/chubbyts-framework][6]: ^4.1.1
  * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^4.0.0
  * [@chubbyts/chubbyts-http][8]: ^3.1.0
  * [@chubbyts/chubbyts-http-api][9]: ^1.0.0
@@ -36,7 +36,7 @@ An api skeleton using postgres for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-http-error][11]: ^3.5.1
  * [@chubbyts/chubbyts-http-node][12]: ^1.0.0
  * [@chubbyts/chubbyts-http-oidc][13]: ^1.0.0
- * [@chubbyts/chubbyts-http-types][14]: ^4.1.0
+ * [@chubbyts/chubbyts-http-types][14]: ^4.2.1
  * [@chubbyts/chubbyts-log-types][15]: ^3.3.1
  * [@chubbyts/chubbyts-pino-adapter][16]: ^3.3.1
  * [commander][17]: ^15.0.0

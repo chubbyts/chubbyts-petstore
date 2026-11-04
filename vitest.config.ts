@@ -6,7 +6,6 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/unit/**/*.test.*'],
     coverage: {
-      all: true,
       clean: true,
       reporter: ['clover', ['html', { subdir: 'html' }], 'json', 'lcovonly', 'text'],
       provider: 'v8',

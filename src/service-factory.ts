@@ -203,11 +203,6 @@ export const serverRequestHelpersServiceFactory = (): ServerRequestHelpers => {
   return createServerRequestHelpers();
 };
 
-// @chubbyts/chubbyts-http-api still resolves the body factory by its deprecated name
-export const streamFactoryServiceFactory = (container: Container): BodyFactory => {
-  return container.get<BodyFactory>('bodyFactory');
-};
-
 export const uriFactoryServiceFactory = (): UriFactory => {
   return createUriFactory();
 };

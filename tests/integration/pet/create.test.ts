@@ -42,13 +42,19 @@ describe('create', () => {
     expect(responseData).toMatchInlineSnapshot(`
       {
         "_httpError": "UnsupportedMediaType",
-        "detail": "Allowed content-types: "application/json", "application/jsonx+xml", "application/x-www-form-urlencoded", "application/x-yaml"",
+        "detail": "Allowed content-types: "application/json", "application/jsonx+xml", "application/jsonl", "application/x-jsonl", "text/jsonl", "application/ndjson", "application/x-ndjson", "application/x-www-form-urlencoded", "application/x-yaml", "application/yaml"",
         "status": 415,
         "supportedValues": [
           "application/json",
           "application/jsonx+xml",
+          "application/jsonl",
+          "application/x-jsonl",
+          "text/jsonl",
+          "application/ndjson",
+          "application/x-ndjson",
           "application/x-www-form-urlencoded",
           "application/x-yaml",
+          "application/yaml",
         ],
         "title": "Unsupported Media Type",
         "type": "https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.16",

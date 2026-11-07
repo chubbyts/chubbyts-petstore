@@ -4,7 +4,7 @@ import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
 import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
-import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/dist/service-factory';
+import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import {
   acceptNegotiationMiddlewareServiceFactory,
   contentTypeNegotiationMiddlewareServiceFactory,
@@ -50,7 +50,6 @@ import {
   routesServiceFactory,
   serverRequestFactoryServiceFactory,
   serverRequestHelpersServiceFactory,
-  streamFactoryServiceFactory,
   uriFactoryServiceFactory,
 } from '../src/service-factory.js';
 
@@ -162,7 +161,6 @@ export const configFactory = (env: string): Config => {
         ['routesByName', routesByNameServiceFactory],
         ['serverRequestFactory', serverRequestFactoryServiceFactory],
         ['serverRequestHelpers', serverRequestHelpersServiceFactory],
-        ['streamFactory', streamFactoryServiceFactory],
         ['uriFactory', uriFactoryServiceFactory],
       ]),
       delegators: new Map([

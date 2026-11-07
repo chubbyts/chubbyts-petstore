@@ -1,5 +1,5 @@
-import type { Decoder } from '@chubbyts/chubbyts-decode-encode/dist/decoder/decoder';
-import type { Encoder } from '@chubbyts/chubbyts-decode-encode/dist/encoder/encoder';
+import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
+import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
 import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/handler/lazy-handler';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/middleware/lazy-middleware';
@@ -51,7 +51,7 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
-    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    bodyFactory: container.get<BodyFactory>('bodyFactory'),
     decoder: container.get<Decoder>('decoder'),
     inputModelSchema: inputPetSchema,
     persistModel: await container.get<Promise<PersistModel<InputPetSchema>>>('petPersistModel'),
@@ -105,7 +105,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
-    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    bodyFactory: container.get<BodyFactory>('bodyFactory'),
     inputModelListSchema: inputPetListSchema,
     resolveModelList:
       await container.get<Promise<ResolveModelList<InputPetSchema, InputPetListSchema>>>('petResolveModelList'),
@@ -127,7 +127,7 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
-    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    bodyFactory: container.get<BodyFactory>('bodyFactory'),
     findModelById: await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
     enrichedModelSchema: enrichedPetSchema,
     encoder: container.get<Encoder>('encoder'),
@@ -150,7 +150,7 @@ export const petUpdateHandlerServiceFactory = async (container: Container): Prom
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
-    streamFactory: container.get<BodyFactory>('bodyFactory'),
+    bodyFactory: container.get<BodyFactory>('bodyFactory'),
     findModelById: await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
     decoder: container.get<Decoder>('decoder'),
     inputModelSchema: inputPetSchema,

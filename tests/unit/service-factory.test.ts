@@ -27,7 +27,6 @@ import {
   routesServiceFactory,
   serverRequestFactoryServiceFactory,
   serverRequestHelpersServiceFactory,
-  streamFactoryServiceFactory,
   uriFactoryServiceFactory,
 } from '../../src/service-factory.js';
 import { routeTestingResolveAllLazyMiddlewaresAndHandlers } from '../utils/route.js';
@@ -496,22 +495,6 @@ describe('service-factory', () => {
 
   test('serverRequestHelpersServiceFactory', () => {
     expect(serverRequestHelpersServiceFactory()).toBeInstanceOf(Object);
-  });
-
-  test('streamFactoryServiceFactory', () => {
-    const bodyFactory = {};
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['bodyFactory'],
-        return: bodyFactory,
-      },
-    ]);
-
-    expect(streamFactoryServiceFactory(container)).toBe(bodyFactory);
-
-    expect(containerMocks).toHaveLength(0);
   });
 
   test('uriFactoryServiceFactory', () => {

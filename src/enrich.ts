@@ -34,7 +34,7 @@ const enrichModel = <IMS extends InputModelSchema>(
 });
 
 export const createEnrichModel = <IMS extends InputModelSchema>(generatePath: GeneratePath, modelLinks: ModelLinks) => {
-  return async (model: Model<IMS>) => enrichModel(generatePath, model, modelLinks);
+  return (model: Model<IMS>) => Promise.resolve(enrichModel(generatePath, model, modelLinks));
 };
 
 export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends InputModelListSchema>(
@@ -42,17 +42,17 @@ export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends
   modelLinks: ModelLinks,
   listLinks: ListLinks,
 ) => {
-  return async (modelList: ModelList<IMS, IMLS>) => {
+  return (modelList: ModelList<IMS, IMLS>) => {
     const items = modelList.items.map((model) => enrichModel(generatePath, model, modelLinks));
 
     const links: Record<string, Link & { attributes: { method: string } }> = listLinks.create
       ? { create: createLink(generatePath(listLinks.create), 'POST') }
       : {};
 
-    return {
+    return Promise.resolve({
       ...modelList,
       items,
       _links: links,
-    };
+    });
   };
 };

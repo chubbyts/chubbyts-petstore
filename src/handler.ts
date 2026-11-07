@@ -20,8 +20,8 @@ const createJsonResponse = (responseFactory: ResponseFactory, bodyFactory: BodyF
 };
 
 export const createPingHandler = (responseFactory: ResponseFactory, bodyFactory: BodyFactory): Handler => {
-  return async (): Promise<Response> => {
-    return createJsonResponse(responseFactory, bodyFactory, { datetime: new Date().toISOString() });
+  return (): Promise<Response> => {
+    return Promise.resolve(createJsonResponse(responseFactory, bodyFactory, { datetime: new Date().toISOString() }));
   };
 };
 
@@ -30,7 +30,7 @@ export const createOpenApiHandler = (
   responseFactory: ResponseFactory,
   bodyFactory: BodyFactory,
 ): Handler => {
-  return async (): Promise<Response> => {
-    return createJsonResponse(responseFactory, bodyFactory, openApiObject);
+  return (): Promise<Response> => {
+    return Promise.resolve(createJsonResponse(responseFactory, bodyFactory, openApiObject));
   };
 };

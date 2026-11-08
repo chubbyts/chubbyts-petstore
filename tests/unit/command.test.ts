@@ -2,8 +2,8 @@ import { randomBytes } from 'crypto';
 import { mkdirSync, readdirSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { describe, expect, test } from 'vitest';
-import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import type { Logger } from '@chubbyts/chubbyts-log-types/log';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import { createCleanDirectoriesCommand } from '../../src/command.js';
 
 describe('command', () => {

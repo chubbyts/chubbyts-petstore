@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/router/url-generator';
-import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/function-mock';
 import { createEnrichModelList, createEnrichModel } from '../../src/enrich.js';
 
 describe('createEnrichModel', () => {

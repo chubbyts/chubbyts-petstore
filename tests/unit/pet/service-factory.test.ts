@@ -1,8 +1,8 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Container } from '@chubbyts/chubbyts-dic-types/container';
 import { describe, expect, test } from 'vitest';
 import type { Collection, Db, MongoClient } from 'mongodb';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import {
   petCreateHandlerServiceFactory,

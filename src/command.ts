@@ -1,5 +1,5 @@
 import { rmSync, mkdirSync } from 'node:fs';
-import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
+import type { Logger } from '@chubbyts/chubbyts-log-types/log';
 
 export type CleanDirectoriesCommand = (directoryNames: Array<string>) => number;
 

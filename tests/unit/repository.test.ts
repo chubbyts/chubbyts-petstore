@@ -1,7 +1,7 @@
 import type { InputModelListSchema, Model, ModelList } from '@chubbyts/chubbyts-http-api/model';
 import { describe, expect, test } from 'vitest';
 import type { AggregationCursor, Collection, Db, Document, MongoClient, WithId } from 'mongodb';
-import { useObjectMock } from '@chubbyts/chubbyts-function-mock/dist/object-mock';
+import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import type { z } from 'zod';
 import {
   aggregationSort,

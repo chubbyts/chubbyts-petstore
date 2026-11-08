@@ -1,6 +1,6 @@
 import type { Decoder } from '@chubbyts/chubbyts-decode-encode/decoder/decoder';
 import type { Encoder } from '@chubbyts/chubbyts-decode-encode/encoder/encoder';
-import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Container } from '@chubbyts/chubbyts-dic-types/container';
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/handler/lazy-handler';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/middleware/lazy-middleware';
 import { createGroup, getRoutes } from '@chubbyts/chubbyts-framework/router/group';

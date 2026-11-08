@@ -1,8 +1,8 @@
 import { createWriteStream, realpathSync } from 'fs';
 import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
-import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dist/dic-config';
-import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/dist/mongo';
+import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dic-config';
+import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/mongo';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
 import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import {

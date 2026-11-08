@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
 import type { Body, Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import type { BodyFactory, ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
-import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/dist/function-mock';
+import { useFunctionMock } from '@chubbyts/chubbyts-function-mock/function-mock';
 import { createOpenApiHandler, createPingHandler } from '../../src/handler.js';
 
 const createResponse = (): Response =>

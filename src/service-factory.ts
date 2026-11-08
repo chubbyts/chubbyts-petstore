@@ -1,12 +1,12 @@
-import type { Container } from '@chubbyts/chubbyts-dic-types/dist/container';
+import type { Container } from '@chubbyts/chubbyts-dic-types/container';
 import { createLazyMiddleware } from '@chubbyts/chubbyts-framework/middleware/lazy-middleware';
 import { createErrorMiddleware } from '@chubbyts/chubbyts-framework/middleware/error-middleware';
 import { createRouteMatcherMiddleware } from '@chubbyts/chubbyts-framework/middleware/route-matcher-middleware';
-import type { Logger } from '@chubbyts/chubbyts-log-types/dist/log';
-import { createLogger } from '@chubbyts/chubbyts-log-types/dist/log';
+import type { Logger } from '@chubbyts/chubbyts-log-types/log';
+import { createLogger } from '@chubbyts/chubbyts-log-types/log';
 import type { Match } from '@chubbyts/chubbyts-framework/router/route-matcher';
 import type { GeneratePath } from '@chubbyts/chubbyts-framework/router/url-generator';
-import { createPinoAdapter } from '@chubbyts/chubbyts-pino-adapter/dist/pino-adapter';
+import { createPinoAdapter } from '@chubbyts/chubbyts-pino-adapter/pino-adapter';
 import {
   createPathToRegexpGeneratePath,
   createPathToRegexpMatch,
@@ -35,7 +35,7 @@ import { createLazyHandler } from '@chubbyts/chubbyts-framework/handler/lazy-han
 import type { Route } from '@chubbyts/chubbyts-framework/router/route';
 import { createGetRoute } from '@chubbyts/chubbyts-framework/router/route';
 import { MongoClient } from 'mongodb';
-import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/dist/mongo';
+import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/mongo';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';

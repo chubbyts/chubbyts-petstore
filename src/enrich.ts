@@ -11,14 +11,12 @@ type ListLinks = {
   create?: string;
 };
 
-const createLink = (href: string, method: string): Link & { attributes: { method: string } } => {
-  return {
-    href,
-    attributes: {
-      method,
-    },
-  };
-};
+const createLink = (href: string, method: string): Link & { attributes: { method: string } } => ({
+  href,
+  attributes: {
+    method,
+  },
+});
 
 const enrichModel = <IMS extends InputModelSchema>(
   generatePath: GeneratePath,
@@ -33,16 +31,18 @@ const enrichModel = <IMS extends InputModelSchema>(
   },
 });
 
-export const createEnrichModel = <IMS extends InputModelSchema>(generatePath: GeneratePath, modelLinks: ModelLinks) => {
-  return (model: Model<IMS>) => Promise.resolve(enrichModel(generatePath, model, modelLinks));
-};
+export const createEnrichModel =
+  <IMS extends InputModelSchema>(generatePath: GeneratePath, modelLinks: ModelLinks) =>
+  (model: Model<IMS>) =>
+    Promise.resolve(enrichModel(generatePath, model, modelLinks));
 
-export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends InputModelListSchema>(
-  generatePath: GeneratePath,
-  modelLinks: ModelLinks,
-  listLinks: ListLinks,
-) => {
-  return (modelList: ModelList<IMS, IMLS>) => {
+export const createEnrichModelList =
+  <IMS extends InputModelSchema, IMLS extends InputModelListSchema>(
+    generatePath: GeneratePath,
+    modelLinks: ModelLinks,
+    listLinks: ListLinks,
+  ) =>
+  (modelList: ModelList<IMS, IMLS>) => {
     const items = modelList.items.map((model) => enrichModel(generatePath, model, modelLinks));
 
     const links: Record<string, Link & { attributes: { method: string } }> = listLinks.create
@@ -55,4 +55,3 @@ export const createEnrichModelList = <IMS extends InputModelSchema, IMLS extends
       _links: links,
     });
   };
-};

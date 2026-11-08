@@ -46,8 +46,8 @@ extendZodWithOpenApi(z);
 
 const petCollectionName = 'pets';
 
-export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createCreateHandler({
+export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> =>
+  createCreateHandler({
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
@@ -60,30 +60,27 @@ export const petCreateHandlerServiceFactory = async (container: Container): Prom
     enrichModel: container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
     uuid: v7,
   });
-};
 
-export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createDeleteHandler({
+export const petDeleteHandlerServiceFactory = async (container: Container): Promise<Handler> =>
+  createDeleteHandler({
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
     findModelById: await container.get<Promise<FindModelById<InputPetSchema>>>('petFindModelById'),
     removeModel: await container.get<Promise<RemoveModel<InputPetSchema>>>('petRemoveModel'),
   });
-};
 
-export const petEnrichModelServiceFactory = (container: Container): EnrichModel<InputPetSchema> => {
-  return createEnrichModel<InputPetSchema>(container.get<GeneratePath>('generatePath'), {
+export const petEnrichModelServiceFactory = (container: Container): EnrichModel<InputPetSchema> =>
+  createEnrichModel<InputPetSchema>(container.get<GeneratePath>('generatePath'), {
     read: 'pet_read',
     update: 'pet_update',
     delete: 'pet_delete',
   });
-};
 
 export const petEnrichModelListServiceFactory = (
   container: Container,
-): EnrichModelList<InputPetSchema, InputPetListSchema> => {
-  return createEnrichModelList<InputPetSchema, InputPetListSchema>(
+): EnrichModelList<InputPetSchema, InputPetListSchema> =>
+  createEnrichModelList<InputPetSchema, InputPetListSchema>(
     container.get<GeneratePath>('generatePath'),
     {
       read: 'pet_read',
@@ -94,14 +91,12 @@ export const petEnrichModelListServiceFactory = (
       create: 'pet_create',
     },
   );
-};
 
-export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> => {
-  return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
-};
+export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> =>
+  createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 
-export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createListHandler({
+export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> =>
+  createListHandler({
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
@@ -113,17 +108,12 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
     encoder: container.get<Encoder>('encoder'),
     enrichModelList: container.get<EnrichModelList<InputPetSchema, InputPetListSchema>>('petEnrichModelList'),
   });
-};
 
-export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
-  return createPersistModel<InputPetSchema>(
-    await container.get<Promise<MongoClient>>('mongoClient'),
-    petCollectionName,
-  );
-};
+export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> =>
+  createPersistModel<InputPetSchema>(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 
-export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createReadHandler({
+export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> =>
+  createReadHandler({
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
@@ -133,20 +123,17 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
     encoder: container.get<Encoder>('encoder'),
     enrichModel: container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
   });
-};
 
-export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
-  return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
-};
+export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> =>
+  createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 
 export const petResolveModelListServiceFactory = async (
   container: Container,
-): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> => {
-  return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
-};
+): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> =>
+  createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
 
-export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
-  return createUpdateHandler({
+export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> =>
+  createUpdateHandler({
     serverRequestHelpers: container.get<ServerRequestHelpers>('serverRequestHelpers'),
     responseFactory: container.get<ResponseFactory>('responseFactory'),
     responseHelpers: container.get<ResponseHelpers>('responseHelpers'),
@@ -159,7 +146,6 @@ export const petUpdateHandlerServiceFactory = async (container: Container): Prom
     encoder: container.get<Encoder>('encoder'),
     enrichModel: container.get<EnrichModel<InputPetSchema>>('petEnrichModel'),
   });
-};
 
 // delegator's
 

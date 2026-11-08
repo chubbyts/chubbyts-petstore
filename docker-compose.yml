@@ -12,7 +12,7 @@ services:
     userns_mode: keep-id
     environment:
       NODE_ENV: development
-      MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
+      POSTGRES_URI: 'postgres://petstore:4aAUfBjDACcdZxNwJgJ6@postgres:5432/petstore'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
       SSH_AUTH_SOCK: /ssh-agent
@@ -51,7 +51,7 @@ services:
       # pi - coding agent
       - ~/.pi/agent/auth.json:/home/node/.pi/agent/auth.json
     depends_on:
-      - mongo
+      - postgres
       - keycloak
   node-fluentd:
     container_name: chubbyts-petstore-node-fluentd
@@ -85,17 +85,6 @@ services:
       - '8080:8080'
     volumes:
       - ./docker/development/keycloak/import:/opt/keycloak/data/import
-  mongo:
-    container_name: chubbyts-petstore-mongo
-    hostname: chubbyts-petstore-mongo
-    image: mongo:9
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: petstore
-      MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo:/data/db
   nginx:
     container_name: chubbyts-petstore-nginx
     hostname: chubbyts-petstore-nginx
@@ -144,6 +133,19 @@ services:
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
     ports:
       - 5601:5601
+  postgres:
+    container_name: chubbyts-petstore-postgres
+    hostname: chubbyts-petstore-postgres
+    image: postgres:17
+    command: -c log_statement=all -c log_error_verbosity=VERBOSE
+    environment:
+      POSTGRES_DB: petstore
+      POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+      POSTGRES_USER: petstore
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
   swagger-ui:
     container_name: chubbyts-petstore-swagger-ui
     hostname: chubbyts-petstore-swagger-ui
@@ -153,4 +155,4 @@ services:
       URLS: '[ { url: "/openapi" } ]'
 
 volumes:
-  mongo:
+  postgres:

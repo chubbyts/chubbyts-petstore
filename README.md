@@ -1,24 +1,24 @@
 # chubbyts-petstore
 
-[![CI](https://github.com/chubbyts/chubbyts-petstore/actions/workflows/ci.yml/badge.svg?branch=mongo)](https://github.com/chubbyts/chubbyts-petstore/actions/workflows/ci.yml)
+[![CI](https://github.com/chubbyts/chubbyts-petstore/actions/workflows/ci.yml/badge.svg?branch=postgres)](https://github.com/chubbyts/chubbyts-petstore/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyts/chubbyts-petstore/badge.svg?branch=master)](https://coveralls.io/github/chubbyts/chubbyts-petstore?branch=master)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fchubbyts%2Fchubbyts-petstore%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyts/chubbyts-petstore/master)
 
-[![bugs](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=bugs&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![code_smells](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=code_smells&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![coverage](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=coverage&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![duplicated_lines_density](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=duplicated_lines_density&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![ncloc](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=ncloc&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![sqale_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=sqale_rating&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![alert_status](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=alert_status&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![reliability_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=reliability_rating&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![security_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=security_rating&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![sqale_index](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=sqale_index&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
-[![vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=vulnerabilities&branch=mongo)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=mongo)
+[![bugs](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=bugs&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![code_smells](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=code_smells&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![coverage](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=coverage&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![duplicated_lines_density](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=duplicated_lines_density&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![ncloc](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=ncloc&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![sqale_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=sqale_rating&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![alert_status](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=alert_status&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![reliability_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=reliability_rating&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![security_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=security_rating&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![sqale_index](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=sqale_index&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
+[![vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=chubbyts_chubbyts-petstore&metric=vulnerabilities&branch=postgres)](https://sonarcloud.io/dashboard?id=chubbyts_chubbyts-petstore&branch=postgres)
 
 ## Description
 
-An api skeleton using mongodb for [chubbyts-framework][6].
+An api skeleton using postgres for [chubbyts-framework][6].
 
 ## Requirements
 
@@ -38,14 +38,15 @@ An api skeleton using mongodb for [chubbyts-framework][6].
  * [@chubbyts/chubbyts-http-oidc][13]: ^1.1.0
  * [@chubbyts/chubbyts-http-types][14]: ^4.2.2
  * [@chubbyts/chubbyts-log-types][15]: ^3.4.0
- * [@chubbyts/chubbyts-mongodb][16]: ^2.4.0
- * [@chubbyts/chubbyts-pino-adapter][17]: ^3.4.0
- * [commander][18]: ^15.0.0
- * [mongodb][19]: ^7.8.0
+ * [@chubbyts/chubbyts-pino-adapter][16]: ^3.4.0
+ * [commander][17]: ^15.0.0
+ * [drizzle-kit][18]: ^0.31.11
+ * [drizzle-orm][19]: ^0.45.4
  * [openapi3-ts][20]: ^4.6.2
- * [pino][21]: ^10.4.0
- * [uuid][22]: ^14.0.3
- * [zod][23]: ^4.6.7
+ * [pg][21]: ^8.23.1
+ * [pino][22]: ^10.4.0
+ * [uuid][23]: ^14.0.3
+ * [zod][24]: ^4.6.7
 
 ## Environment
 
@@ -271,14 +272,15 @@ Before you start, produce at least one error, [produce a 404](https://localhost/
 [13]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-oidc
 [14]: https://www.npmjs.com/package/@chubbyts/chubbyts-http-types
 [15]: https://www.npmjs.com/package/@chubbyts/chubbyts-log-types
-[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-mongodb
-[17]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
-[18]: https://www.npmjs.com/package/commander
-[19]: https://www.npmjs.com/package/mongodb
+[16]: https://www.npmjs.com/package/@chubbyts/chubbyts-pino-adapter
+[17]: https://www.npmjs.com/package/commander
+[18]: https://www.npmjs.com/package/drizzle-kit
+[19]: https://www.npmjs.com/package/drizzle-orm
 [20]: https://www.npmjs.com/package/openapi3-ts
-[21]: https://www.npmjs.com/package/pino
-[22]: https://www.npmjs.com/package/uuid
-[23]: https://www.npmjs.com/package/zod
+[21]: https://www.npmjs.com/package/pg
+[22]: https://www.npmjs.com/package/pino
+[23]: https://www.npmjs.com/package/uuid
+[24]: https://www.npmjs.com/package/zod
 
 [30]: src/command.ts
 [31]: src/handler.ts

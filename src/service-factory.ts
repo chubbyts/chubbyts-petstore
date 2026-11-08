@@ -34,15 +34,17 @@ import { createRoutesByName } from '@chubbyts/chubbyts-framework/router/routes-b
 import { createLazyHandler } from '@chubbyts/chubbyts-framework/handler/lazy-handler';
 import type { Route } from '@chubbyts/chubbyts-framework/router/route';
 import { createGetRoute } from '@chubbyts/chubbyts-framework/router/route';
-import { MongoClient } from 'mongodb';
-import { upsertIndexes } from '@chubbyts/chubbyts-mongodb/mongo';
 import { extendZodWithOpenApi, OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import type { OpenAPIComponentObject } from '@asteasolutions/zod-to-openapi/dist/openapi-registry.d.ts';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import type { Config } from '../config/production.js';
 import { createCleanDirectoriesCommand } from './command.js';
 import type { CleanDirectoriesCommand } from './command.js';
 import { createOpenApiHandler, createPingHandler } from './handler.js';
+import * as schema from './schema.js';
+import type { Schema } from './repository.js';
 
 extendZodWithOpenApi(z);
 
@@ -52,6 +54,10 @@ export const bodyFactoryServiceFactory = (): BodyFactory => {
 
 export const cleanDirectoriesCommandServiceFactory = (container: Container): CleanDirectoriesCommand => {
   return createCleanDirectoriesCommand(container.get<Config>('config').directories, container.get<Logger>('logger'));
+};
+
+export const dbServiceFactory = (container: Container): NodePgDatabase<Schema> => {
+  return drizzle(container.get<Config>('config').postgres, { schema });
 };
 
 export const errorMiddlewareServiceFactory = (container: Container): Middleware => {
@@ -95,14 +101,6 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
   const m = (name: string) => createLazyMiddleware(container, name);
 
   return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
-};
-
-export const mongoClientServiceFactory = async (container: Container): Promise<MongoClient> => {
-  const mongoConfig = container.get<Config>('config').mongodb;
-  const mongoClient = await MongoClient.connect(mongoConfig.uri);
-  await upsertIndexes(mongoClient, mongoConfig.indexes);
-
-  return mongoClient;
 };
 
 export const openApiHandlerServiceFactory = (container: Container) => {

@@ -2,7 +2,6 @@ import { createWriteStream, realpathSync } from 'fs';
 import { URL } from 'url';
 import type { DestinationStream, LoggerOptions } from 'pino';
 import type { ConfigDelegator, ConfigFactory } from '@chubbyts/chubbyts-dic-config/dic-config';
-import type { IndexesByCollection } from '@chubbyts/chubbyts-mongodb/mongo';
 import type { OpenAPIObjectConfig } from '@asteasolutions/zod-to-openapi/dist/v3.0/openapi-generator.d.ts';
 import { decoderServiceFactory, encoderServiceFactory } from '@chubbyts/chubbyts-decode-encode/service-factory';
 import {
@@ -32,12 +31,12 @@ import {
 import {
   bodyFactoryServiceFactory,
   cleanDirectoriesCommandServiceFactory,
+  dbServiceFactory,
   errorMiddlewareServiceFactory,
   generatePathServiceFactory,
   loggerServiceFactory,
   matchServiceFactory,
   middlewaresServiceFactory,
-  mongoClientServiceFactory,
   openApiHandlerServiceFactory,
   openApiObjectServiceFactory,
   openApiRegistryServiceFactory,
@@ -64,15 +63,12 @@ export type Config = {
     delegators: Map<string, Array<ConfigDelegator>>;
   };
   directories: Map<string, string>;
-  mongodb: {
-    uri: string;
-    indexes: IndexesByCollection;
-  };
   openApi: OpenAPIObjectConfig;
   pino: {
     options: LoggerOptions;
     stream: DestinationStream;
   };
+  postgres: string;
   server: {
     host: string;
     port: number;
@@ -129,6 +125,7 @@ export const configFactory = (env: string): Config => {
         ['cleanDirectoriesCommand', cleanDirectoriesCommandServiceFactory],
         ['contentTypeNegotiationMiddleware', contentTypeNegotiationMiddlewareServiceFactory()],
         ['corsMiddleware', corsMiddlewareServiceFactory()],
+        ['db', dbServiceFactory],
         ['decoder', decoderServiceFactory()],
         ['encoder', encoderServiceFactory()],
         ['errorMiddleware', errorMiddlewareServiceFactory],
@@ -136,7 +133,6 @@ export const configFactory = (env: string): Config => {
         ['logger', loggerServiceFactory],
         ['match', matchServiceFactory],
         ['middlewares', middlewaresServiceFactory],
-        ['mongoClient', mongoClientServiceFactory],
         ['oidcAuthenticationMiddleware', oidcAuthenticationMiddlewareServiceFactory()],
         ['openApiObject', openApiObjectServiceFactory],
         ['openApiHandler', openApiHandlerServiceFactory],
@@ -172,28 +168,6 @@ export const configFactory = (env: string): Config => {
       ['cache', cacheDir],
       ['log', logDir],
     ]),
-    mongodb: {
-      uri: getRequiredEnv('MONGO_URI'),
-      indexes: {
-        pets: [
-          {
-            key: { id: 1 },
-            name: 'pets.id',
-            unique: true,
-          },
-          {
-            key: { name: 1 },
-            name: 'pets.name',
-          },
-          {
-            key: { tag: 1 },
-            name: 'pets.tag',
-            unique: true,
-            sparse: true,
-          },
-        ],
-      },
-    },
     openApi: {
       openapi: '3.0.0',
       info: {
@@ -217,6 +191,7 @@ export const configFactory = (env: string): Config => {
         },
       },
     },
+    postgres: getRequiredEnv('POSTGRES_URI'),
     server: {
       host: getRequiredEnv('SERVER_HOST'),
       port: parseInt(getRequiredEnv('SERVER_PORT'), 10),

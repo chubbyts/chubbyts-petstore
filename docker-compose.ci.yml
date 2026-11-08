@@ -7,7 +7,7 @@ services:
       context: ./
     environment:
       NODE_ENV: production
-      MONGO_URI: 'mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@mongo:27017/petstore?authMechanism=DEFAULT&authSource=admin'
+      POSTGRES_URI: 'postgres://petstore:4aAUfBjDACcdZxNwJgJ6@postgres:5432/petstore'
       SERVER_HOST: '0.0.0.0'
       SERVER_PORT: '1234'
       OIDC_ISSUER: 'http://keycloak:8080/realms/petstore'
@@ -15,10 +15,10 @@ services:
     depends_on:
       keycloak:
         condition: service_started
-      # the app connects and upserts its indexes on the first request (see src/service-factory.ts), which needs mongo
-      # to accept connections already: a fresh mongo container creates the root user first and refuses connections
-      # on its non-loopback address meanwhile
-      mongo:
+      # the schema gets pushed on container start (see docker/production/node/Dockerfile), which needs postgres to
+      # accept connections already: a fresh postgres container initializes its data directory first and refuses tcp
+      # connections meanwhile
+      postgres:
         condition: service_healthy
   keycloak:
     container_name: chubbyts-petstore-keycloak-ci
@@ -35,17 +35,19 @@ services:
       - '8080:8080'
     volumes:
       - ./docker/development/keycloak/import:/opt/keycloak/data/import
-  mongo:
-    container_name: chubbyts-petstore-mongo-ci
-    hostname: chubbyts-petstore-mongo-ci
-    image: mongo:9
+  postgres:
+    container_name: chubbyts-petstore-postgres-ci
+    hostname: chubbyts-petstore-postgres-ci
+    image: postgres:17
+    command: -c log_statement=all -c log_error_verbosity=VERBOSE
     environment:
-      MONGO_INITDB_ROOT_USERNAME: petstore
-      MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
-    # --host "$(hostname)" forces the non-loopback address: while the root user gets created a temporary server
-    # listens on 127.0.0.1 only, which a ping against localhost would otherwise report as ready
+      POSTGRES_DB: petstore
+      POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+      POSTGRES_USER: petstore
+    # -h localhost forces tcp: while the data directory gets initialized a temporary server listens on the unix socket
+    # only, which pg_isready would otherwise report as ready
     healthcheck:
-      test: ['CMD-SHELL', 'mongosh --host "$(hostname)" --quiet --eval "db.adminCommand(''ping'')"']
+      test: ['CMD-SHELL', 'pg_isready -h localhost -U petstore -d petstore']
       interval: 1s
       timeout: 5s
       retries: 60

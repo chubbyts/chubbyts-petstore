@@ -20,7 +20,7 @@ jobs:
       - name: blacksmith docker
         uses: useblacksmith/setup-docker-builder@v2.2.0
         with:
-          cache-key: chubbyts-petstore/mongo/docker-compose
+          cache-key: chubbyts-petstore/postgres/docker-compose
       - name: docker build / start
         env:
           DOCKER_BUILDKIT: 1
@@ -60,13 +60,14 @@ jobs:
     name: docker (development container)
     runs-on: blacksmith-4vcpu-ubuntu-2604
     services:
-      mongo:
-        image: mongo:9
+      postgres:
+        image: postgres:17
         env:
-          MONGO_INITDB_ROOT_USERNAME: petstore
-          MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+          POSTGRES_DB: petstore
+          POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+          POSTGRES_USER: petstore
         ports:
-          - 27017:27017
+          - 5432:5432
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -75,7 +76,7 @@ jobs:
       - name: blacksmith docker
         uses: useblacksmith/setup-docker-builder@v2.2.0
         with:
-          cache-key: chubbyts-petstore/mongo/docker
+          cache-key: chubbyts-petstore/postgres/docker
       # started as early as possible (and not as a job service, which cannot mount the checked out realm import nor
       # pass the "start-dev --import-realm" command), so it is up by the time the integration tests run
       - name: keycloak start
@@ -95,7 +96,7 @@ jobs:
       # "keycloak" resolves to the docker host, where the keycloak container publishes port 8080: the issuer claim
       # is fixed to http://keycloak:8080 (KC_HOSTNAME) and has to match OIDC_ISSUER
       - name: pnpm run test:integration --run --no-cache
-        run: docker container run -v ${GITHUB_WORKSPACE}:/app --add-host keycloak:172.17.0.1 -e 'MONGO_URI=mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin' -e 'OIDC_ISSUER=http://keycloak:8080/realms/petstore' -e 'OIDC_AUDIENCE=petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
+        run: docker container run -v ${GITHUB_WORKSPACE}:/app --add-host keycloak:172.17.0.1 -e 'POSTGRES_URI=postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore' -e 'OIDC_ISSUER=http://keycloak:8080/realms/petstore' -e 'OIDC_AUDIENCE=petstore' node /bin/bash -c 'source ~/.bashrc && pnpm run test:integration --run --no-cache'
       - name: pnpm run build
         run: docker container run -v ${GITHUB_WORKSPACE}:/app node /bin/bash -c 'source ~/.bashrc && pnpm run build'
   node22:
@@ -118,13 +119,14 @@ jobs:
     name: Node 24
     runs-on: blacksmith-4vcpu-ubuntu-2604
     services:
-      mongo:
-        image: mongo:9
+      postgres:
+        image: postgres:17
         env:
-          MONGO_INITDB_ROOT_USERNAME: petstore
-          MONGO_INITDB_ROOT_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+          POSTGRES_DB: petstore
+          POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
+          POSTGRES_USER: petstore
         ports:
-          - 27017:27017
+          - 5432:5432
     steps:
       - name: checkout
         uses: actions/checkout@v7.0.1
@@ -149,7 +151,7 @@ jobs:
       - run: pnpm run test --run --coverage --no-cache
       - run: pnpm run test:integration --run --no-cache
         env:
-          MONGO_URI: "mongodb://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:27017/petstore?authMechanism=DEFAULT&authSource=admin"
+          POSTGRES_URI: "postgres://petstore:4aAUfBjDACcdZxNwJgJ6@172.17.0.1:5432/petstore"
           OIDC_ISSUER: "http://keycloak:8080/realms/petstore"
           OIDC_AUDIENCE: "petstore"
       - run: pnpm run infection

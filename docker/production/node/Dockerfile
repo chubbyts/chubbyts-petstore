@@ -84,5 +84,7 @@ WORKDIR /app
 RUN source ~/.bashrc \
     && pnpm install --prod
 
+# update the database schema before the server starts, the same as "pnpm db:push" within "pnpm start" in development
 CMD source ~/.bashrc \
+    && node node_modules/drizzle-kit/bin.cjs push \
     && node bootstrap/index.js

@@ -1,7 +1,6 @@
 import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import type { Container } from '@chubbyts/chubbyts-dic-types/container';
 import { describe, expect, test } from 'vitest';
-import type { Collection, Db, MongoClient } from 'mongodb';
 import { useObjectMock } from '@chubbyts/chubbyts-function-mock/object-mock';
 import type { Response, ServerRequest } from '@chubbyts/chubbyts-http-types/message';
 import {
@@ -239,37 +238,10 @@ describe('service-factory', () => {
   });
 
   test('petFindModelByIdServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petFindModelByIdServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks).toHaveLength(0);
-    expect(dbMocks).toHaveLength(0);
-    expect(mongoClientMocks).toHaveLength(0);
     expect(containerMocks).toHaveLength(0);
   });
 
@@ -318,37 +290,10 @@ describe('service-factory', () => {
   });
 
   test('petPersistModelServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petPersistModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks).toHaveLength(0);
-    expect(dbMocks).toHaveLength(0);
-    expect(mongoClientMocks).toHaveLength(0);
     expect(containerMocks).toHaveLength(0);
   });
 
@@ -397,72 +342,18 @@ describe('service-factory', () => {
   });
 
   test('petRemoveModelServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petRemoveModelServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks).toHaveLength(0);
-    expect(dbMocks).toHaveLength(0);
-    expect(mongoClientMocks).toHaveLength(0);
     expect(containerMocks).toHaveLength(0);
   });
 
   test('petResolveModelListServiceFactory', async () => {
-    const [collection, collectionMocks] = useObjectMock<Collection>([]);
-
-    const [db, dbMocks] = useObjectMock<Db>([
-      {
-        name: 'collection',
-        parameters: ['pets'],
-        return: collection,
-      },
-    ]);
-
-    const [mongoClient, mongoClientMocks] = useObjectMock<MongoClient>([
-      {
-        name: 'db',
-        parameters: [],
-        return: db,
-      },
-    ]);
-
-    const [container, containerMocks] = useObjectMock<Container>([
-      {
-        name: 'get',
-        parameters: ['mongoClient'],
-        return: Promise.resolve(mongoClient),
-      },
-    ]);
+    const [container, containerMocks] = useObjectMock<Container>([{ name: 'get', parameters: ['db'], return: {} }]);
 
     expect(await petResolveModelListServiceFactory(container)).toBeInstanceOf(Function);
 
-    expect(collectionMocks).toHaveLength(0);
-    expect(dbMocks).toHaveLength(0);
-    expect(mongoClientMocks).toHaveLength(0);
     expect(containerMocks).toHaveLength(0);
   });
 

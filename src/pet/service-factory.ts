@@ -11,7 +11,6 @@ import {
   createPostRoute,
   createPutRoute,
 } from '@chubbyts/chubbyts-framework/router/route';
-import type { MongoClient } from 'mongodb';
 import { createCreateHandler } from '@chubbyts/chubbyts-http-api/handler/create';
 import { createReadHandler } from '@chubbyts/chubbyts-http-api/handler/read';
 import { createUpdateHandler } from '@chubbyts/chubbyts-http-api/handler/update';
@@ -27,12 +26,13 @@ import type { GeneratePath } from '@chubbyts/chubbyts-framework/router/url-gener
 import type { EnrichModelList, EnrichModel } from '@chubbyts/chubbyts-http-api/model';
 import { extendZodWithOpenApi, type OpenAPIRegistry, type RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { Handler } from '@chubbyts/chubbyts-http-types/handler';
 import type { BodyFactory, ResponseFactory } from '@chubbyts/chubbyts-http-types/message-factory';
 import type { ResponseHelpers, ServerRequestHelpers } from '@chubbyts/chubbyts-http-types/message-helper';
 import { v7 } from 'uuid';
 import { createEnrichModelList, createEnrichModel } from '../enrich.js';
-import { createResolveModelList, createFindModelById, createPersistModel, createRemoveModel } from '../repository.js';
+import type { Schema } from '../repository.js';
 import type { InputPetListSchema, InputPetSchema } from './model.js';
 import {
   enrichedPetListSchema,
@@ -41,10 +41,9 @@ import {
   inputPetListSchema,
   inputPetSchema,
 } from './model.js';
+import { createFindPetById, createPersistPet, createRemovePet, createResolvePetList } from './repository.js';
 
 extendZodWithOpenApi(z);
-
-const petCollectionName = 'pets';
 
 export const petCreateHandlerServiceFactory = async (container: Container): Promise<Handler> => {
   return createCreateHandler({
@@ -97,7 +96,7 @@ export const petEnrichModelListServiceFactory = (
 };
 
 export const petFindModelByIdServiceFactory = async (container: Container): Promise<FindModelById<InputPetSchema>> => {
-  return createFindModelById(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
+  return createFindPetById(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petListHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -116,10 +115,7 @@ export const petListHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petPersistModelServiceFactory = async (container: Container): Promise<PersistModel<InputPetSchema>> => {
-  return createPersistModel<InputPetSchema>(
-    await container.get<Promise<MongoClient>>('mongoClient'),
-    petCollectionName,
-  );
+  return createPersistPet(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petReadHandlerServiceFactory = async (container: Container): Promise<Handler> => {
@@ -136,13 +132,13 @@ export const petReadHandlerServiceFactory = async (container: Container): Promis
 };
 
 export const petRemoveModelServiceFactory = async (container: Container): Promise<RemoveModel<InputPetSchema>> => {
-  return createRemoveModel(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
+  return createRemovePet(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petResolveModelListServiceFactory = async (
   container: Container,
 ): Promise<ResolveModelList<InputPetSchema, InputPetListSchema>> => {
-  return createResolveModelList(await container.get<Promise<MongoClient>>('mongoClient'), petCollectionName);
+  return createResolvePetList(container.get<NodePgDatabase<Schema>>('db'));
 };
 
 export const petUpdateHandlerServiceFactory = async (container: Container): Promise<Handler> => {

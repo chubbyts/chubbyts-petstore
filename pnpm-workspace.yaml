@@ -17,7 +17,6 @@ minimumReleaseAgeExclude:
   - '@chubbyts/chubbyts-http-error@3.6.0'
   - '@chubbyts/chubbyts-http-oidc@1.1.0'
   - '@chubbyts/chubbyts-log-types@3.4.0'
-  - '@chubbyts/chubbyts-mongodb@2.4.0'
   - '@chubbyts/chubbyts-negotiation@4.6.0'
   - '@chubbyts/chubbyts-pino-adapter@3.4.0'
   - '@chubbyts/chubbyts-throwable-to-error@2.4.0'

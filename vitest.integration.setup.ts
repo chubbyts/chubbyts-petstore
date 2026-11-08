@@ -1,10 +1,10 @@
 /* oxlint-disable functional/no-let */
 
 import type { ChildProcessWithoutNullStreams } from 'child_process';
-import { spawn } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import fetch from 'cross-fetch';
-import { MongoClient } from 'mongodb';
-import { parse, format } from 'mongodb-uri';
+import { Client } from 'pg';
+import { ConnectionString } from 'connection-string';
 import { getRequiredEnv } from './config/production.js';
 
 const getRandomInt = (min: number, max: number) => {
@@ -20,11 +20,37 @@ const timeout = 20000;
 const oidcProviderTimeout = 120000; // keycloak needs a while to boot and import the realm
 const iterationTimeout = 500;
 
-const bootstrapMongoDbTestDatabase = async (mongoUriWithoutDatabase: string, testDatabase: string): Promise<void> => {
-  const mongoClient = await MongoClient.connect(mongoUriWithoutDatabase);
+const resolveDatabaseFromPostgresUri = (postgresUri: string) => {
+  const connectionString = new ConnectionString(postgresUri);
 
-  await mongoClient.db(testDatabase).dropDatabase();
-  await mongoClient.close();
+  if (connectionString.path?.length !== 1) {
+    throw new Error('Cannot parse database name');
+  }
+
+  return connectionString.path[0];
+};
+
+const resolvePostgresConnectionStringWithDifferentDatabase = (postgresUri: string, database: string | undefined) => {
+  const connectionString = new ConnectionString(postgresUri);
+  // oxlint-disable-next-line functional/immutable-data
+  connectionString.path = database ? [database] : [];
+
+  return connectionString.toString();
+};
+
+const bootstrapPostgresTestDatabase = async (
+  postgresUriWithoutDatabase: string,
+  testDatabase: string,
+): Promise<void> => {
+  const postgresClient = new Client(postgresUriWithoutDatabase);
+  await postgresClient.connect();
+  await postgresClient.query(`DROP DATABASE IF EXISTS "${testDatabase}"`);
+  await postgresClient.query(`CREATE DATABASE "${testDatabase}"`);
+
+  execSync('./node_modules/.bin/drizzle-kit push', {
+    env: process.env,
+    stdio: 'inherit',
+  });
 };
 
 // the tests run against a real oidc provider (keycloak, see docker-compose.yml / .github/workflows/ci.yml)
@@ -82,25 +108,24 @@ const startServer = async () => {
 let httpServer: ChildProcessWithoutNullStreams;
 
 export const setup = async () => {
-  const mongoUri = getRequiredEnv('MONGO_URI');
+  const postgresUri = getRequiredEnv('POSTGRES_URI');
   const oidcIssuer = getRequiredEnv('OIDC_ISSUER');
   getRequiredEnv('OIDC_AUDIENCE');
 
-  const { database, ...mongoConfigWithoutDatabase } = parse(mongoUri);
-
+  const database = resolveDatabaseFromPostgresUri(postgresUri);
   const testDatabase = `${database}_test`;
 
-  const mongoUriWithoutDatabase = format({ ...mongoConfigWithoutDatabase });
-  const mongoUriWithTestDatabase = format({ ...mongoConfigWithoutDatabase, database: testDatabase });
+  const postgresUriWithoutDatabase = resolvePostgresConnectionStringWithDifferentDatabase(postgresUri, undefined);
+  const postgresUriWithTestDatabase = resolvePostgresConnectionStringWithDifferentDatabase(postgresUri, testDatabase);
 
   // oxlint-disable-next-line functional/immutable-data
-  process.env.MONGO_URI = mongoUriWithTestDatabase;
+  process.env.POSTGRES_URI = postgresUriWithTestDatabase;
   // oxlint-disable-next-line functional/immutable-data
   process.env.SERVER_HOST = testServerHost;
   // oxlint-disable-next-line functional/immutable-data
   process.env.SERVER_PORT = `${testServerPort}`;
 
-  await bootstrapMongoDbTestDatabase(mongoUriWithoutDatabase, testDatabase);
+  await bootstrapPostgresTestDatabase(postgresUriWithoutDatabase, testDatabase);
 
   await waitForOidcProvider(oidcIssuer);
 

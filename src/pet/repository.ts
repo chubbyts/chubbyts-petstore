@@ -34,10 +34,9 @@ const mapPetResultToPet = (petResult: PetQueryResult): Pet => ({
   }),
 });
 
-export const createResolvePetList = (
-  db: NodePgDatabase<Schema>,
-): ResolveModelList<InputPetSchema, InputPetListSchema> => {
-  return async (list: InputModelList<InputPetListSchema>): Promise<ModelList<InputPetSchema, InputPetListSchema>> => {
+export const createResolvePetList =
+  (db: NodePgDatabase<Schema>): ResolveModelList<InputPetSchema, InputPetListSchema> =>
+  async (list: InputModelList<InputPetListSchema>): Promise<ModelList<InputPetSchema, InputPetListSchema>> => {
     const where = and(
       ...Object.entries(list.filters).map(([field, value]) => eq(pets[field as schema.PetsColumns], String(value))),
     );
@@ -71,10 +70,10 @@ export const createResolvePetList = (
       count: petCountResult[0].count,
     };
   };
-};
 
-export const createFindPetById = (db: NodePgDatabase<Schema>): FindModelById<InputPetSchema> => {
-  return async (id: string) => {
+export const createFindPetById =
+  (db: NodePgDatabase<Schema>): FindModelById<InputPetSchema> =>
+  async (id: string) => {
     const petResult = await db.query.pets
       .findFirst({
         with: {
@@ -90,10 +89,10 @@ export const createFindPetById = (db: NodePgDatabase<Schema>): FindModelById<Inp
 
     return mapPetResultToPet(petResult);
   };
-};
 
-export const createPersistPet = (db: NodePgDatabase<Schema>): PersistModel<InputPetSchema> => {
-  return async (pet: Model<InputPetSchema>) => {
+export const createPersistPet =
+  (db: NodePgDatabase<Schema>): PersistModel<InputPetSchema> =>
+  async (pet: Model<InputPetSchema>) => {
     await db.transaction(async (transaction) => {
       const exist =
         (
@@ -134,13 +133,12 @@ export const createPersistPet = (db: NodePgDatabase<Schema>): PersistModel<Input
 
     return pet;
   };
-};
 
-export const createRemovePet = (db: NodePgDatabase<Schema>): RemoveModel<InputPetSchema> => {
-  return async (pet: Model<InputPetSchema>) => {
+export const createRemovePet =
+  (db: NodePgDatabase<Schema>): RemoveModel<InputPetSchema> =>
+  async (pet: Model<InputPetSchema>) => {
     await db.transaction(async (transaction) => {
       await transaction.delete(petsVaccinations).where(eq(petsVaccinations.petId, pet.id)).execute();
       await transaction.delete(pets).where(eq(pets.id, pet.id)).execute();
     });
   };
-};

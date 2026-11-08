@@ -48,30 +48,24 @@ import type { Schema } from './repository.js';
 
 extendZodWithOpenApi(z);
 
-export const bodyFactoryServiceFactory = (): BodyFactory => {
-  return createBodyFactory();
-};
+export const bodyFactoryServiceFactory = (): BodyFactory => createBodyFactory();
 
-export const cleanDirectoriesCommandServiceFactory = (container: Container): CleanDirectoriesCommand => {
-  return createCleanDirectoriesCommand(container.get<Config>('config').directories, container.get<Logger>('logger'));
-};
+export const cleanDirectoriesCommandServiceFactory = (container: Container): CleanDirectoriesCommand =>
+  createCleanDirectoriesCommand(container.get<Config>('config').directories, container.get<Logger>('logger'));
 
-export const dbServiceFactory = (container: Container): NodePgDatabase<Schema> => {
-  return drizzle(container.get<Config>('config').postgres, { schema });
-};
+export const dbServiceFactory = (container: Container): NodePgDatabase<Schema> =>
+  drizzle(container.get<Config>('config').postgres, { schema });
 
-export const errorMiddlewareServiceFactory = (container: Container): Middleware => {
-  return createErrorMiddleware(
+export const errorMiddlewareServiceFactory = (container: Container): Middleware =>
+  createErrorMiddleware(
     container.get<ResponseFactory>('responseFactory'),
     container.get<BodyFactory>('bodyFactory'),
     container.get<Config>('config').debug,
     container.get<Logger>('logger'),
   );
-};
 
-export const generatePathServiceFactory = (container: Container): GeneratePath => {
-  return createPathToRegexpGeneratePath(container.get<RoutesByName>('routesByName'));
-};
+export const generatePathServiceFactory = (container: Container): GeneratePath =>
+  createPathToRegexpGeneratePath(container.get<RoutesByName>('routesByName'));
 
 export const loggerServiceFactory = (container: Container): Logger => {
   const { options, stream } = container.get<Config>('config').pino;
@@ -93,9 +87,8 @@ export const loggerServiceFactory = (container: Container): Logger => {
   );
 };
 
-export const matchServiceFactory = (container: Container): Match => {
-  return createPathToRegexpMatch(container.get<RoutesByName>('routesByName'));
-};
+export const matchServiceFactory = (container: Container): Match =>
+  createPathToRegexpMatch(container.get<RoutesByName>('routesByName'));
 
 export const middlewaresServiceFactory = (container: Container): Array<Middleware> => {
   const m = (name: string) => createLazyMiddleware(container, name);
@@ -103,13 +96,12 @@ export const middlewaresServiceFactory = (container: Container): Array<Middlewar
   return [m('errorMiddleware'), m('corsMiddleware'), m('routeMatcherMiddleware')];
 };
 
-export const openApiHandlerServiceFactory = (container: Container) => {
-  return createOpenApiHandler(
+export const openApiHandlerServiceFactory = (container: Container) =>
+  createOpenApiHandler(
     container.get<OpenAPIComponentObject>('openApiObject'),
     container.get<ResponseFactory>('responseFactory'),
     container.get<BodyFactory>('bodyFactory'),
   );
-};
 
 export const openApiObjectServiceFactory = (container: Container): OpenAPIComponentObject => {
   const openApi = container.get<Config>('config').openApi;
@@ -149,28 +141,19 @@ export const openApiRegistryServiceFactory = (): OpenAPIRegistry => {
   return registry;
 };
 
-export const pingHandlerServiceFactory = (container: Container) => {
-  return createPingHandler(
-    container.get<ResponseFactory>('responseFactory'),
-    container.get<BodyFactory>('bodyFactory'),
-  );
-};
+export const pingHandlerServiceFactory = (container: Container) =>
+  createPingHandler(container.get<ResponseFactory>('responseFactory'), container.get<BodyFactory>('bodyFactory'));
 
-export const requestFactoryServiceFactory = (container: Container): RequestFactory => {
-  return createRequestFactory(container.get<UriFactory>('uriFactory'), container.get<BodyFactory>('bodyFactory'));
-};
+export const requestFactoryServiceFactory = (container: Container): RequestFactory =>
+  createRequestFactory(container.get<UriFactory>('uriFactory'), container.get<BodyFactory>('bodyFactory'));
 
-export const responseFactoryServiceFactory = (container: Container): ResponseFactory => {
-  return createResponseFactory(container.get<BodyFactory>('bodyFactory'));
-};
+export const responseFactoryServiceFactory = (container: Container): ResponseFactory =>
+  createResponseFactory(container.get<BodyFactory>('bodyFactory'));
 
-export const responseHelpersServiceFactory = (): ResponseHelpers => {
-  return createResponseHelpers();
-};
+export const responseHelpersServiceFactory = (): ResponseHelpers => createResponseHelpers();
 
-export const routeMatcherMiddlewareServiceFactory = (container: Container): Middleware => {
-  return createRouteMatcherMiddleware(container.get<Match>('match'));
-};
+export const routeMatcherMiddlewareServiceFactory = (container: Container): Middleware =>
+  createRouteMatcherMiddleware(container.get<Match>('match'));
 
 export const routesServiceFactory = (container: Container): Array<Route> => {
   const h = (name: string) => createLazyHandler(container, name);
@@ -189,18 +172,12 @@ export const routesServiceFactory = (container: Container): Array<Route> => {
   ];
 };
 
-export const routesByNameServiceFactory = (container: Container): RoutesByName => {
-  return createRoutesByName(container.get<Array<Route>>('routes'));
-};
+export const routesByNameServiceFactory = (container: Container): RoutesByName =>
+  createRoutesByName(container.get<Array<Route>>('routes'));
 
-export const serverRequestFactoryServiceFactory = (container: Container): ServerRequestFactory => {
-  return createServerRequestFactory(container.get<RequestFactory>('requestFactory'));
-};
+export const serverRequestFactoryServiceFactory = (container: Container): ServerRequestFactory =>
+  createServerRequestFactory(container.get<RequestFactory>('requestFactory'));
 
-export const serverRequestHelpersServiceFactory = (): ServerRequestHelpers => {
-  return createServerRequestHelpers();
-};
+export const serverRequestHelpersServiceFactory = (): ServerRequestHelpers => createServerRequestHelpers();
 
-export const uriFactoryServiceFactory = (): UriFactory => {
-  return createUriFactory();
-};
+export const uriFactoryServiceFactory = (): UriFactory => createUriFactory();

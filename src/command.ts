@@ -3,11 +3,9 @@ import type { Logger } from '@chubbyts/chubbyts-log-types/log';
 
 export type CleanDirectoriesCommand = (directoryNames: Array<string>) => number;
 
-export const createCleanDirectoriesCommand = (
-  directories: Map<string, string>,
-  logger: Logger,
-): CleanDirectoriesCommand => {
-  return (directoryNames: Array<string>): number => {
+export const createCleanDirectoriesCommand =
+  (directories: Map<string, string>, logger: Logger): CleanDirectoriesCommand =>
+  (directoryNames: Array<string>): number => {
     const unsupportedDirectoryNames: Array<string> = directoryNames.filter(
       (directoryName) => !directories.has(directoryName),
     );
@@ -29,4 +27,3 @@ export const createCleanDirectoriesCommand = (
 
     return 0;
   };
-};

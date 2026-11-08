@@ -19,18 +19,12 @@ const createJsonResponse = (responseFactory: ResponseFactory, bodyFactory: BodyF
   };
 };
 
-export const createPingHandler = (responseFactory: ResponseFactory, bodyFactory: BodyFactory): Handler => {
-  return (): Promise<Response> => {
-    return Promise.resolve(createJsonResponse(responseFactory, bodyFactory, { datetime: new Date().toISOString() }));
-  };
-};
+export const createPingHandler =
+  (responseFactory: ResponseFactory, bodyFactory: BodyFactory): Handler =>
+  (): Promise<Response> =>
+    Promise.resolve(createJsonResponse(responseFactory, bodyFactory, { datetime: new Date().toISOString() }));
 
-export const createOpenApiHandler = (
-  openApiObject: OpenAPIComponentObject,
-  responseFactory: ResponseFactory,
-  bodyFactory: BodyFactory,
-): Handler => {
-  return (): Promise<Response> => {
-    return Promise.resolve(createJsonResponse(responseFactory, bodyFactory, openApiObject));
-  };
-};
+export const createOpenApiHandler =
+  (openApiObject: OpenAPIComponentObject, responseFactory: ResponseFactory, bodyFactory: BodyFactory): Handler =>
+  (): Promise<Response> =>
+    Promise.resolve(createJsonResponse(responseFactory, bodyFactory, openApiObject));

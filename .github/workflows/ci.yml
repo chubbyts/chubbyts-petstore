@@ -18,7 +18,7 @@ jobs:
         with:
           persist-credentials: false
       - name: blacksmith docker
-        uses: useblacksmith/setup-docker-builder@v2.2.0
+        uses: useblacksmith/setup-docker-builder@v2.3.0
         with:
           cache-key: chubbyts-petstore/postgres/docker-compose
       - name: docker build / start
@@ -74,7 +74,7 @@ jobs:
         with:
           persist-credentials: false
       - name: blacksmith docker
-        uses: useblacksmith/setup-docker-builder@v2.2.0
+        uses: useblacksmith/setup-docker-builder@v2.3.0
         with:
           cache-key: chubbyts-petstore/postgres/docker
       # started as early as possible (and not as a job service, which cannot mount the checked out realm import nor
@@ -118,6 +118,22 @@ jobs:
   node24:
     name: Node 24
     runs-on: blacksmith-4vcpu-ubuntu-2604
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: checkout node
+        uses: useblacksmith/setup-node@v5.0.4
+        with:
+          node-version: "24"
+      - run: npm install -g --ignore-scripts pnpm@11.0.9
+      - run: pnpm install --ignore-scripts
+      - run: pnpm run build
+      - run: pnpm run test --run
+  node26:
+    name: Node 26
+    runs-on: blacksmith-4vcpu-ubuntu-2604
     services:
       postgres:
         image: postgres:17
@@ -143,7 +159,7 @@ jobs:
       - name: checkout node
         uses: useblacksmith/setup-node@v5.0.4
         with:
-          node-version: "24"
+          node-version: "26"
       - run: npm install -g --ignore-scripts pnpm@11.0.9
       - run: pnpm install --ignore-scripts
       - run: pnpm run cs
@@ -163,23 +179,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: sonarcloud.io
-        uses: SonarSource/sonarqube-scan-action@v8.3.0
+        uses: SonarSource/sonarqube-scan-action@v8.4.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  node26:
-    name: Node 26
-    runs-on: blacksmith-4vcpu-ubuntu-2604
-    steps:
-      - name: checkout
-        uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
-      - name: checkout node
-        uses: useblacksmith/setup-node@v5.0.4
-        with:
-          node-version: "26"
-      - run: npm install -g --ignore-scripts pnpm@11.0.9
-      - run: pnpm install --ignore-scripts
-      - run: pnpm run build
-      - run: pnpm run test --run

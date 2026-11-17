@@ -61,7 +61,7 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2604
     services:
       postgres:
-        image: postgres:17
+        image: postgres:18
         env:
           POSTGRES_DB: petstore
           POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6
@@ -136,7 +136,7 @@ jobs:
     runs-on: blacksmith-4vcpu-ubuntu-2604
     services:
       postgres:
-        image: postgres:17
+        image: postgres:18
         env:
           POSTGRES_DB: petstore
           POSTGRES_PASSWORD: 4aAUfBjDACcdZxNwJgJ6

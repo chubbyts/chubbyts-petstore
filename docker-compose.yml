@@ -39,11 +39,13 @@ services:
       - ~/.ssh/github.pub:/home/node/.ssh/github.pub
       # npm
       - ~/.npmrc:/home/node/.npmrc
+      # antigravity - coding agent (shares ~/.gemini with gemini, see below)
+      - ${PWD}/.home/.config/antigravity:/home/node/.config/antigravity
       # claude - coding agent
       - ${PWD}/.home/.claude:/home/node/.claude
       # codex - coding agent
       - ${PWD}/.home/.codex:/home/node/.codex
-      # gemini - coding agent
+      # gemini - coding agent (incl. antigravity: ~/.gemini/antigravity-cli, ~/.gemini/config)
       - ${PWD}/.home/.gemini:/home/node/.gemini
       # opencode - coding agent
       - ${PWD}/.home/.config/opencode:/home/node/.config/opencode

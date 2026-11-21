@@ -17,6 +17,9 @@ alias ln='ln -i'
 alias mv='mv -i'
 alias rm='rm -i'
 
+# gemini: yolo (auto-approve all tools) can't be set via settings.json, only via flag
+alias gemini='gemini --yolo'
+
 # Reset per-harness state to the image baseline, keeping only what docker-compose.yml bind-mounts
 # (plus, for pi, the packages baked into the image by the Dockerfile).
 
@@ -31,6 +34,13 @@ codex-reset() {
     find ~/.codex -mindepth 1 -maxdepth 1 \
         ! -name 'auth.json' \
         ! -name 'config.toml' \
+        -exec rm -rf -- {} +
+}
+
+gemini-reset() {
+    find ~/.gemini -mindepth 1 -maxdepth 1 \
+        ! -name 'oauth_creds.json' \
+        ! -name 'settings.json' \
         -exec rm -rf -- {} +
 }
 
@@ -55,6 +65,7 @@ pi-reset() {
 harness-reset() {
     claude-reset
     codex-reset
+    gemini-reset
     opencode-reset
     pi-reset
 }

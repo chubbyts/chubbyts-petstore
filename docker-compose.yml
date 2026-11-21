@@ -44,6 +44,9 @@ services:
       # codex - coding agent
       - ~/.codex/auth.json:/home/node/.codex/auth.json
       - ~/.codex/config.toml:/home/node/.codex/config.toml
+      # gemini - coding agent
+      - ~/.gemini/oauth_creds.json:/home/node/.gemini/oauth_creds.json
+      - ~/.gemini/settings.json:/home/node/.gemini/settings.json
       # opencode - coding agent
       - ~/.config/opencode/opencode.jsonc:/home/node/.config/opencode/opencode.jsonc
       - ~/.config/opencode/tui.json:/home/node/.config/opencode/tui.json

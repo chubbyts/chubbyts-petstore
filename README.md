@@ -24,22 +24,22 @@ An api skeleton using postgres for [chubbyts-framework][6].
 
  * node: 22
  * [@asteasolutions/zod-to-openapi][1]: ^9.1.0
- * [@chubbyts/chubbyts-decode-encode][2]: ^2.8.0
- * [@chubbyts/chubbyts-dic][3]: ^2.4.1
- * [@chubbyts/chubbyts-dic-config][4]: ^2.4.0
- * [@chubbyts/chubbyts-dic-types][5]: ^2.4.0
- * [@chubbyts/chubbyts-framework][6]: ^4.2.0
- * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^4.1.1
- * [@chubbyts/chubbyts-http][8]: ^3.1.0
- * [@chubbyts/chubbyts-http-api][9]: ^1.3.0
- * [@chubbyts/chubbyts-http-cors][10]: ^3.1.0
- * [@chubbyts/chubbyts-http-error][11]: ^3.6.0
- * [@chubbyts/chubbyts-http-node][12]: ^1.1.2
- * [@chubbyts/chubbyts-http-oidc][13]: ^1.1.0
- * [@chubbyts/chubbyts-http-types][14]: ^4.2.2
- * [@chubbyts/chubbyts-log-types][15]: ^3.4.0
- * [@chubbyts/chubbyts-pino-adapter][16]: ^3.4.0
- * [commander][17]: ^15.0.0
+ * [@chubbyts/chubbyts-decode-encode][2]: ^2.8.1
+ * [@chubbyts/chubbyts-dic][3]: ^2.4.2
+ * [@chubbyts/chubbyts-dic-config][4]: ^2.4.1
+ * [@chubbyts/chubbyts-dic-types][5]: ^2.4.1
+ * [@chubbyts/chubbyts-framework][6]: ^4.2.1
+ * [@chubbyts/chubbyts-framework-router-path-to-regexp][7]: ^4.2.0
+ * [@chubbyts/chubbyts-http][8]: ^3.2.1
+ * [@chubbyts/chubbyts-http-api][9]: ^1.3.1
+ * [@chubbyts/chubbyts-http-cors][10]: ^3.1.1
+ * [@chubbyts/chubbyts-http-error][11]: ^3.6.1
+ * [@chubbyts/chubbyts-http-node][12]: ^1.2.1
+ * [@chubbyts/chubbyts-http-oidc][13]: ^1.1.1
+ * [@chubbyts/chubbyts-http-types][14]: ^4.3.1
+ * [@chubbyts/chubbyts-log-types][15]: ^3.4.2
+ * [@chubbyts/chubbyts-pino-adapter][16]: ^3.4.2
+ * [commander][17]: ^15.1.0
  * [drizzle-kit][18]: ^0.31.11
  * [drizzle-orm][19]: ^0.45.4
  * [openapi3-ts][20]: ^4.6.2

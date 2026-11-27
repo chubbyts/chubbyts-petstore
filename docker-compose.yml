@@ -138,7 +138,7 @@ services:
   postgres:
     container_name: chubbyts-petstore-postgres
     hostname: chubbyts-petstore-postgres
-    image: postgres:18
+    image: postgres:19
     command: -c log_statement=all -c log_error_verbosity=VERBOSE
     environment:
       POSTGRES_DB: petstore
